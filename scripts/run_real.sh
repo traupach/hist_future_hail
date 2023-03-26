@@ -4,8 +4,8 @@
 #PBS -P li18
 #PBS -l storage=gdata/up6+gdata/hh5
 #PBS -l walltime=06:00:00
-#PBS -l mem=1900GB       
-#PBS -l ncpus=480
+#PBS -l mem=190GB       
+#PBS -l ncpus=48
 #PBS -j oe
 #PBS -l wd
 #PBS -W umask=0022
@@ -15,6 +15,9 @@
 module load openmpi
 ulimit -s unlimited
 limit stacksize unlimited
+
+# Link metgrid boundary conditions files to current directory.
+ln -sf ../WPS/met_em*.nc .
 
 echo 'Running in directory:' `pwd`
 env > run_environment_real.txt
