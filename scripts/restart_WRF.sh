@@ -28,17 +28,16 @@ else
 
     # Remove all but the most recent restart file (for each of 7 domains).
     for i in 1 2 3 4 5 6 7; do
-        if [ `ls wrfrst_d0${i}* | wc -l` > 1 ]; then
-            rm `ls -t wrfrst_d0${i}* | awk 'NR>1'`
-        fi
+	if ls wrfrst_d0${i}* 1> /dev/null 2> /dev/null; then
+            if [ `ls wrfrst_d0${i}* | wc -l` > 1 ]; then
+		rm `ls -t wrfrst_d0${i}* | awk 'NR>1'`
+            fi
+	fi
     done
     
-    # Keep a copy of the most recent restart files.
-    cp wrfrst* $run_dir
-    
-    year=`ls wrfrst_d07* | cut -d_ -f3 | cut -d- -f1`
-    month=`ls wrfrst_d07* | cut -d_ -f3 | cut -d- -f2`
-    day=`ls wrfrst_d07* | cut -d_ -f3 | cut -d- -f3`
+    year=`ls wrfrst_d01* | cut -d_ -f3 | cut -d- -f1`
+    month=`ls wrfrst_d01* | cut -d_ -f3 | cut -d- -f2`
+    day=`ls wrfrst_d01* | cut -d_ -f3 | cut -d- -f3`
     
     sed -i s/start_year.*$/"start_year = ${year}, ${year}, ${year}, ${year}, ${year}, ${year}, ${year},"/g namelist.input
     sed -i s/start_month.*$/"start_month = ${month}, ${month}, ${month}, ${month}, ${month}, ${month}, ${month},"/g namelist.input

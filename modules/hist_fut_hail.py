@@ -21,6 +21,11 @@ cities = {'Perth': (115.8606, -31.9559),
           'Brisbane': (153.028056, -27.467778),
           'Canberra': (149.126944, -35.293056)}
 
+# Coordinates for remote regions of interest.
+remote = {'Adelaide': (138.5999, -34.9287),
+          'Burketown': (139.5423, -17.7383),
+          'Kalgoorlie': (121.4656, -30.7582)}
+
 def gen_download_script(years, out_file, fut_ssp='ssp245', link_list='data/xu_file_list.csv'):
     """
     Write a script to wget all the boundary condition files required for a run over given years.
@@ -67,7 +72,7 @@ def gen_download_script(years, out_file, fut_ssp='ssp245', link_list='data/xu_fi
         fp.write(cmd + '\n')
     fp.close()
     
-def set_up_WRF(year, template_dir, sims_dir, exp):
+def set_up_WRF(year, template_dir, namelist_dir, sims_dir, exp):
     """
     Set up directories ready for WPS and WRF runs for a given season, including 
     updating namelist files.
@@ -75,6 +80,7 @@ def set_up_WRF(year, template_dir, sims_dir, exp):
     Arguments:
         year: Event year (includes Sep year to Feb year+1).
         template_dir: Directory with template WPS and WRF setups.
+        namelist_dir: Directory from which to source WPS and WRF namelists.
         sims_dir: Directory in which simulations will be run.
         exp: Experiment to run (hist or ssp245).
     """
@@ -92,8 +98,8 @@ def set_up_WRF(year, template_dir, sims_dir, exp):
     if not os.path.exists(f'{sim_dir}/WPS'):
         os.mkdir(f'{sim_dir}/WPS')
         os.system(f'ln -s {template_dir}/WPS/* {sim_dir}/WPS/')        
-        os.system(f'rm {sim_dir}/WPS/namelist.wps {sim_dir}/WPS/mk.inputlist.sh')
-        os.system(f'cp {template_dir}/WPS/namelist.wps {sim_dir}/WPS/')
+        os.system(f'rm {sim_dir}/WPS/mk.inputlist.sh')
+        os.system(f'cp {namelist_dir}/namelist.wps {sim_dir}/WPS/')
         os.system(f'cp {template_dir}/WPS/mk.inputlist.sh {sim_dir}/WPS/')
         os.system(f'sed -i s/year=.*$/"year={year}"/g {sim_dir}/WPS/mk.inputlist.sh')
         os.system(f'sed -i s/exp=.*$/"exp={exp}"/g {sim_dir}/WPS/mk.inputlist.sh')
@@ -106,8 +112,7 @@ def set_up_WRF(year, template_dir, sims_dir, exp):
     if not os.path.exists(f'{sim_dir}/WRF/'):
         os.mkdir(f'{sim_dir}/WRF')
         os.system(f'ln -s {template_dir}/WRF/* {sim_dir}/WRF/')
-        os.system(f'rm {sim_dir}/WRF/namelist.input')
-        os.system(f'cp -f {template_dir}/WRF/namelist.input {sim_dir}/WRF/')
+        os.system(f'cp -f {namelist_dir}/namelist.input {sim_dir}/WRF/')
         os.system(f'sed -i s/start_year.*$/"start_year = {comma.join(np.repeat(start_time[0:4], 7))},"/g {sim_dir}/WRF/namelist.input')
         os.system(f'sed -i s/start_month.*$/"start_month = {comma.join(np.repeat(start_time[5:7], 7))},"/g {sim_dir}/WRF/namelist.input')
         os.system(f'sed -i s/start_day.*$/"start_day = {comma.join(np.repeat(start_time[8:10], 7))},"/g {sim_dir}/WRF/namelist.input')
@@ -133,8 +138,11 @@ def plot_wrf_domains(wps_dir, pts=None):
     
     max_map_fac = np.array([np.max(np.abs(x.MAPFAC_M.values-1) / 1 * 100) for x in doms])
     if np.any(max_map_fac > 5):
-        print('WARNING: Map factor is too large or small; reconfigure domains.')
-    
+        print('WARNING: Map factor is large or small (below 0.95 or over 1.05).')
+        facts = [np.max(x.MAPFAC_M.values) for x in doms]
+        print(f'Max factor is {np.max(facts):.3} in domain {np.argmax(facts)+1}.')
+        print(f'Min factor is {np.min(facts):.3} in domain {np.argmin(facts)+1}.')
+        
     # Custom functions for WRF domain plotting.
     def add_box(x, y, ax, colour='white', linestyle='solid'):
         geom = LinearRing(list(zip(list(x.isel(south_north=-1).values) + list(x.isel(south_north=0).values)[::-1],
@@ -153,8 +161,9 @@ def plot_wrf_domains(wps_dir, pts=None):
     z = doms[0].isel(Time=0).HGT_M.values
     x = doms[0].isel(Time=0).XLONG_M.values
     y = doms[0].isel(Time=0).XLAT_M.values
-    ax.pcolormesh(x,y,z,cmap='terrain', transform=ccrs.PlateCarree())
+    pc=ax.pcolormesh(x,y,z,cmap='terrain', transform=ccrs.PlateCarree())
     ax.coastlines(linewidth=1.5)
+    fig.colorbar(pc)
     add_doms(doms[1:(len(doms))], ax=ax, colour='red')
     
     # Add optional points.

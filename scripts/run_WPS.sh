@@ -2,7 +2,7 @@
 # Run WPS to prepare a WRF run.
 
 #PBS -q normal
-#PBS -P li18
+#PBS -P up6
 #PBS -l storage=gdata/up6+gdata/hh5+gdata/rt52+gdata/zz93+gdata/sx70
 #PBS -l ncpus=48
 #PBS -l walltime=12:00:00
