@@ -124,13 +124,17 @@ def set_up_WRF(year, template_dir, namelist_dir, sims_dir, exp):
     else:
         print(f'Skipping existing WRF...')
         
-def plot_wrf_domains(wps_dir, pts=None):
+def plot_wrf_domains(wps_dir, pts=None, figsize=(10,8), proj=ccrs.PlateCarree(), fontsize=14, labels=None, file=None):
     """
     Plot WRF domains for a WPS setup. Requires geogrid to have been run first.
     
     Arguments:
         wps_dir: The WPS directory to find domain information in.
         pts: Points to add as a dictionary with keys a name and values an (x,y) pair.
+        figsize: The figure size (width x height).
+        proj: Projection to display map in.
+        labels: Point name: (label, offset) for each point to display, with offset in map coordinates.
+        file: Output file for figure.
     """
     
     dom_files = sorted(glob.glob(wps_dir+'/geo*.nc'))
@@ -156,23 +160,41 @@ def plot_wrf_domains(wps_dir, pts=None):
             add_box(x, y, ax, colour=colour, linestyle=linestyle)
     
     # Do the plotting.
-    plt.rcParams['font.size'] = 18
-    fig, ax = plt.subplots(figsize=(10,8), subplot_kw={'projection': ccrs.PlateCarree()})
-    z = doms[0].isel(Time=0).HGT_M.values
+    plt.rcParams['font.size'] = fontsize
+    fig, ax = plt.subplots(figsize=figsize, subplot_kw={'projection': proj})
+    #z = doms[0].isel(Time=0).HGT_M.values
     x = doms[0].isel(Time=0).XLONG_M.values
     y = doms[0].isel(Time=0).XLAT_M.values
-    pc=ax.pcolormesh(x,y,z,cmap='terrain', transform=ccrs.PlateCarree())
+    #pc = ax.pcolormesh(x,y,z,cmap='terrain', transform=ccrs.PlateCarree())
     ax.coastlines(linewidth=1.5)
-    fig.colorbar(pc)
-    add_doms(doms[1:(len(doms))], ax=ax, colour='red')
-    
+    #fig.colorbar(pc)
+    add_doms([doms[0]], ax=ax, colour='orange')
+    add_doms([doms[x] for x in [1,3]], ax=ax, colour='darkgreen')
+    add_doms([doms[x] for x in [2,4,5,6]], ax=ax, colour='blue')
+
+    ax.set_xlim(np.min(x)-2, np.max(x)+2)
+    ax.set_ylim(np.min(y)-2, np.max(y)+2)
+
+    gl = ax.gridlines(crs=proj, draw_labels=True, alpha=0.3)
+    gl.top_labels = gl.right_labels = False
+
     # Add optional points.
     for i in pts.keys():
-        ax.scatter(pts[i][0], pts[i][1], color='red')
+        ax.scatter(pts[i][0], pts[i][1], color='red', transform=ccrs.PlateCarree())
+
+        if labels is not None and i in labels:
+            ax.annotate(labels[i][0], (pts[i][0], pts[i][1]), 
+                        textcoords='offset points',
+                        xytext=labels[i][1], ha='center',
+                        color='black')
+
+    if not file is None:
+        plt.savefig(fname=file, dpi=300, bbox_inches='tight')
     
     plt.show()
     
-def plot_wrf_domain_def(parent_id, i_parent_start, j_parent_start, ref_lon, ref_lat, e_we, e_sn, dx, dy, num_doms, scale_factor, pts=None):
+def plot_wrf_domain_def(parent_id, i_parent_start, j_parent_start, ref_lon, ref_lat, e_we, 
+                        e_sn, dx, dy, num_doms, scale_factor, pts=None):
     """
     Plot a WRF domain definition, assuming the projection is 'lat-lon' (ie rotated cylindrical equidistant) in WRF.
     

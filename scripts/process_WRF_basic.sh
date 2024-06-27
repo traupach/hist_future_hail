@@ -1,8 +1,8 @@
 #!/bin/bash
-# Extract basic variables from wrfout_d03* files.
+# Extract basic variables from wrfout_* files.
 
 #PBS -q normal
-#PBS -P li18
+#PBS -P w42
 #PBS -l storage=gdata/up6+gdata/hh5
 #PBS -l ncpus=28
 #PBS -l walltime=12:00:00
