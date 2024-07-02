@@ -27,18 +27,18 @@ for filename in files:
     nc = Dataset(filename)
     dat = xarray.Dataset({'pressure': wrf.getvar(nc, 'pressure', timeidx=wrf.ALL_TIMES, squeeze=False),
                           'temperature': wrf.getvar(nc, 'tk', timeidx=wrf.ALL_TIMES, squeeze=False),
-                          'rh': wrf.getvar(nc, 'rh', timeidx=wrf.ALL_TIMES, squeeze=False),
+                          #'rh': wrf.getvar(nc, 'rh', timeidx=wrf.ALL_TIMES, squeeze=False),
                           'u': wrf.getvar(nc, 'ua', timeidx=wrf.ALL_TIMES, squeeze=False), 
                           'v': wrf.getvar(nc, 'va', timeidx=wrf.ALL_TIMES, squeeze=False),
-                          'w': wrf.getvar(nc, 'wa', timeidx=wrf.ALL_TIMES, squeeze=False),
-                          'z': wrf.getvar(nc, 'height', timeidx=wrf.ALL_TIMES, squeeze=False),
+                          #'w': wrf.getvar(nc, 'wa', timeidx=wrf.ALL_TIMES, squeeze=False),
+                          #'z': wrf.getvar(nc, 'height', timeidx=wrf.ALL_TIMES, squeeze=False),
                           'z_agl': wrf.getvar(nc, 'height_agl', timeidx=wrf.ALL_TIMES, squeeze=False),
                           'mixing_ratio': wrf.getvar(nc, 'QVAPOR', timeidx=wrf.ALL_TIMES, squeeze=False),
                           'wind_10m': wrf.getvar(nc, 'uvmet10_wspd_wdir', timeidx=wrf.ALL_TIMES, squeeze=False),
-                          'updraft_helicity': wrf.getvar(nc, 'updraft_helicity', timeidx=wrf.ALL_TIMES, squeeze=False),
-                          'slp': wrf.getvar(nc, 'slp', timeidx=wrf.ALL_TIMES, squeeze=False),
-                          'ter': wrf.getvar(nc, 'ter', timeidx=wrf.ALL_TIMES, squeeze=False),
-                          'td': wrf.getvar(nc, 'td', timeidx=wrf.ALL_TIMES, squeeze=False),
+                          #'updraft_helicity': wrf.getvar(nc, 'updraft_helicity', timeidx=wrf.ALL_TIMES, squeeze=False),
+                          #'slp': wrf.getvar(nc, 'slp', timeidx=wrf.ALL_TIMES, squeeze=False),
+                          #'ter': wrf.getvar(nc, 'ter', timeidx=wrf.ALL_TIMES, squeeze=False),
+                          #'td': wrf.getvar(nc, 'td', timeidx=wrf.ALL_TIMES, squeeze=False),
                           'hailcast_diam_max': wrf.getvar(nc, 'HAILCAST_DIAM_MAX', timeidx=wrf.ALL_TIMES, squeeze=False)})
                           
     assert not np.any(dat.pressure == dat.pressure.attrs['_FillValue'])
@@ -53,8 +53,8 @@ for filename in files:
                              'west_east': dat.west_east,
                              'bottom_top': dat.bottom_top})
 
-    assert np.all(dat.ter == dat.ter.max('time')), 'Terrain is not constant.'
-    dat['ter'] = dat.ter.max('time', keep_attrs=True)
+    #assert np.all(dat.ter == dat.ter.max('time')), 'Terrain is not constant.'
+    #dat['ter'] = dat.ter.max('time', keep_attrs=True)
 
     dat.attrs['projection'] = str(dat.u.attrs['projection'])
 
