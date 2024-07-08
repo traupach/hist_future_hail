@@ -20,9 +20,9 @@ default_labels <- labeller(
         wind_10m = "10 m wind"
     ),
     parameter = c(
-        shape = "Shape parameter",
-        location = "Location parameter",
-        scale = "Scale parameter"
+        shape = "Shape",
+        location = "Location",
+        scale = "Scale"
     ), .multi_line = FALSE
 )
 default_fontsize <- 14 # Font size for plots.
