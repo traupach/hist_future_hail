@@ -228,6 +228,7 @@ collect_params = function(gevs, domains, variables, epochs) {
 fit_gevs <- function(all_dat,
                      epochs = c("historic", "ssp245"),
                      prob_diams = c(20, 50, 100),
+                     prob_windspeeds = c(27.78), # 100 km/h
                      p = seq(1, 99) / 100,
                      return_periods = seq(2, 100),
                      ks_iterations = 100,
@@ -243,6 +244,7 @@ fit_gevs <- function(all_dat,
     quantiles <- list()
     return_levels <- list()
     hail_probs <- list()
+    wind_probs <- list()
     ks_fits <- list()
 
     for (d in domains) {
@@ -282,6 +284,12 @@ fit_gevs <- function(all_dat,
                         p = pextRemes(gev, q = prob_diams, lower.tail = FALSE) * 100
                     )))
                 }
+                if (v == "wind_10m") {
+                    wind_probs <- append(wind_probs, list(tibble(
+                        domain = d, epoch = e, windspeed = prob_windspeeds,
+                        p = pextRemes(gev, q = prob_windspeeds, lower.tail = FALSE) * 100
+                    )))
+                }
 
                 # Calculate KS tests for model fits.
                 ks <- vector()
@@ -298,6 +306,7 @@ fit_gevs <- function(all_dat,
     return_levels <- bind_rows(return_levels)
     ks_fits <- bind_rows(ks_fits)
     hail_probs <- bind_rows(hail_probs)
+    wind_probs <- bind_rows(wind_probs)
 
     ks_fits = bind_rows(ks_fits, ks_tests( # nolint
         gevs = gevs, domains = domains,
@@ -323,8 +332,8 @@ fit_gevs <- function(all_dat,
     )
 
     return(list(
-        gevs = gevs, return_levels = return_levels,
-        hail_probs = hail_probs, params = params,
+        gevs = gevs, return_levels = return_levels, params = params,
+        hail_probs = hail_probs, wind_probs = wind_probs, 
         ks_fits = ks_fits, quantiles = quantiles
     ))
 }
