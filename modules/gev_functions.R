@@ -126,19 +126,19 @@ plot_quantiles <- function(gev_fits, var, unit, labels = default_labels, fontsiz
 }
 
 # Plot return level curves for fitted GEVs.
-plot_return_levels <- function(gev_fits, file = NA, width = 12, height = 3,
+plot_return_levels <- function(gev_fits, var, varname, file = NA, width = 12, height = 3,
                                fontsize = default_fontsize, labels = default_labels) {
     variable <- epoch <- low <- high <- est <- NULL
 
     g <- gev_fits$return_levels %>%
-        filter(variable == "hailcast_diam_max") %>%
+        filter(variable == var) %>%
         ggplot(aes(x = period, y = est)) +
         geom_ribbon(aes(fill = epoch, ymin = low, ymax = high), linewidth = 0.5, alpha = 0.2) +
         geom_line(aes(colour = epoch), linewidth = 1) +
         facet_wrap(~domain, nrow = 1, labeller = labels) +
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text.x = element_text(size = fontsize)) +
-        labs(y = "Max hail size [mm]", x = "Return period [hail days]") +
+        labs(y = parse(text=varname), x = "Return period [hail days]") +
         scale_fill_discrete(name = "Epoch", breaks = c("historic", "ssp245"), labels = c("Historic", "SSP245")) +
         scale_colour_discrete(name = "Epoch", breaks = c("historic", "ssp245"), labels = c("Historic", "SSP245"))
     print(g)
