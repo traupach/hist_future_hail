@@ -138,9 +138,10 @@ plot_return_levels <- function(gev_fits, var, varname, file = NA, width = 12, he
         facet_wrap(~domain, nrow = 1, labeller = labels) +
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text.x = element_text(size = fontsize)) +
-        labs(y = parse(text=varname), x = "Return period [hail days]") +
+        labs(y = parse(text = varname), x = "Return period [hail days]") +
         scale_fill_discrete(name = "Epoch", breaks = c("historic", "ssp245"), labels = c("Historic", "SSP245")) +
-        scale_colour_discrete(name = "Epoch", breaks = c("historic", "ssp245"), labels = c("Historic", "SSP245"))
+        scale_colour_discrete(name = "Epoch", breaks = c("historic", "ssp245"), labels = c("Historic", "SSP245")) +
+        scale_x_log10()
     print(g)
 
     if (!is.na(file)) {
@@ -149,7 +150,7 @@ plot_return_levels <- function(gev_fits, var, varname, file = NA, width = 12, he
 }
 
 # Plot hail probabilities for comparison of GEV fits.
-plot_hail_probs <- function(gev_fits, file = NA, width = 12, height = 2, fontsize = default_fontsize) {
+plot_hail_probs <- function(gev_fits, file = NA, width = 12, height = 3, fontsize = default_fontsize) {
     diam = epoch = p = NULL
 
     g <- ggplot(gev_fits$hail_probs) +
