@@ -6,6 +6,7 @@ import geopandas
 import numpy as np
 import pandas as pd
 import cartopy.crs as ccrs
+from skimage import morphology
 import matplotlib.pyplot as plt
 from cartopy.io import shapereader
 import matplotlib.ticker as mticker
@@ -151,7 +152,8 @@ def plot_wrf_domains(wps_dir, pts=None, figsize=(10,8), proj=ccrs.PlateCarree(),
     def add_box(x, y, ax, colour='white', linestyle='solid'):
         geom = LinearRing(list(zip(list(x.isel(south_north=-1).values) + list(x.isel(south_north=0).values)[::-1],
                                list(y.isel(south_north=-1).values) + list(y.isel(south_north=0).values)[::-1])))
-        ax.add_geometries([geom], crs=ccrs.PlateCarree(), linewidth=1.5, edgecolor=colour, facecolor='none', linestyle=linestyle)
+        ax.add_geometries([geom], crs=ccrs.PlateCarree(), linewidth=1.5, edgecolor=colour, 
+                          facecolor='none', linestyle=linestyle)
 
     def add_doms(dom_list, ax, colour='white', linestyle='solid'):
         for dom in dom_list:
@@ -723,3 +725,120 @@ def plot_map(dat, dat_proj=ccrs.PlateCarree(), disp_proj=ccrs.PlateCarree(), fig
             plt.show()
         
     return ax
+
+def plot_max_hail_daims(maxes, lm, domain, figsize=(12,2)):
+    """
+    Plot maximum hail diameters by location for historical and future 
+    epochs both nonmasked and masked to land points only.
+    
+    Arguments:
+        maxes: Max hail diameters per location per epoch.
+        lm: The landmask.
+        domain: The domain to use in titles.
+    """
+    
+    x = maxes.longitude
+    y = maxes.latitude
+    z_hist = maxes.hailcast_diam_max.sel(epoch='historical')
+    z_futu = maxes.hailcast_diam_max.sel(epoch='ssp245')
+
+    plt.rcParams['font.size'] = 12
+    fig, axs = plt.subplots(ncols=4, figsize=figsize, 
+                            subplot_kw={'projection': ccrs.PlateCarree()},
+                            gridspec_kw={'wspace': 0.3})
+    pc_hist = axs[0].pcolormesh(x, y, z_hist, cmap='Spectral_r', transform=ccrs.PlateCarree())
+    pc_futu = axs[1].pcolormesh(x, y, z_futu, cmap='Spectral_r', transform=ccrs.PlateCarree())
+    pc_hist_land = axs[2].pcolormesh(x, y, z_hist.where(lm == 1), cmap='Spectral_r', transform=ccrs.PlateCarree())
+    pc_futu_land = axs[3].pcolormesh(x, y, z_futu.where(lm == 1), cmap='Spectral_r', transform=ccrs.PlateCarree())
+    plt.colorbar(pc_hist, label='Max hail diam [mm]')
+    plt.colorbar(pc_futu, label='Max hail diam [mm]')
+    plt.colorbar(pc_hist_land, label='Max hail diam [mm]')
+    plt.colorbar(pc_futu_land, label='Max hail diam [mm]')
+    
+    for ax in axs:
+        ax.coastlines(linewidth=1.5)
+    
+    axs[0].set_title(f'{domain}\nhist')
+    axs[1].set_title(f'{domain}\nssp245')
+    axs[2].set_title(f'{domain}\nhist')
+    axs[3].set_title(f'{domain}\nssp245')
+    plt.show()
+
+def process_maxima(sim_dir, plot=True, figsize=(12, 3), 
+                   domains={'Perth': 3, 
+                            'Melbourne': 5,
+                            'Brisbane': 6,
+                            'Sydney_Canberra': 7},
+                   results_dir='/g/data/up6/tr2908/hist_future_hail/results/',
+                   variables=['hailcast_diam_max']):
+    """
+    Find block maxima for selected variables. On the way save the landmask
+    and plot max hail sizes by location.
+
+    Argumnets:
+        sim_dir: Simulation base directory.
+        plot: Plot max hail sizes?
+        figsize: Figure size.
+        domains: The name: number of domains to consider.
+        results_dir: Output directory for results.
+        variables: Variables to process.
+    """
+
+    for domain, d in domains.items():
+        print(f'Processing d0{d}...')
+        
+        # Define cache files.
+        lm_file = f'{results_dir}/{domain}_landmask.nc'
+        maxes_file = f'{results_dir}/{domain}_domain_maximums.nc'
+        h_maxima_file = f'{results_dir}/{domain}_hist_block_maxima.feather'
+        f_maxima_file = f'{results_dir}/{domain}_ssp245_block_maxima.feather'
+        
+        # Get land mask.
+        if not os.path.exists(lm_file):
+            print('Computing dilated landmask...')
+            lm = xarray.open_dataset(glob(f'{sim_dir}/hist/*/WRF/wrfout_d0{d}*')[0])
+            lm = lm.LANDMASK.isel(Time=0).astype(bool)
+            lm.values = morphology.remove_small_holes(lm.values, area_threshold=9, connectivity=2)
+            lm.values = morphology.binary_erosion(lm.values, footprint=np.ones((2,2)))
+            lm.to_netcdf(lm_file)
+        lm = xarray.open_dataset(lm_file).LANDMASK
+        
+        # Open hist and future simulations.
+        if not os.path.exists(maxes_file) or not os.path.exists(h_maxima_file) or not os.path.exists(f_maxima_file):
+            hist = xarray.open_mfdataset(f'{sim_dir}/hist/*/WRF/basic*d0{d}*.nc', parallel=True)
+            futu = xarray.open_mfdataset(f'{sim_dir}/ssp245/*/WRF/basic*d0{d}*.nc', parallel=True)
+            hist = hist.chunk({'time': -1, 'south_north': 20, 'west_east': 20})
+            futu = futu.chunk({'time': -1, 'south_north': 20, 'west_east': 20})
+        
+            # Subset to only required variables.
+            lats = hist.isel(time=0).latitude
+            lons = hist.isel(time=0).longitude
+            hist = hist[variables]
+            futu = futu[variables]
+    
+            # Subset to land points only.
+            hist_land = hist.where(lm == 1).reset_coords(drop=True)
+            futu_land = futu.where(lm == 1).reset_coords(drop=True)
+        
+        # Calculate maximums over two epochs for full domains.
+        
+        if not os.path.exists(maxes_file):
+            h_max = hist.max('time').expand_dims({'epoch': ['historical']})
+            f_max = futu.max('time').expand_dims({'epoch': ['ssp245']})
+            maxes = xarray.merge([h_max, f_max])
+            maxes['latitude'] = lats
+            maxes['longitude'] = lons
+            maxes.to_netcdf(maxes_file)
+        maxes = xarray.open_dataset(maxes_file)
+    
+        if plot:
+            plot_max_hail_daims(maxes=maxes, lm=lm, domain=domain)
+        
+        # Output block maxima for land points only.
+        if not os.path.exists(h_maxima_file):
+            h_maxima = hist_land.max(['south_north', 'west_east']).resample(time='1D').max()
+            h_maxima.to_dataframe().dropna().to_feather(h_maxima_file)
+        
+        if not os.path.exists(f_maxima_file):
+            f_maxima = futu_land.max(['south_north', 'west_east']).resample(time='1D').max()
+            f_maxima.to_dataframe().dropna().to_feather(f_maxima_file)
