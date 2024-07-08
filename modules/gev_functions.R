@@ -17,7 +17,7 @@ default_labels <- labeller(
     epoch = c(historic = "Historic", ssp245 = "SSP245"),
     variable = c(
         hailcast_diam_max = "Maximum hail size",
-        wind_10m = "Maximum 10 m wind at hail times"
+        wind_10m = "Maximum 10 m wind collocated with hail"
     ),
     parameter = c(
         shape = "Shape",
