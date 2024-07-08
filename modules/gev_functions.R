@@ -102,7 +102,7 @@ plot_ks_fits <- function(gev_fits, file = NA, fontsize = default_fontsize, label
 }
 
 # Plot qq plots of GEV fitted functions.s
-plot_quantiles <- function(gev_fits, var, labels = default_labels, fontsize = default_fontsize,
+plot_quantiles <- function(gev_fits, var, unit, labels = default_labels, fontsize = default_fontsize,
                            width = 12, height = 6, file = NA) {
     variable = model = empirical = NULL
 
@@ -111,7 +111,10 @@ plot_quantiles <- function(gev_fits, var, labels = default_labels, fontsize = de
         geom_point(shape = 1) +
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text.x = element_text(size = fontsize)) +
-        labs(x = "Model quantile [mm]", y = "Empirical quantile [mm]") +
+        labs(
+            x = parse(text = paste("Model~quantile~group('[',", unit, ",']')", sep = "")),
+            y = parse(text = paste("Empirical~quantile~group('[',", unit, ",']')", sep = ""))
+        ) +
         geom_abline(slope = 1, intercept = 0) +
         coord_fixed() +
         theme(panel.spacing.x = unit(2, "lines"))
