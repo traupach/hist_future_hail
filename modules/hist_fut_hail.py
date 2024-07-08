@@ -1,4 +1,5 @@
-import re
+"""Module providing support functions for historic vs future hail comparisons."""
+
 import os
 import glob
 import xarray
@@ -10,7 +11,7 @@ from skimage import morphology
 import matplotlib.pyplot as plt
 from cartopy.io import shapereader
 import matplotlib.ticker as mticker
-from shapely.geometry import Polygon
+from matplotlib import colors
 from matplotlib.patches import Rectangle
 from shapely.geometry.polygon import LinearRing
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
@@ -123,7 +124,7 @@ def set_up_WRF(year, template_dir, namelist_dir, sims_dir, exp):
         os.system(f'sed -i s/end_day.*$/"end_day = {comma.join(np.repeat(end_time[8:10], 7))},"/g {sim_dir}/WRF/namelist.input')
         os.system(f'sed -i s/end_hour.*$/"end_hour = {comma.join(np.repeat(end_time[11:13], 7))},"/g {sim_dir}/WRF/namelist.input')
     else:
-        print(f'Skipping existing WRF...')
+        print('Skipping existing WRF...')
         
 def plot_wrf_domains(wps_dir, pts=None, figsize=(10,8), proj=ccrs.PlateCarree(), fontsize=14, labels=None, file=None):
     """
@@ -190,7 +191,7 @@ def plot_wrf_domains(wps_dir, pts=None, figsize=(10,8), proj=ccrs.PlateCarree(),
                         xytext=labels[i][1], ha='center',
                         color='black')
 
-    if not file is None:
+    if file is not None:
         plt.savefig(fname=file, dpi=300, bbox_inches='tight')
     
     plt.show()
@@ -222,7 +223,7 @@ def plot_wrf_domain_def(parent_id, i_parent_start, j_parent_start, ref_lon, ref_
     (ref_lon, ref_lat) = proj.transform_point(x=ref_lon_orig, y=ref_lat_orig, src_crs=ccrs.Geodetic())
     
     # Add optional points.
-    if not pts is None:
+    if pts is not None:
         for i in pts.keys():
             ax.scatter(pts[i][0], pts[i][1], color='red', transform=ccrs.PlateCarree())
 
@@ -246,7 +247,7 @@ def plot_wrf_domain_def(parent_id, i_parent_start, j_parent_start, ref_lon, ref_
 
         dom = Rectangle(xy=(x, y), width=w, height=h, fill=False, edgecolor='red', transform=proj)
         ax.add_patch(dom)
-        if not d+1 in domains:
+        if d+1 not in domains:
             domains[d+1] = [x, y, d_dx, d_dy]
 
     ax.coastlines()
@@ -306,8 +307,8 @@ def conv_stats(basic_vars=['hailcast_diam_max', 'longitude', 'latitude'],
                          'Melbourne': 5,
                          'Brisbane': 6,
                          'Sydney + Canberra': 7},
-               sims = {'Historical': f'/g/data/up6/tr2908/hist_future_hail/WRF_v4.4/simulations/hist/',
-                       'SSP2-4.5': f'/g/data/up6/tr2908/hist_future_hail/WRF_v4.4/simulations/ssp245/'},
+               sims = {'Historical': '/g/data/up6/tr2908/hist_future_hail/WRF_v4.4/simulations/hist/',
+                       'SSP2-4.5': '/g/data/up6/tr2908/hist_future_hail/WRF_v4.4/simulations/ssp245/'},
                city_cells = None):
     """
     Process means and quantiles per timestep in basic* and conv* files.
@@ -486,7 +487,7 @@ def plot_map_to_ax(dat, ax, coastlines=True, grid=True, dat_proj=ccrs.PlateCarre
     if cbar_label is not None:
         cbar_args['label'] = cbar_label
                     
-    if colourbar == False:
+    if colourbar is False:
         cbar_args = None
         
     cmap = plt.get_cmap(cmap).copy()
@@ -501,7 +502,7 @@ def plot_map_to_ax(dat, ax, coastlines=True, grid=True, dat_proj=ccrs.PlateCarre
                                 cmap=cmap, norm=norm, cbar_kwargs=cbar_args,
                                 add_colorbar=colourbar)
     
-    if not stippling is None:
+    if stippling is not None:
         ax.autoscale(False)
         if hatch == '.':
             pts = stippling.where(stippling).to_dataframe().dropna().reset_index()
@@ -516,15 +517,15 @@ def plot_map_to_ax(dat, ax, coastlines=True, grid=True, dat_proj=ccrs.PlateCarre
         ax.set_xlim(xlims)
     if ylims is not None:
         ax.set_ylim(ylims)
-    if not tick_labels is None:
+    if tick_labels is not None:
         assert len(tick_labels) == len(cbar_ticks), 'Labels and ticks must have same length'
         res.colorbar.ax.set_yticklabels(tick_labels)
-    if not left_title is None:
+    if left_title is not None:
         if title_inset:
             title = f'{left_title} {title}'
         else:
             ax.set_title(left_title, fontsize=plt.rcParams['font.size'], loc='left')
-    if not title is None:
+    if title is not None:
         if title_inset:
             ax.annotate(text=title, xy=(0.05, 0.9), xycoords='axes fraction',
                         fontweight='bold', fontsize=plt.rcParams['font.size'])
@@ -650,11 +651,11 @@ def plot_map(dat, dat_proj=ccrs.PlateCarree(), disp_proj=ccrs.PlateCarree(), fig
                 
         for i, d in enumerate(dat):
             ax_title = None
-            if not title is None:
+            if title is not None:
                 ax_title = title[i]
             
             ax_poly = None
-            if not polygons is None:
+            if polygons is not None:
                 ax_poly = polygons[i]
             
             tb = ticks_bottom
@@ -693,7 +694,7 @@ def plot_map(dat, dat_proj=ccrs.PlateCarree(), disp_proj=ccrs.PlateCarree(), fig
             cbar_ax = fig.add_axes([cbar_adjust+cbar_pad, 0.23, 0.02, 0.55])
             fmt = mticker.ScalarFormatter(useOffset=False, useMathText=True)
             fmt.set_powerlimits((-4, 6))
-            cb = fig.colorbar(im, ax=ax, cax=cbar_ax, ticks=cbar_ticks, label=scale_label, format=fmt)
+            _ = fig.colorbar(im, ax=ax, cax=cbar_ax, ticks=cbar_ticks, label=scale_label, format=fmt)
             
         if col_labels is not None or row_labels is not None:
             for a in ax.flat:
@@ -714,7 +715,7 @@ def plot_map(dat, dat_proj=ccrs.PlateCarree(), disp_proj=ccrs.PlateCarree(), fig
                     lab_ax.annotate(lab, xy=(0.5, 1-p), rotation=90,
                                     xycoords='axes fraction', ha='center')
 
-    if not file is None:
+    if file is not None:
         plt.savefig(fname=file, dpi=300, bbox_inches='tight')
         
         if show:
