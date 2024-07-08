@@ -24,7 +24,11 @@ default_labels <- labeller(
         location = "Location",
         scale = "Scale"
     ),
-    .multi_line = FALSE)
+    domain = c(
+        "Sydney + Canberra" = "Sydney/Canberra"
+    ),
+    .multi_line = FALSE
+)
 default_fontsize <- 14 # Font size for plots.
 
 # Read and concatenate all feather files in `results-dir`.
@@ -312,9 +316,9 @@ fit_gevs <- function(all_dat,
             "ssp245 model vs empirical",
             "historic model vs ssp245 model"
         ),
-        labels = c("Model vs empirical: historical",
+        labels = c("Model vs empirical: historic",
             "ssp245 model vs empirical" = "Model vs empirical: SSP245",
-            "historic model vs ssp245 model" = "Historical model vs SSP245 model"
+            "historic model vs ssp245 model" = "Historic model vs SSP245 model"
         )
     )
 
