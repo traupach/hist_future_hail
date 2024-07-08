@@ -294,14 +294,6 @@ fit_gevs <- function(all_dat,
     ks_fits <- bind_rows(ks_fits)
     hail_probs <- bind_rows(hail_probs)
 
-    # Set plot orders.
-    hail_probs$diam = factor(hail_probs$diam, levels = prob_diams)
-    ks_fits$scenario <- factor(ks_fits$scenario, levels = c(
-        "historic model vs empirical",
-        "ssp245 model vs empirical",
-        "historic model vs ssp245 model"
-    ))
-
     ks_fits = bind_rows(ks_fits, ks_tests( # nolint
         gevs = gevs, domains = domains,
         variables = variables, ks_iterations = ks_iterations
@@ -310,6 +302,14 @@ fit_gevs <- function(all_dat,
         gevs = gevs, domains = domains,
         variables = variables, epochs = epochs
     )
+
+    # Set plot orders.
+    hail_probs$diam = factor(hail_probs$diam, levels = prob_diams)
+    ks_fits$scenario <- factor(ks_fits$scenario, levels = c(
+        "historic model vs empirical",
+        "ssp245 model vs empirical",
+        "historic model vs ssp245 model"
+    ))
 
     return(list(
         gevs = gevs, return_levels = return_levels,
