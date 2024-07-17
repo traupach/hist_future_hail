@@ -1,54 +1,4 @@
-\documentclass[]{agujournal2019}\usepackage[]{graphicx}\usepackage[]{xcolor}
-% maxwidth is the original width if it is less than linewidth
-% otherwise use linewidth (to make sure the graphics do not exceed the margin)
-\makeatletter
-\def\maxwidth{ %
-  \ifdim\Gin@nat@width>\linewidth
-    \linewidth
-  \else
-    \Gin@nat@width
-  \fi
-}
-\makeatother
-
-\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
-\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
-\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
-\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
-\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
-\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
-\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
-\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
-\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
-\let\hlipl\hlkwb
-
-\usepackage{framed}
-\makeatletter
-\newenvironment{kframe}{%
- \def\at@end@of@kframe{}%
- \ifinner\ifhmode%
-  \def\at@end@of@kframe{\end{minipage}}%
-  \begin{minipage}{\columnwidth}%
- \fi\fi%
- \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
- \colorbox{shadecolor}{##1}\hskip-\fboxsep
-     % There is no \\@totalrightmargin, so:
-     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
- \MakeFramed {\advance\hsize-\width
-   \@totalleftmargin\z@ \linewidth\hsize
-   \@setminipage}}%
- {\par\unskip\endMakeFramed%
- \at@end@of@kframe}
-\makeatother
-
-\definecolor{shadecolor}{rgb}{.97, .97, .97}
-\definecolor{messagecolor}{rgb}{0, 0, 0}
-\definecolor{warningcolor}{rgb}{1, 0, 1}
-\definecolor{errorcolor}{rgb}{1, 0, 0}
-\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
-
-\usepackage{alltt}
+\documentclass[]{agujournal2019}
 \usepackage{url} %this package should fix any errors with URLs in refs.
 \usepackage{lineno}
 \usepackage[inline]{trackchanges} %for better track changes. finalnew option will compile document with changes incorporated.
@@ -71,7 +21,7 @@
 
 \draftfalse
 \journalname{Geophysical Research Letters}
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+
 \begin{document}
 
 \title{Changes in damaging hail in major Australian cities with global warming}
@@ -209,13 +159,48 @@ Having determined that the GEV fits are valid, we now consider whether the fitte
       \label{fig:return_periods_probs_hail}
 \end{figure}
 
+<<readResults, echo=FALSE, include=FALSE>>=
+library(arrow)
+library(dplyr)
+hail_probs = read_feather("../results/hail_probs.feather")
+wind_probs = read_feather("../results/wind_probs.feather")
+@
 
+<<hailProbResultsMelb, echo=FALSE, include=TRUE, results="asis">>=
+melbSevereHist = round(filter(hail_probs, domain == "Melbourne", diam==20, epoch=="historic")$p, 0)
+melbSevereFut = round(filter(hail_probs, domain == "Melbourne", diam==20, epoch=="ssp245")$p, 0)
+melbGiantHist = round(filter(hail_probs, domain == "Melbourne", diam==50, epoch=="historic")$p, 0)
+melbGiantFut = round(filter(hail_probs, domain == "Melbourne", diam==50, epoch=="ssp245")$p, 0)
+melb100Hist = round(filter(hail_probs, domain == "Melbourne", diam==100, epoch=="historic")$p, 0)
+melb100Fut = round(filter(hail_probs, domain == "Melbourne", diam==100, epoch=="ssp245")$p, 0)
 
+# Check claims in text.
+if (melbGiantFut < melbGiantHist * 2) {
+      cat("\\todo{Melb giant hail does not double.}")
+}
+if (melb100Fut < melb100Hist * 3) {
+      cat("\\todo{Melb 100 mm hail does not triple.}")
+}
+@
 
+<<hailProbResultsSydCan, echo=FALSE, include=TRUE, results="asis">>=
+scSevereHist = round(filter(hail_probs, domain == "Sydney + Canberra", diam==20, epoch=="historic")$p, 0)
+scSevereFut = round(filter(hail_probs, domain == "Sydney + Canberra", diam==20, epoch=="ssp245")$p, 0)
+scGiantHist = round(filter(hail_probs, domain == "Sydney + Canberra", diam==50, epoch=="historic")$p, 0)
+scGiantFut = round(filter(hail_probs, domain == "Sydney + Canberra", diam==50, epoch=="ssp245")$p, 0)
+sc100Hist = round(filter(hail_probs, domain == "Sydney + Canberra", diam==100, epoch=="historic")$p, 0)
+sc100Fut = round(filter(hail_probs, domain == "Sydney + Canberra", diam==100, epoch=="ssp245")$p, 0)
 
+# Check claims in text.
+if (scSevereHist > scSevereFut) {
+      cat("\\todo{Syd sev hail does not increase.}")
+}
+if (sc100Hist > sc100Fut) {
+      cat("\\todo{Syd 100 mm hail does not increase.}")
+}
+@
 
-
-Figure \ref{fig:return_periods_probs_hail} shows return periods for maximum hail size. It is not uncommon for return period models based on the GEV family to produce non-physical extreme values such as the extremely large hail sizes predicted for large return periods here \cite[p. 66]{Coles_2001}. We take the advice of \citeA{Coles_2001} and interpret the results here based on the shorter return periods, thus keeping physical principles in mind. In the two domains with significant changes there are increases in the maximum expected hail size for return periods out to about 30 hail days. Figure \ref{fig:return_periods_probs_hail} also shows the probability of a hail day producing severe (20 mm), giant (50 mm), and 100 mm hail, respectively. In the Melbourne domain, the probability of a hail day producing severe hail jumps from 44\% to 59\%, the probability of a hail day producing giant hail more than doubles from 5\% to 12\%, and the probability of a hail day producing 100 mm hail triples from 1\% to 3\%. In the Sydney/Canberra domain, the probability of a hail day producing severe hail increases from 49\% to 62\%, while the probability of a hail day producing giant hail goes from 6\% to 10\% and the probability of a hail day producing 100 mm hail increases from 1\% to 2\%. The other two domains, in which the changes are not significant, show increases for severe hail but no changes in larger hail.
+Figure \ref{fig:return_periods_probs_hail} shows return periods for maximum hail size. It is not uncommon for return period models based on the GEV family to produce non-physical extreme values such as the extremely large hail sizes predicted for large return periods here \cite[p. 66]{Coles_2001}. We take the advice of \citeA{Coles_2001} and interpret the results here based on the shorter return periods, thus keeping physical principles in mind. In the two domains with significant changes there are increases in the maximum expected hail size for return periods out to about 30 hail days. Figure \ref{fig:return_periods_probs_hail} also shows the probability of a hail day producing severe (20 mm), giant (50 mm), and 100 mm hail, respectively. In the Melbourne domain, the probability of a hail day producing severe hail jumps from \Sexpr{melbSevereHist}\% to \Sexpr{melbSevereFut}\%, the probability of a hail day producing giant hail more than doubles from \Sexpr{melbGiantHist}\% to \Sexpr{melbGiantFut}\%, and the probability of a hail day producing 100 mm hail triples from \Sexpr{melb100Hist}\% to \Sexpr{melb100Fut}\%. In the Sydney/Canberra domain, the probability of a hail day producing severe hail increases from \Sexpr{scSevereHist}\% to \Sexpr{scSevereFut}\%, while the probability of a hail day producing giant hail goes from \Sexpr{scGiantHist}\% to \Sexpr{scGiantFut}\% and the probability of a hail day producing 100 mm hail increases from \Sexpr{sc100Hist}\% to \Sexpr{sc100Fut}\%. The other two domains, in which the changes are not significant, show increases for severe hail but no changes in larger hail.
 
 \subsection{Changes in 10 m wind at hail locations and times}
 
@@ -225,7 +210,20 @@ Figure \ref{fig:return_periods_probs_hail} shows return periods for maximum hail
       \label{fig:return_periods_wind}
 \end{figure}
 
+<<windProbResultsMelb, echo=FALSE, include=TRUE, results="asis">>=
+melbWindHist = round(filter(wind_probs, domain == "Melbourne", epoch=="historic")$p, 3)
+melbWindFut = round(filter(wind_probs, domain == "Melbourne", epoch=="ssp245")$p, 3)
+scWindHist = round(filter(wind_probs, domain == "Sydney + Canberra", epoch=="historic")$p, 3)
+scWindFut = round(filter(wind_probs, domain == "Sydney + Canberra", epoch=="ssp245")$p, 3)
 
+# Check statements in text.
+if (scWindHist > 0.1 || melbWindHist > 0.1) {
+      cat("\\todo{Hist wind probs are > 0.1.}")
+}
+if (melbWindFut != 0 || scWindFut != 0) {
+      cat("\\todo{Future wind probabilities are not zero.}")
+}
+@
 
 Figure \ref{fig:return_periods_wind} shows return periods for 10 m wind collocated with hail. In Melbourne and Sydney/Canberra, the two domains with significant changes, there are increases in wind speeds for low return periods (up to 10 hail days), and decreases in wind speeds with very long return periods (50 to 100 hail days). We examined 100 km h$^{-1}$ as a threshold for wind speeds that combined with hail can cause structural damage \todo{references}. In both the Melbourne and Sydney/Canberra domains, the historical probability of a hail day producing a 100 km h$^{-1}$ wind collocated with surface hail was very low (less than 0.1\%) and the future probability is zero, according to the fitted GEVs. We note that extrapolating to very high levels in GEVs is discouraged \cite{Coles_2001}, so these results must be taken with caution.
 

@@ -30,6 +30,30 @@ Adams-Selin, R\BPBI D.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Coles%
+}{%
+Coles%
+}{%
+{\protect \APACyear {2001}}%
+}]{%
+Coles_2001}
+\APACinsertmetastar {%
+Coles_2001}%
+\begin{APACrefauthors}%
+Coles, S.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2001}.
+\newblock
+\APACrefbtitle {An introduction to statistical modeling of extreme values} {An introduction to statistical modeling of extreme values}\ (\PrintOrdinal{1}\ \BEd).
+\newblock
+\APACaddressPublisher{}{Springer London}.
+\newblock
+\begin{APACrefDOI} \doi{10.1007/978-1-4471-3675-0} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Eyring%
 \ \protect \BOthers {.}}{%
 Eyring%
