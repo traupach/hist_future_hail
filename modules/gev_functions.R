@@ -11,6 +11,7 @@ suppressMessages(library(lubridate))
 suppressMessages(library(dplyr))
 suppressMessages(library(ggplot2))
 suppressMessages(library(stringr))
+suppressMessages(library(tables))
 
 # Labellers for plot elements.
 default_labels <- labeller(
@@ -108,7 +109,7 @@ plot_ks_fits <- function(gev_fits, file = NA, fontsize = default_fontsize, label
 # Plot qq plots of GEV fitted functions.s
 plot_quantiles <- function(gev_fits, var, unit, labels = default_labels, fontsize = default_fontsize,
                            width = 12, height = 6, file = NA) {
-    variable = model = empirical = NULL
+    variable <- model <- empirical <- NULL
 
     g <- ggplot(gev_fits$quantiles %>% filter(variable == var), aes(x = model, y = empirical)) +
         facet_wrap(epoch ~ domain, nrow = 2, labeller = labels) +
@@ -155,7 +156,7 @@ plot_return_levels <- function(gev_fits, var, varname, file = NA, width = 12, he
 
 # Plot hail probabilities for comparison of GEV fits.
 plot_hail_probs <- function(gev_fits, file = NA, width = 12, height = 3, fontsize = default_fontsize) {
-    diam = epoch = p = NULL
+    diam <- epoch <- p <- NULL
 
     g <- ggplot(gev_fits$hail_probs) +
         geom_point(aes(x = diam, y = p, colour = epoch), shape = 1, size = 3, stroke = 2) +
@@ -172,7 +173,7 @@ plot_hail_probs <- function(gev_fits, file = NA, width = 12, height = 3, fontsiz
 }
 
 # Calculate ks tests to show differences between historic and ssp245 model for each domain.
-ks_tests = function(gevs, domains, variables, ks_iterations) {
+ks_tests <- function(gevs, domains, variables, ks_iterations) {
     ks_change <- list()
     for (d in domains) {
         for (v in variables) {
@@ -192,7 +193,7 @@ ks_tests = function(gevs, domains, variables, ks_iterations) {
 }
 
 # Collect together model parameters and confidence intervals.
-collect_params = function(gevs, domains, variables, epochs) {
+collect_params <- function(gevs, domains, variables, epochs) {
     params <- list()
     for (d in domains) {
         for (v in variables) {
@@ -213,6 +214,34 @@ collect_params = function(gevs, domains, variables, epochs) {
     return(params)
 }
 
+probabilities_table <- function(gev_fits, var, units) {
+    diam <- windspeed <- NULL
+    probs <- gev_fits[[var]]
+    probs$domain <- factor(probs$domain)
+    probs$epoch <- factor(probs$epoch, levels = c("historic", "ssp245"), labels = c("Historic", "SSP245"))
+
+    if (var == "hail_probs") {
+        probs <- rename(probs, by_var = diam)
+    } else if (var == "wind_probs") {
+        probs <- rename(probs, by_var = windspeed)
+    } else {
+        stop("Unknown value for var.")
+    }
+
+    probs$by_var <- factor(probs$by_var,
+        levels = unique(probs$by_var),
+        labels = paste(unique(probs$by_var), units)
+    )
+
+    tab <- tabular(
+        Heading("Domain") * domain *
+            Heading("Epoch") * epoch ~ Heading("Probability [\\%]") * by_var *
+            Heading() * p * Heading() * identity * Format(digits = 1),
+        data = probs,
+    )
+    print(tab)
+}
+
 # Do GEV fits per domain, variable and epoch. Collect quantiles for qq plots, do
 # ks tests to compare distributions.
 #
@@ -224,7 +253,13 @@ collect_params = function(gevs, domains, variables, epochs) {
 #   return_periods: Return periods to use (years of hail days).
 #   ks.iterations: Iterations to use for ks tests.
 #
-# Returns:
+# Returns: gevs: GEV objects,
+#   return_levels: return levels summary,
+#   params: GEV parameters,
+#   hail_probs: hail probabilies for given sizes,
+#   wind_probs: wind probabilies for given speeds,
+#   ks_fits: KS test results,
+#   quantiles: Quantiles of empirical vs modeled amounts.
 fit_gevs <- function(all_dat,
                      epochs = c("historic", "ssp245"),
                      prob_diams = c(20, 50, 100),
@@ -308,17 +343,17 @@ fit_gevs <- function(all_dat,
     hail_probs <- bind_rows(hail_probs)
     wind_probs <- bind_rows(wind_probs)
 
-    ks_fits = bind_rows(ks_fits, ks_tests( # nolint
+    ks_fits <- bind_rows(ks_fits, ks_tests( # nolint
         gevs = gevs, domains = domains,
         variables = variables, ks_iterations = ks_iterations
     ))
-    params = collect_params( # nolint
+    params <- collect_params( # nolint
         gevs = gevs, domains = domains,
         variables = variables, epochs = epochs
     )
 
     # Set plot orders.
-    hail_probs$diam = factor(hail_probs$diam, levels = prob_diams)
+    hail_probs$diam <- factor(hail_probs$diam, levels = prob_diams)
     ks_fits$scenario <- factor(ks_fits$scenario,
         levels = c(
             "historic model vs empirical",
@@ -333,7 +368,7 @@ fit_gevs <- function(all_dat,
 
     return(list(
         gevs = gevs, return_levels = return_levels, params = params,
-        hail_probs = hail_probs, wind_probs = wind_probs, 
+        hail_probs = hail_probs, wind_probs = wind_probs,
         ks_fits = ks_fits, quantiles = quantiles
     ))
 }
