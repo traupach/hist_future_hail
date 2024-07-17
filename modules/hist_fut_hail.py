@@ -1049,7 +1049,8 @@ def process_maxima(
     time_adjust={'Perth': 8, 'Melbourne': 11, 'Brisbane': 10, 'Sydney_Canberra': 11},
     results_dir='/g/data/up6/tr2908/hist_future_hail/results/',
     variables=['hailcast_diam_max', 'wind_10m'],
-    file_dir='paper/figures/'
+    file_dir='paper/figures/',
+    drop_months=[3,9]
 ):
     """
     Find block maxima for selected variables. On the way save the landmask
@@ -1064,6 +1065,7 @@ def process_maxima(
         results_dir: Output directory for results.
         variables: Variables to process.
         file_dir: Output directory for hailcost maxima plots.
+        drop_months: Months to drop from maxima outputs.
     """
 
     for domain, d in domains.items():
@@ -1113,10 +1115,9 @@ def process_maxima(
             )
 
             # Remove spin up time and trim so timeseries are the same length.
-            hist = hist.where(hist.time.dt.month != 9, drop=True)
-            hist = hist.where(hist.time.dt.month != 3, drop=True)
-            futu = futu.where(futu.time.dt.month != 9, drop=True)
-            futu = futu.where(futu.time.dt.month != 3, drop=True)
+            for m in drop_months:
+                hist = hist.where(hist.time.dt.month != m, drop=True)
+                futu = futu.where(futu.time.dt.month != m, drop=True)
             assert np.all(hist.time == futu.time)
 
             # Subset to only required variables.
