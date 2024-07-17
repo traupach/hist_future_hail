@@ -1017,8 +1017,8 @@ def plot_maxes(
         subplot_kw={'projection': ccrs.PlateCarree()},
         gridspec_kw={'wspace': 0.3},
     )
-    pc_hist = axs[0].pcolormesh(x, y, z_hist, cmap='Spectral_r', transform=ccrs.PlateCarree())
-    pc_futu = axs[1].pcolormesh(x, y, z_futu, cmap='Spectral_r', transform=ccrs.PlateCarree())
+    pc_hist = axs[0].pcolormesh(x, y, z_hist, cmap='Spectral_r', transform=ccrs.PlateCarree(), rasterized=True)
+    pc_futu = axs[1].pcolormesh(x, y, z_futu, cmap='Spectral_r', transform=ccrs.PlateCarree(), rasterized=True)
     pc_hist_land = axs[2].pcolormesh(
         x, y, z_hist.where(lm == 1), cmap='Spectral_r', transform=ccrs.PlateCarree()
     )
