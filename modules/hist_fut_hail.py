@@ -1011,7 +1011,7 @@ def plot_maxes(
     z_futu = maxes[variable].sel(epoch='ssp245')
 
     plt.rcParams['font.size'] = 12
-    fig, axs = plt.subplots(
+    _, axs = plt.subplots(
         ncols=4,
         figsize=figsize,
         subplot_kw={'projection': ccrs.PlateCarree()},
@@ -1020,10 +1020,10 @@ def plot_maxes(
     pc_hist = axs[0].pcolormesh(x, y, z_hist, cmap='Spectral_r', transform=ccrs.PlateCarree(), rasterized=True)
     pc_futu = axs[1].pcolormesh(x, y, z_futu, cmap='Spectral_r', transform=ccrs.PlateCarree(), rasterized=True)
     pc_hist_land = axs[2].pcolormesh(
-        x, y, z_hist.where(lm == 1), cmap='Spectral_r', transform=ccrs.PlateCarree()
+        x, y, z_hist.where(lm == 1), cmap='Spectral_r', transform=ccrs.PlateCarree(), rasterized=True
     )
     pc_futu_land = axs[3].pcolormesh(
-        x, y, z_futu.where(lm == 1), cmap='Spectral_r', transform=ccrs.PlateCarree()
+        x, y, z_futu.where(lm == 1), cmap='Spectral_r', transform=ccrs.PlateCarree(), rasterized=True
     )
     plt.colorbar(pc_hist, label=lab)
     plt.colorbar(pc_futu, label=lab)
