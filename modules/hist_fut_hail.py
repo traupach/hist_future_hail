@@ -983,8 +983,8 @@ def plot_map(
 
 
 def plot_maxes(
-    maxes,
-    lm,
+    all_maxes,
+    subset_maxes,
     domain,
     figsize=(12, 2),
     variable='hailcast_diam_max',
@@ -992,12 +992,12 @@ def plot_maxes(
     file_dir=None,
 ):
     """
-    Plot maximum hail diameters by location for historical and future
-    epochs both nonmasked and masked to land points only.
+    Plot maximum values by location for historical and future
+    epochs both nonmasked and masked.
 
     Arguments:
-        maxes: Max hail diameters per location per epoch.
-        lm: The landmask.
+        all_maxes: Maximums per location per epoch.
+        subset_maxes: As for maxes but subset to study regions.
         domain: The domain to use in titles.
         figsize: Figure size.
         variable: Variable to plot.
@@ -1005,10 +1005,8 @@ def plot_maxes(
         file_dir: Optional directory to save plot to.
     """
 
-    x = maxes.longitude
-    y = maxes.latitude
-    z_hist = maxes[variable].sel(epoch='historical')
-    z_futu = maxes[variable].sel(epoch='ssp245')
+    x = all_maxes.longitude.values
+    y = all_maxes.latitude.values
 
     plt.rcParams['font.size'] = 12
     _, axs = plt.subplots(
@@ -1017,13 +1015,37 @@ def plot_maxes(
         subplot_kw={'projection': ccrs.PlateCarree()},
         gridspec_kw={'wspace': 0.3},
     )
-    pc_hist = axs[0].pcolormesh(x, y, z_hist, cmap='Spectral_r', transform=ccrs.PlateCarree(), rasterized=True)
-    pc_futu = axs[1].pcolormesh(x, y, z_futu, cmap='Spectral_r', transform=ccrs.PlateCarree(), rasterized=True)
+    pc_hist = axs[0].pcolormesh(
+        x,
+        y,
+        all_maxes[variable].sel(epoch='historical'),
+        cmap='Spectral_r',
+        transform=ccrs.PlateCarree(),
+        rasterized=True,
+    )
+    pc_futu = axs[1].pcolormesh(
+        x,
+        y,
+        all_maxes[variable].sel(epoch='ssp245'),
+        cmap='Spectral_r',
+        transform=ccrs.PlateCarree(),
+        rasterized=True,
+    )
     pc_hist_land = axs[2].pcolormesh(
-        x, y, z_hist.where(lm == 1), cmap='Spectral_r', transform=ccrs.PlateCarree(), rasterized=True
+        x,
+        y,
+        subset_maxes[variable].sel(epoch='historical'),
+        cmap='Spectral_r',
+        transform=ccrs.PlateCarree(),
+        rasterized=True,
     )
     pc_futu_land = axs[3].pcolormesh(
-        x, y, z_futu.where(lm == 1), cmap='Spectral_r', transform=ccrs.PlateCarree(), rasterized=True
+        x,
+        y,
+        subset_maxes[variable].sel(epoch='ssp245'),
+        cmap='Spectral_r',
+        transform=ccrs.PlateCarree(),
+        rasterized=True,
     )
     plt.colorbar(pc_hist, label=lab)
     plt.colorbar(pc_futu, label=lab)
@@ -1038,34 +1060,106 @@ def plot_maxes(
     axs[1].set_title(f'{domain_str}\nssp245')
     axs[2].set_title(f'{domain_str}\nhist')
     axs[3].set_title(f'{domain_str}\nssp245')
-    
+
     if file_dir is not None:
         plt.savefig(fname=f'{file_dir}/maxes_{domain}_{variable}.pdf', dpi=300, bbox_inches='tight')
 
+
+def process_maxima_set(
+    dat,
+    lm,
+    time_adjust,
+    epoch,
+    domain,
+    variables=['hailcast_diam_max', 'wind_10m'],
+    drop_months=[9, 3],
+    max_hailsize=180,
+):
+    """
+    Process block (daily) maxima for a dataset.
+
+    Args:
+        dat: The raw data.
+        lm: Landmask for this dataset.
+        time_adjust: Adjustment in hours to make to UTC times.
+        epoch: Epoch descriptor to add to outputs.
+        domain: The domain descriptor.
+        variables: Variables to process. Defaults to ['hailcast_diam_max', 'wind_10m'].
+        drop_months: Months to ignore. Defaults to [9, 3].
+        max_hailsize: Maximum hail size to allow [mm].
+
+    Returns:
+    """
+    dat = dat.chunk({'time': 3000, 'south_north': -1, 'west_east': -1})
+
+    # Adjust to local time.
+    dat = dat.assign_coords({'time': dat.time + np.timedelta64(time_adjust, 'h')})
+
+    # Remove spin up time and trim so all timeseries are the same length.
+    for m in drop_months:
+        dat = dat.where(dat.time.dt.month != m, drop=True)
+
+    # Subset to only required variables.
+    lats = dat.isel(time=0).latitude
+    lons = dat.isel(time=0).longitude
+    dat = dat[variables]
+
+    # Subset to only those points where surface hail was simulated.
+    dat = dat.where(dat.hailcast_diam_max > 0)
+
+    # If getting wind speed, don't worry about wind direction.
+    if 'wind_10m' in variables:
+        dat['wind_10m'] = dat.wind_10m.sel(wspd_wdir='wspd')
+        dat = dat.drop_vars('wspd_wdir').reset_coords()
+
+    # Subset to land points only.
+    dat_land = dat.where(lm == 1).reset_coords(drop=True)
+
+    # Remove too-large hail.
+    num_large_hail = (dat_land.hailcast_diam_max > max_hailsize).sum().values
+    num_any_hail = (dat_land.hailcast_diam_max > 0).sum().values
+    perc_large_hail = num_large_hail / num_any_hail * 100
+    dat_land = dat_land.where(dat_land.hailcast_diam_max <= max_hailsize)
+    
+    maxes_all = dat.max('time').expand_dims({'epoch': [epoch]})
+    maxes_land = dat_land.max('time')
+    
+    # Save percentage of hail that is too large and removed.
+    maxes_land['perc_large_hail'] = perc_large_hail
+    maxes_land.perc_large_hail.attrs['description'] = f'Percentage of hail removed because it is over {max_hailsize} mm.'
+    
+    maxes_land = maxes_land.expand_dims({'epoch': [epoch]})
+    for i in [maxes_all, maxes_land]:
+        i['latitude'] = (('south_north', 'west_east'), lats.values)
+        i['longitude'] = (('south_north', 'west_east'), lons.values)
+
+    # Calculate daily maxima for land points only.
+    maxima = dat_land.max(['south_north', 'west_east']).resample(time='1D').max()
+    maxima = maxima.expand_dims({'domain': [domain.replace('_', ' + ')], 'epoch': [epoch]})
+    maxima = maxima.to_dataframe().dropna(how='all')
+
+    return maxima, maxes_all, maxes_land
+
 def process_maxima(
     sim_dir,
-    plot=True,
     domains={'Perth': 3, 'Melbourne': 5, 'Brisbane': 6, 'Sydney_Canberra': 7},
     time_adjust={'Perth': 8, 'Melbourne': 11, 'Brisbane': 10, 'Sydney_Canberra': 11},
     results_dir='/g/data/up6/tr2908/hist_future_hail/results/',
     variables=['hailcast_diam_max', 'wind_10m'],
     file_dir='paper/figures/',
-    drop_months=[3,9]
+    **kwargs,
 ):
     """
-    Find block maxima for selected variables. On the way save the landmask
-    and plot max hail sizes by location.
+    Process maxima of hail and wind values.
 
-    Argumnets:
-        sim_dir: Simulation base directory.
-        plot: Plot max hail sizes?
-        figsize: Figure size.
-        domains: The name: number of domains to consider.
-        time_adjust: Time adjustments to make from UTC time (in hours).
-        results_dir: Output directory for results.
-        variables: Variables to process.
-        file_dir: Output directory for hailcost maxima plots.
-        drop_months: Months to drop from maxima outputs.
+    Args:
+        sim_dir: Directory where simulations are stored. Defaults to '/g/data/up6/tr2908/hist_future_hail/WRF_v4.4/simulations/cities/'.
+        domains: Domain IDs in sims. Defaults to {'Perth': 3, 'Melbourne': 5, 'Brisbane': 6, 'Sydney_Canberra': 7}.
+        time_adjust: Time adjustments to get to local time. Defaults to {'Perth': 8, 'Melbourne': 11, 'Brisbane': 10, 'Sydney_Canberra': 11}.
+        results_dir: Where to write results. Defaults to '/g/data/up6/tr2908/hist_future_hail/results/'.
+        variables: Variables to process. Defaults to ['hailcast_diam_max', 'wind_10m'].
+        file_dir: Figure directory. Defaults to 'paper/figures/'.
+        kwargs: Extra arguments to process_maxima_set().
     """
 
     for domain, d in domains.items():
@@ -1074,7 +1168,8 @@ def process_maxima(
         # Define cache files.
         dmn = domain.replace(' + ', '_')
         lm_file = f'{results_dir}/{dmn}_landmask.nc'
-        maxes_file = f'{results_dir}/{dmn}_domain_maximums.nc'
+        all_maxes_file = f'{results_dir}/{dmn}_domain_maximums_all.nc'
+        land_maxes_file = f'{results_dir}/{dmn}_domain_maximums_subset.nc'
         h_maxima_file = f'{results_dir}/{dmn}_hist_block_maxima.feather'
         f_maxima_file = f'{results_dir}/{dmn}_ssp245_block_maxima.feather'
 
@@ -1090,7 +1185,8 @@ def process_maxima(
 
         # Open hist and future simulations.
         if (
-            not os.path.exists(maxes_file)
+            not os.path.exists(all_maxes_file)
+            or not os.path.exists(land_maxes_file)
             or not os.path.exists(h_maxima_file)
             or not os.path.exists(f_maxima_file)
         ):
@@ -1103,81 +1199,53 @@ def process_maxima(
             hist = xarray.open_mfdataset(hist_files, parallel=True)
             futu = xarray.open_mfdataset(fut_files, parallel=True)
 
-            hist = hist.chunk({'time': -1, 'south_north': 50, 'west_east': 50})
-            futu = futu.chunk({'time': -1, 'south_north': 50, 'west_east': 50})
-
-            # Adjust to local time.
-            hist = hist.assign_coords(
-                {'time': hist.time + np.timedelta64(time_adjust[domain], 'h')}
-            )
-            futu = futu.assign_coords(
-                {'time': futu.time + np.timedelta64(time_adjust[domain], 'h')}
+            hist_maxima, hist_maxes_all, hist_maxes_land = process_maxima_set(
+                dat=hist,
+                lm=lm,
+                time_adjust=time_adjust[domain],
+                epoch='historical',
+                domain=domain,
+                **kwargs,
             )
 
-            # Remove spin up time and trim so timeseries are the same length.
-            for m in drop_months:
-                hist = hist.where(hist.time.dt.month != m, drop=True)
-                futu = futu.where(futu.time.dt.month != m, drop=True)
-            assert np.all(hist.time == futu.time)
-
-            # Subset to only required variables.
-            lats = hist.isel(time=0).latitude
-            lons = hist.isel(time=0).longitude
-            hist = hist[variables]
-            futu = futu[variables]
-
-            # Subset to only those points where surface hail was simulated.
-            hist = hist.where(hist.hailcast_diam_max > 0)
-            futu = futu.where(futu.hailcast_diam_max > 0)
-
-            # If getting wind speed, don't worry about wind direction.
-            if 'wind_10m' in variables:
-                hist['wind_10m'] = hist.wind_10m.sel(wspd_wdir='wspd')
-                futu['wind_10m'] = futu.wind_10m.sel(wspd_wdir='wspd')
-                hist = hist.drop_vars('wspd_wdir').reset_coords()
-                futu = futu.drop_vars('wspd_wdir').reset_coords()
-
-            # Subset to land points only.
-            hist_land = hist.where(lm == 1).reset_coords(drop=True)
-            futu_land = futu.where(lm == 1).reset_coords(drop=True)
-
-        # Calculate maximums over two epochs for full domains.
-        if not os.path.exists(maxes_file):
-            h_max = hist.max('time').expand_dims({'epoch': ['historical']})
-            f_max = futu.max('time').expand_dims({'epoch': ['ssp245']})
-            maxes = xarray.merge([h_max, f_max])
-            maxes['latitude'] = lats
-            maxes['longitude'] = lons
-            maxes.to_netcdf(maxes_file)
-        maxes = xarray.open_dataset(maxes_file)
-
-        if plot:
-            if 'hailcast_diam_max' in variables:
-                plot_maxes(
-                    maxes=maxes,
-                    variable='hailcast_diam_max',
-                    lab='Max hail diam [mm]',
-                    lm=lm,
-                    domain=domain,
-                    file_dir=file_dir
-                )
-            if 'wind_10m' in variables:
-                plot_maxes(
-                    maxes=maxes, variable='wind_10m', 
-                    lab='Max wind [m/s]', lm=lm, domain=domain
-                )
-
-        # Output block maxima for land points only.
-        if not os.path.exists(h_maxima_file):
-            h_maxima = hist_land.max(['south_north', 'west_east']).resample(time='1D').max()
-            h_maxima = h_maxima.expand_dims(
-                {'domain': [domain.replace('_', ' + ')], 'epoch': ['historic']}
+            futu_maxima, futu_maxes_all, futu_maxes_land = process_maxima_set(
+                dat=futu,
+                lm=lm,
+                time_adjust=time_adjust[domain],
+                epoch='ssp245',
+                domain=domain,
+                **kwargs,
             )
-            h_maxima.to_dataframe().dropna(how='all').to_feather(h_maxima_file)
 
-        if not os.path.exists(f_maxima_file):
-            f_maxima = futu_land.max(['south_north', 'west_east']).resample(time='1D').max()
-            f_maxima = f_maxima.expand_dims(
-                {'domain': [domain.replace('_', ' + ')], 'epoch': ['ssp245']}
+            hist_maxima.to_feather(h_maxima_file)
+            futu_maxima.to_feather(f_maxima_file)
+            del hist_maxima, futu_maxima
+
+            all_maxes = xarray.merge([hist_maxes_all, futu_maxes_all])
+            all_maxes.to_netcdf(all_maxes_file)
+            del all_maxes
+
+            land_maxes = xarray.merge([hist_maxes_land, futu_maxes_land])
+            land_maxes.to_netcdf(land_maxes_file)
+            del land_maxes
+
+        all_maxes = xarray.open_dataset(all_maxes_file)
+        land_maxes = xarray.open_dataset(land_maxes_file)
+
+        if 'hailcast_diam_max' in variables:
+            plot_maxes(
+                all_maxes=all_maxes,
+                subset_maxes=land_maxes,
+                variable='hailcast_diam_max',
+                lab='Max hail diam [mm]',
+                domain=domain,
+                file_dir=file_dir,
             )
-            f_maxima.to_dataframe().dropna(how='all').to_feather(f_maxima_file)
+        if 'wind_10m' in variables:
+            plot_maxes(
+                all_maxes=all_maxes,
+                subset_maxes=land_maxes,
+                variable='wind_10m',
+                lab='Max wind [m/s]',
+                domain=domain,
+            )

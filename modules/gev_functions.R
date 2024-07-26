@@ -15,7 +15,7 @@ suppressMessages(library(tables))
 
 # Labellers for plot elements.
 default_labels <- labeller(
-    epoch = c(historic = "Historic", ssp245 = "SSP245"),
+    epoch = c(historical = "Historical", ssp245 = "SSP245"),
     variable = c(
         hailcast_diam_max = "Maximum hail size",
         wind_10m = "Maximum 10 m wind collocated with hail"
@@ -78,7 +78,7 @@ plot_params <- function(gev_fits, fontsize = 14, dodge = 0.3, labels = default_l
         geom_point(aes(x = domain, y = est, colour = epoch), position = position_dodge(dodge), size = 3) +
         theme(strip.background = element_blank(), strip.text.x = element_text(size = fontsize)) +
         labs(x = "Domain", y = "Parameter value") +
-        scale_colour_discrete(name = "Epoch", breaks = c("historic", "ssp245"), labels = c("Historic", "SSP245")) +
+        scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "SSP245")) +
         theme(axis.text.x = element_text(angle = 25, vjust = 1, hjust = 1))
     print(g)
 
@@ -111,6 +111,10 @@ plot_quantiles <- function(gev_fits, var, unit, labels = default_labels, fontsiz
                            width = 12, height = 6, file = NA) {
     variable <- model <- empirical <- NULL
 
+    vals <- gev_fits$quantiles %>% filter(variable == var)
+    mins <- min(min(vals$model), min(vals$empirical))
+    maxs <- max(max(vals$model), max(vals$empirical))
+
     g <- ggplot(gev_fits$quantiles %>% filter(variable == var), aes(x = model, y = empirical)) +
         facet_wrap(epoch ~ domain, nrow = 2, labeller = labels) +
         geom_point(shape = 1) +
@@ -121,7 +125,7 @@ plot_quantiles <- function(gev_fits, var, unit, labels = default_labels, fontsiz
             y = parse(text = paste("Empirical~quantile~group('[',", unit, ",']')", sep = ""))
         ) +
         geom_abline(slope = 1, intercept = 0) +
-        coord_fixed() +
+        coord_fixed(xlim = c(mins, maxs), ylim = c(mins, maxs)) +
         theme(panel.spacing.x = unit(2, "lines"))
     print(g)
 
@@ -144,8 +148,8 @@ plot_return_levels <- function(gev_fits, var, varname, file = NA, width = 12, he
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text.x = element_text(size = fontsize)) +
         labs(y = parse(text = varname), x = "Return period [hail days]") +
-        scale_fill_discrete(name = "Epoch", breaks = c("historic", "ssp245"), labels = c("Historic", "SSP245")) +
-        scale_colour_discrete(name = "Epoch", breaks = c("historic", "ssp245"), labels = c("Historic", "SSP245")) +
+        scale_fill_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "SSP245")) +
+        scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "SSP245")) +
         scale_x_log10()
     print(g)
 
@@ -163,7 +167,7 @@ plot_hail_probs <- function(gev_fits, file = NA, width = 12, height = 3, fontsiz
         facet_wrap(~domain, nrow = 1) +
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text.x = element_text(size = fontsize)) +
-        scale_colour_discrete(name = "Epoch", breaks = c("historic", "ssp245"), labels = c("Historic", "SSP245")) +
+        scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "SSP245")) +
         labs(x = "Hail diameter [mm]", y = "Probability [%]")
     print(g)
 
@@ -172,7 +176,7 @@ plot_hail_probs <- function(gev_fits, file = NA, width = 12, height = 3, fontsiz
     }
 }
 
-# Calculate ks tests to show differences between historic and ssp245 model for each domain.
+# Calculate ks tests to show differences between historical and ssp245 model for each domain.
 ks_tests <- function(gevs, domains, variables, ks_iterations) {
     ks_change <- list()
     for (d in domains) {
@@ -180,11 +184,11 @@ ks_tests <- function(gevs, domains, variables, ks_iterations) {
             ks <- vector()
             for (i in seq(1, ks_iterations)) {
                 ks <- append(ks, ks.test(
-                    rextRemes(gevs[[d]][[v]][["historic"]], 1000),
+                    rextRemes(gevs[[d]][[v]][["historical"]], 1000),
                     rextRemes(gevs[[d]][[v]][["ssp245"]], 1000)
                 )$p.value)
             }
-            ks <- tibble(pval = ks, domain = d, scenario = "historic model vs ssp245 model", variable = v)
+            ks <- tibble(pval = ks, domain = d, scenario = "historical model vs ssp245 model", variable = v)
             ks_change <- append(ks_change, list(ks))
         }
     }
@@ -218,7 +222,7 @@ probabilities_table <- function(gev_fits, var, units) {
     diam <- windspeed <- NULL
     probs <- gev_fits[[var]]
     probs$domain <- factor(probs$domain)
-    probs$epoch <- factor(probs$epoch, levels = c("historic", "ssp245"), labels = c("Historic", "SSP245"))
+    probs$epoch <- factor(probs$epoch, levels = c("historical", "ssp245"), labels = c("Historical", "SSP245"))
 
     if (var == "hail_probs") {
         probs <- rename(probs, by_var = diam)
@@ -261,7 +265,7 @@ probabilities_table <- function(gev_fits, var, units) {
 #   ks_fits: KS test results,
 #   quantiles: Quantiles of empirical vs modeled amounts.
 fit_gevs <- function(all_dat,
-                     epochs = c("historic", "ssp245"),
+                     epochs = c("historical", "ssp245"),
                      prob_diams = c(20, 50, 100),
                      prob_windspeeds = c(27.78), # 100 km/h
                      p = seq(1, 99) / 100,
@@ -285,6 +289,8 @@ fit_gevs <- function(all_dat,
     for (d in domains) {
         for (v in variables) {
             for (e in epochs) {
+                print(paste("Fitting for", v, "in", d, "for", e))
+
                 dat <- filter(all_dat, domain == d, epoch == e)[[v]]
                 gev <- fevd(dat, type = "GEV", time.units = "days")
                 gevs[[d]][[v]][[e]] <- gev
@@ -356,13 +362,13 @@ fit_gevs <- function(all_dat,
     hail_probs$diam <- factor(hail_probs$diam, levels = prob_diams)
     ks_fits$scenario <- factor(ks_fits$scenario,
         levels = c(
-            "historic model vs empirical",
+            "historical model vs empirical",
             "ssp245 model vs empirical",
-            "historic model vs ssp245 model"
+            "historical model vs ssp245 model"
         ),
-        labels = c("Model vs empirical: historic",
+        labels = c("Model vs empirical: historical",
             "ssp245 model vs empirical" = "Model vs empirical: SSP245",
-            "historic model vs ssp245 model" = "Historic model vs SSP245 model"
+            "historical model vs ssp245 model" = "Historical model vs SSP245 model"
         )
     )
 
