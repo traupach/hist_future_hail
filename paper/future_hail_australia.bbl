@@ -30,6 +30,162 @@ Adams-Selin, R\BPBI D.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Allen%
+, Karoly%
+\BCBL {}\ \BBA {} Walsh%
+}{%
+Allen%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2014}}%
+}]{%
+Allen_JC_2014}
+\APACinsertmetastar {%
+Allen_JC_2014}%
+\begin{APACrefauthors}%
+Allen, J\BPBI T.%
+, Karoly, D\BPBI J.%
+\BCBL {}\ \BBA {} Walsh, K\BPBI J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2014}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Future {A}ustralian Severe Thunderstorm Environments. {Part II}: The Influence of a Strongly Warming Climate on Convective Environments} {Future {A}ustralian severe thunderstorm environments. {Part II}: The influence of a strongly warming climate on convective environments}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{J Climate}{27}{10}{3848-3868}.
+\newblock
+\begin{APACrefDOI} \doi{10.1175/JCLI-D-13-00426.1} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+{Association of Consulting Structural Engineers}%
+}{%
+{Association of Consulting Structural Engineers}%
+}{%
+{\protect \APACyear {2022}}%
+}]{%
+ACSE_2022}
+\APACinsertmetastar {%
+ACSE_2022}%
+\begin{APACrefauthors}%
+{Association of Consulting Structural Engineers}.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2022}{}{}.
+\newblock
+\APACrefbtitle {Hail Loading on Roofs. {P}ractice Note Number 19 Version 2.} {Hail loading on roofs. {P}ractice note number 19 version 2.}
+\newblock
+\begin{APACrefURL} \url{https://www.acse.org.au/wp-content/uploads/2022/03/Practice-Paper-19-Hail-Loading-REVISED-2022.pdf} \end{APACrefURL}
+\newblock
+\APACrefnote{accessed 22 June 2024}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+{Australian Building Codes Board}%
+}{%
+{Australian Building Codes Board}%
+}{%
+{\protect \APACyear {2024}}%
+}]{%
+ABCB_2024}
+\APACinsertmetastar {%
+ABCB_2024}%
+\begin{APACrefauthors}%
+{Australian Building Codes Board}.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2024}{}{}.
+\newblock
+\APACrefbtitle {National Construction Code.} {National construction code.}
+\newblock
+\begin{APACrefURL} \url{https://ncc.abcb.gov.au} \end{APACrefURL}
+\newblock
+\APACrefnote{accessed 22 July 2024}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Bell%
+\ \protect \BOthers {.}}{%
+Bell%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2023}}%
+}]{%
+Bell_WF_2023}
+\APACinsertmetastar {%
+Bell_WF_2023}%
+\begin{APACrefauthors}%
+Bell, J\BPBI R.%
+, Wisinski, E\BPBI F.%
+, Molthan, A\BPBI L.%
+, Schultz, C\BPBI J.%
+, Gilligan, E.%
+\BCBL {}\ \BBA {} Sharp, K\BPBI G.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2023}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Developing a Hail and Wind Damage Swath Event Database from Daily {MODIS} True Color Imagery and Storm Reports for Impact Analysis and Applications} {Developing a hail and wind damage swath event database from daily {MODIS} true color imagery and storm reports for impact analysis and applications}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Weather Forecast}{38}{9}{1575 - 1588}.
+\newblock
+\begin{APACrefDOI} \doi{10.1175/WAF-D-22-0210.1} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Carletta%
+}{%
+Carletta%
+}{%
+{\protect \APACyear {2010}}%
+}]{%
+Carletta_2010}
+\APACinsertmetastar {%
+Carletta_2010}%
+\begin{APACrefauthors}%
+Carletta, N\BPBI D.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2010}.
+\unskip\
+\newblock
+\APACrefbtitle {Severe Wind-Driven Hail Events: Dependence on Convective Morphology and Larger-Scale Environment} {Severe wind-driven hail events: Dependence on convective morphology and larger-scale environment}\ \APACtypeAddressSchool {\BMTh}{}{Department of Geological and Atmospheric Sciences. Iowa State University}.
+\unskip\
+\newblock
+\begin{APACrefURL} \url{https://meteor.geol.iastate.edu/~ncarlett/portfolio/Senior_Thesis_Carletta_Final.pdf} \end{APACrefURL}
+\unskip\
+\newblock
+\APACrefnote{accessed 22 July 2024}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Changnon%
+}{%
+Changnon%
+}{%
+{\protect \APACyear {1967}}%
+}]{%
+Changnon_JAMC_1967}
+\APACinsertmetastar {%
+Changnon_JAMC_1967}%
+\begin{APACrefauthors}%
+Changnon, S\BPBI A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1967}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Areal-Temporal Variations of Hail Intensity in {I}llinois} {Areal-temporal variations of hail intensity in {I}llinois}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{J Appl Meteorol}{6}{3}{536 - 541}.
+\newblock
+\begin{APACrefDOI} \doi{10.1175/1520-0450(1967)006<0536:ATVOHI>2.0.CO;2} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Coles%
 }{%
 Coles%
@@ -195,6 +351,78 @@ Iacono, M\BPBI J.%
 \APACjournalVolNumPages{J Geophys Res-Atmos}{113}{D13}{}.
 \newblock
 \begin{APACrefDOI} \doi{10.1029/2008JD009944} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+{Institute for Catastrophic Loss Reduction}%
+}{%
+{Institute for Catastrophic Loss Reduction}%
+}{%
+{\protect \APACyear {2018}}%
+}]{%
+ICLR_2018}
+\APACinsertmetastar {%
+ICLR_2018}%
+\begin{APACrefauthors}%
+{Institute for Catastrophic Loss Reduction}.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2018}{}{}.
+\newblock
+\APACrefbtitle {Protect your home from Hail.} {Protect your home from hail.}
+\newblock
+\begin{APACrefURL} \url{https://www.iclr.org/wp-content/uploads/2021/04/ICLR_Hail-2020_E_2021.pdf} \end{APACrefURL}
+\newblock
+\APACrefnote{accessed 22 July 2024}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+{Insurance Council of Australia}%
+}{%
+{Insurance Council of Australia}%
+}{%
+{\protect \APACyear {2024}}%
+}]{%
+ICA_2024}
+\APACinsertmetastar {%
+ICA_2024}%
+\begin{APACrefauthors}%
+{Insurance Council of Australia}.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2024}{}{}.
+\newblock
+\APACrefbtitle {Historical Normalised Catastrophes, {J}une 2024.} {Historical normalised catastrophes, {J}une 2024.}
+\newblock
+\begin{APACrefURL} \url{https://insurancecouncil.com.au/wp-content/uploads/2024/07/ICA-Historical-Normalised-Catastrophe-June-2024.xlsx} \end{APACrefURL}
+\newblock
+\APACrefnote{accessed 22 July 2024}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+{International Code Council}%
+}{%
+{International Code Council}%
+}{%
+{\protect \APACyear {2008}}%
+}]{%
+ICC_2008}
+\APACinsertmetastar {%
+ICC_2008}%
+\begin{APACrefauthors}%
+{International Code Council}.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2008}{}{}.
+\newblock
+\APACrefbtitle {International Building Code - Structural.} {International building code - structural.}
+\newblock
+\begin{APACrefURL} \url{https://www.iccsafe.org/cs/codes/Documents/2007-08cycle/FAA/IBC-S1-S141-P2.pdf} \end{APACrefURL}
+\newblock
+\APACrefnote{accessed 22 July 2024}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -370,6 +598,88 @@ Skamarock, W\BPBI C.%
 \APACrefnote{{NCAR} technical note NCAR/TN-556+STR}
 \newblock
 \begin{APACrefDOI} \doi{10.5065/1dfh-6p97} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+{Standards Australia}%
+}{%
+{Standards Australia}%
+}{%
+{\protect \APACyear {2021}}%
+}]{%
+Standards_2021}
+\APACinsertmetastar {%
+Standards_2021}%
+\begin{APACrefauthors}%
+{Standards Australia}.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2021}{}{}.
+\newblock
+\APACrefbtitle {{AS/NZS} 1170.2 Structural Design Actions, Part 2 Wind Actions.} {{AS/NZS} 1170.2 structural design actions, part 2 wind actions.}
+\newblock
+\begin{APACrefURL} \url{https://store.standards.org.au/product/as-nzs-1170-2-2021} \end{APACrefURL}
+\newblock
+\APACrefnote{accessed 22 July 2024}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Towery%
+, Morgan%
+\BCBL {}\ \BBA {} Changnon%
+}{%
+Towery%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {1976}}%
+}]{%
+Towery_JAMC_1976}
+\APACinsertmetastar {%
+Towery_JAMC_1976}%
+\begin{APACrefauthors}%
+Towery, N\BPBI G.%
+, Morgan, G\BPBI M.%
+\BCBL {}\ \BBA {} Changnon, S\BPBI A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1976}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Examples of the Wind Factor in Crop-Hail Damage} {Examples of the wind factor in crop-hail damage}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{J Appl Meteorol}{15}{10}{1116 - 1120}.
+\newblock
+\begin{APACrefDOI} \doi{10.1175/1520-0450(1976)015<1116:EOTWFI>2.0.CO;2} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Walsh%
+\ \protect \BOthers {.}}{%
+Walsh%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2016}}%
+}]{%
+Walsh_CC_2016}
+\APACinsertmetastar {%
+Walsh_CC_2016}%
+\begin{APACrefauthors}%
+Walsh, K.%
+, White, C\BPBI J.%
+, McInnes, K.%
+, Holmes, J.%
+, Schuster, S.%
+, Richter, H.%
+\BDBL {}Warren, R\BPBI A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2016}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Natural hazards in {A}ustralia: storms, wind and hail} {Natural hazards in {A}ustralia: storms, wind and hail}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Climatic Change}{139}{1}{55-67}.
+\newblock
+\begin{APACrefDOI} \doi{10.1007/s10584-016-1737-7} \end{APACrefDOI}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
