@@ -23,15 +23,9 @@ cities = {
     'Melbourne': (144.963056, -37.814167),
     'Brisbane': (153.028056, -27.467778),
     'Canberra': (149.126944, -35.293056),
-}
-
-# Coordinates for remote regions of interest.
-remote = {
     'Adelaide': (138.5999, -34.9287),
-    'Burketown': (139.5423, -17.7383),
     'Kalgoorlie': (121.4656, -30.7582),
 }
-
 
 def gen_download_script(years, out_file, fut_ssp='ssp245', link_list='data/xu_file_list.csv'):
     """
@@ -160,15 +154,14 @@ def set_up_WRF(year, template_dir, namelist_dir, sims_dir, exp):
     else:
         print('Skipping existing WRF...')
 
-
 def plot_wrf_domains(
-    wps_dir, pts=None, figsize=(10, 8), proj=ccrs.PlateCarree(), fontsize=14, labels=None, file=None
+    wps_files, pts=None, figsize=(10, 8), proj=ccrs.PlateCarree(), fontsize=14, labels=None, file=None
 ):
     """
     Plot WRF domains for a WPS setup. Requires geogrid to have been run first.
 
     Arguments:
-        wps_dir: The WPS directory to find domain information in.
+        wps_files: A dictionary of WPS files and the (linestyle, colour) they should be plotted as.
         pts: Points to add as a dictionary with keys a name and values an (x,y) pair.
         figsize: The figure size (width x height).
         proj: Projection to display map in.
@@ -176,7 +169,7 @@ def plot_wrf_domains(
         file: Output file for figure.
     """
 
-    dom_files = sorted(glob.glob(wps_dir + '/geo*.nc'))
+    dom_files = list(wps_files.keys())
     doms = [xarray.open_dataset(x) for x in dom_files]
 
     max_map_fac = np.array([np.max(np.abs(x.MAPFAC_M.values - 1) / 1 * 100) for x in doms])
@@ -213,19 +206,23 @@ def plot_wrf_domains(
 
     # Do the plotting.
     plt.rcParams['font.size'] = fontsize
-    fig, ax = plt.subplots(figsize=figsize, subplot_kw={'projection': proj})
-    # z = doms[0].isel(Time=0).HGT_M.values
-    x = doms[0].isel(Time=0).XLONG_M.values
-    y = doms[0].isel(Time=0).XLAT_M.values
-    # pc = ax.pcolormesh(x,y,z,cmap='terrain', transform=ccrs.PlateCarree())
+    _, ax = plt.subplots(figsize=figsize, subplot_kw={'projection': proj})
     ax.coastlines(linewidth=1.5)
-    # fig.colorbar(pc)
-    add_doms([doms[0]], ax=ax, colour='orange')
-    add_doms([doms[x] for x in [1, 3]], ax=ax, colour='darkgreen')
-    add_doms([doms[x] for x in [2, 4, 5, 6]], ax=ax, colour='blue')
 
-    ax.set_xlim(np.min(x) - 2, np.max(x) + 2)
-    ax.set_ylim(np.min(y) - 2, np.max(y) + 2)
+    min_x = min_y = np.inf
+    max_x = max_y = -np.inf
+
+    for i, (ls, col) in enumerate([wps_files[x] for  x in wps_files]):
+        add_doms([doms[i]], ax=ax, colour=col, linestyle=ls) 
+        x = doms[i].isel(Time=0).XLONG_M.values
+        y = doms[i].isel(Time=0).XLAT_M.values
+        min_x = np.min(x) if np.min(x) < min_x else min_x
+        max_x = np.max(x) if np.max(x) > max_x else max_x
+        min_y = np.min(y) if np.min(y) < min_y else min_y
+        max_y = np.max(y) if np.max(y) > max_y else max_y
+
+    ax.set_xlim(min_x - 2, max_x + 2)
+    ax.set_ylim(min_y - 2, max_y + 2)
 
     gl = ax.gridlines(crs=proj, draw_labels=True, alpha=0.3)
     gl.top_labels = gl.right_labels = False
@@ -248,7 +245,6 @@ def plot_wrf_domains(
         plt.savefig(fname=file, dpi=300, bbox_inches='tight')
 
     plt.show()
-
 
 def plot_wrf_domain_def(
     parent_id,
