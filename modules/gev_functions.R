@@ -18,7 +18,7 @@ default_labels <- labeller(
     epoch = c(historical = "Historical", ssp245 = "SSP245"),
     variable = c(
         hailcast_diam_max = "Maximum hail size",
-        wind_10m = "Maximum 10 m wind collocated with hail"
+        wind_10m = "Maximum 10 m wind with hail"
     ),
     parameter = c(
         shape = "Shape",
@@ -30,6 +30,24 @@ default_labels <- labeller(
     ),
     .multi_line = FALSE
 )
+
+default_labels_ml <- labeller(
+    epoch = c(historical = "Historical", ssp245 = "SSP245"),
+    variable = c(
+        hailcast_diam_max = "Maximum hail size",
+        wind_10m = "Maximum 10 m wind with hail"
+    ),
+    parameter = c(
+        shape = "Shape",
+        location = "Location",
+        scale = "Scale"
+    ),
+    domain = c(
+        "Sydney + Canberra" = "Sydney/Canberra"
+    ),
+    .multi_line = TRUE
+)
+
 default_fontsize <- 14 # Font size for plots.
 
 # Read and concatenate all feather files in `results-dir`.
@@ -49,7 +67,7 @@ read_feathers <- function(results_dir) {
 
 # Plot a timeseries of data from `dat`.
 plot_ts <- function(dat, var, ylabel, xlabel = "Year", file = NA,
-                    width = 12, height = 9, fontsize = default_fontsize, labels = default_labels) {
+                    width = 12, height = 10, fontsize = default_fontsize, labels = default_labels) {
     g <- ggplot(dat, aes(x = time, y = .data[[var]])) +
         geom_point(shape = 1) +
         facet_wrap(domain ~ epoch, scales = "free_x", ncol = 2, labeller = labels) +
@@ -65,7 +83,7 @@ plot_ts <- function(dat, var, ylabel, xlabel = "Year", file = NA,
 }
 
 # Plot parameters of GEV fits returned by fit_gevs.
-plot_params <- function(gev_fits, fontsize = 14, dodge = 0.3, labels = default_labels, file = NULL,
+plot_params <- function(gev_fits, fontsize = 14, dodge = 0.3, labels = default_labels_ml, file = NULL,
                         width = 12, height = 6) {
     domain <- low <- high <- epoch <- est <- NULL
 
@@ -107,7 +125,7 @@ plot_ks_fits <- function(gev_fits, file = NA, fontsize = default_fontsize, label
 }
 
 # Plot qq plots of GEV fitted functions.s
-plot_quantiles <- function(gev_fits, var, unit, labels = default_labels, fontsize = default_fontsize,
+plot_quantiles <- function(gev_fits, var, unit, labels = default_labels_ml, fontsize = default_fontsize,
                            width = 12, height = 5, file = NA) {
     variable <- model <- empirical <- NULL
 
