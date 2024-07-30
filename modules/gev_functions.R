@@ -43,7 +43,7 @@ default_labels_ml <- labeller(
         scale = "Scale"
     ),
     domain = c(
-        "Sydney + Canberra" = "Sydney/Canberra"
+        "Sydney + Canberra" = "Sydney/\nCanberra"
     ),
     .multi_line = TRUE
 )
