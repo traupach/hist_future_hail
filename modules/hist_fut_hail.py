@@ -27,6 +27,7 @@ cities = {
     'Kalgoorlie': (121.4656, -30.7582),
 }
 
+
 def gen_download_script(years, out_file, fut_ssp='ssp245', link_list='data/xu_file_list.csv'):
     """
     Write a script to wget all the boundary condition files required for a run over given years.
@@ -154,8 +155,15 @@ def set_up_WRF(year, template_dir, namelist_dir, sims_dir, exp):
     else:
         print('Skipping existing WRF...')
 
+
 def plot_wrf_domains(
-    wps_files, pts=None, figsize=(10, 8), proj=ccrs.PlateCarree(), fontsize=14, labels=None, file=None
+    wps_files,
+    pts=None,
+    figsize=(10, 8),
+    proj=ccrs.PlateCarree(),
+    fontsize=14,
+    labels=None,
+    file=None,
 ):
     """
     Plot WRF domains for a WPS setup. Requires geogrid to have been run first.
@@ -212,8 +220,8 @@ def plot_wrf_domains(
     min_x = min_y = np.inf
     max_x = max_y = -np.inf
 
-    for i, (ls, col) in enumerate([wps_files[x] for  x in wps_files]):
-        add_doms([doms[i]], ax=ax, colour=col, linestyle=ls) 
+    for i, (ls, col) in enumerate([wps_files[x] for x in wps_files]):
+        add_doms([doms[i]], ax=ax, colour=col, linestyle=ls)
         x = doms[i].isel(Time=0).XLONG_M.values
         y = doms[i].isel(Time=0).XLAT_M.values
         min_x = np.min(x) if np.min(x) < min_x else min_x
@@ -245,6 +253,7 @@ def plot_wrf_domains(
         plt.savefig(fname=file, dpi=300, bbox_inches='tight')
 
     plt.show()
+
 
 def plot_wrf_domain_def(
     parent_id,
@@ -1067,6 +1076,7 @@ def process_maxima_set(
     time_adjust,
     epoch,
     domain,
+    time_adjust_mins=0,
     variables=['hailcast_diam_max', 'wind_10m'],
     drop_months=[9, 3],
     max_hailsize=180,
@@ -1080,6 +1090,7 @@ def process_maxima_set(
         time_adjust: Adjustment in hours to make to UTC times.
         epoch: Epoch descriptor to add to outputs.
         domain: The domain descriptor.
+        time_adjust_mins: Additional minutes to add to the time.
         variables: Variables to process. Defaults to ['hailcast_diam_max', 'wind_10m'].
         drop_months: Months to ignore. Defaults to [9, 3].
         max_hailsize: Maximum hail size to allow [mm].
@@ -1089,7 +1100,7 @@ def process_maxima_set(
     dat = dat.chunk({'time': 3000, 'south_north': -1, 'west_east': -1})
 
     # Adjust to local time.
-    dat = dat.assign_coords({'time': dat.time + np.timedelta64(time_adjust, 'h')})
+    dat = dat.assign_coords({'time': dat.time + np.timedelta64(time_adjust, 'h') + np.timedelta64(time_adjust_mins, 'm')})
 
     # Remove spin up time and trim so all timeseries are the same length.
     for m in drop_months:
@@ -1116,14 +1127,16 @@ def process_maxima_set(
     num_any_hail = (dat_land.hailcast_diam_max > 0).sum().values
     perc_large_hail = num_large_hail / num_any_hail * 100
     dat_land = dat_land.where(dat_land.hailcast_diam_max <= max_hailsize)
-    
+
     maxes_all = dat.max('time').expand_dims({'epoch': [epoch]})
     maxes_land = dat_land.max('time')
-    
+
     # Save percentage of hail that is too large and removed.
     maxes_land['perc_large_hail'] = perc_large_hail
-    maxes_land.perc_large_hail.attrs['description'] = f'Percentage of hail removed because it is over {max_hailsize} mm.'
-    
+    maxes_land.perc_large_hail.attrs['description'] = (
+        f'Percentage of hail removed because it is over {max_hailsize} mm.'
+    )
+
     maxes_land = maxes_land.expand_dims({'epoch': [epoch]})
     for i in [maxes_all, maxes_land]:
         i['latitude'] = (('south_north', 'west_east'), lats.values)
@@ -1136,10 +1149,12 @@ def process_maxima_set(
 
     return maxima, maxes_all, maxes_land
 
+
 def process_maxima(
     sim_dir,
     domains={'Perth': 3, 'Melbourne': 5, 'Brisbane': 6, 'Sydney_Canberra': 7},
     time_adjust={'Perth': 8, 'Melbourne': 11, 'Brisbane': 10, 'Sydney_Canberra': 11},
+    time_adjust_mins={'Perth': 0, 'Melbourne': 0, 'Brisbane': 0, 'Sydney_Canberra': 0},
     results_dir='/g/data/up6/tr2908/hist_future_hail/results/',
     variables=['hailcast_diam_max', 'wind_10m'],
     file_dir='paper/figures/',
@@ -1201,6 +1216,7 @@ def process_maxima(
                 time_adjust=time_adjust[domain],
                 epoch='historical',
                 domain=domain,
+                time_adjust_mins=time_adjust_mins[domain],
                 **kwargs,
             )
 
@@ -1210,6 +1226,7 @@ def process_maxima(
                 time_adjust=time_adjust[domain],
                 epoch='ssp245',
                 domain=domain,
+                time_adjust_mins=time_adjust_mins[domain],
                 **kwargs,
             )
 
