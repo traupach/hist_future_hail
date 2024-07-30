@@ -126,7 +126,7 @@ plot_ks_fits <- function(gev_fits, file = NA, fontsize = default_fontsize, label
 
 # Plot qq plots of GEV fitted functions.s
 plot_quantiles <- function(gev_fits, var, unit, labels = default_labels_ml, fontsize = default_fontsize,
-                           width = 12, height = 5, file = NA) {
+                           width = 12, height = 6, file = NA) {
     variable <- model <- empirical <- NULL
 
     vals <- gev_fits$quantiles %>% filter(variable == var)
