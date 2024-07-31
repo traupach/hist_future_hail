@@ -277,6 +277,7 @@ def plot_wrf_domains(
                 xytext=labels[i][1],
                 ha='center',
                 color='black',
+                fontweight='bold'
             )
 
     if file is not None:
