@@ -231,7 +231,7 @@ def plot_wrf_domains(
         ax.add_geometries(
             [geom],
             crs=ccrs.PlateCarree(),
-            linewidth=1.5,
+            linewidth=2,
             edgecolor=colour,
             facecolor='none',
             linestyle=linestyle,
@@ -277,7 +277,8 @@ def plot_wrf_domains(
                 xytext=labels[i][1],
                 ha='center',
                 color='black',
-                fontweight='bold'
+                fontweight='bold',
+                fontsize=plt.rcParams['font.size']+1,
             )
 
     if file is not None:
