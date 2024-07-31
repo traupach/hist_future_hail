@@ -74,7 +74,10 @@ plot_ts <- function(dat, var, ylabel, xlabel = "Year", file = NA,
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(x = xlabel, y = ylabel) +
-        theme(panel.spacing.x = unit(2, "lines"))
+        theme(
+            panel.spacing.x = unit(2, "lines"),
+            panel.spacing.y = unit(1, "lines")
+        )
     print(g)
 
     if (!is.na(file)) {
@@ -83,7 +86,7 @@ plot_ts <- function(dat, var, ylabel, xlabel = "Year", file = NA,
 }
 
 # Plot parameters of GEV fits returned by fit_gevs.
-plot_params <- function(gev_fits, fontsize = 14, dodge = 0.3, labels = default_labels_ml, file = NULL,
+plot_params <- function(gev_fits, fontsize = default_fontsize, dodge = 0.3, labels = default_labels_ml, file = NULL,
                         width = 12, height = 6) {
     domain <- low <- high <- epoch <- est <- NULL
 
@@ -134,8 +137,8 @@ plot_quantiles <- function(gev_fits, var, unit, labels = default_labels_ml, font
     maxs <- max(max(vals$model), max(vals$empirical))
 
     g <- ggplot(gev_fits$quantiles %>% filter(variable == var), aes(x = model, y = empirical)) +
-        #facet_wrap(epoch ~ domain, nrow = 2, labeller = labels) +
-        facet_grid(epoch ~ domain, labeller = labels) + 
+        # facet_wrap(epoch ~ domain, nrow = 2, labeller = labels) +
+        facet_grid(epoch ~ domain, labeller = labels) +
         geom_point(shape = 1) +
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
@@ -144,8 +147,8 @@ plot_quantiles <- function(gev_fits, var, unit, labels = default_labels_ml, font
             y = parse(text = paste("Empirical~quantile~group('[',", unit, ",']')", sep = ""))
         ) +
         geom_abline(slope = 1, intercept = 0) +
-        coord_fixed(xlim = c(mins, maxs), ylim = c(mins, maxs))# +
-        #theme(panel.spacing.x = unit(2, "lines"))
+        coord_fixed(xlim = c(mins, maxs), ylim = c(mins, maxs)) # +
+    # theme(panel.spacing.x = unit(2, "lines"))
     print(g)
 
     if (!is.na(file)) {
