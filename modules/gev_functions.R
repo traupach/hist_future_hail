@@ -67,7 +67,7 @@ read_feathers <- function(results_dir) {
 
 # Plot a timeseries of data from `dat`.
 plot_ts <- function(dat, var, ylabel, xlabel = "Year", file = NA,
-                    width = 12, height = 10, fontsize = default_fontsize, labels = default_labels) {
+                    width = 12, height = 10, fontsize = default_fontsize, labels = default_labels_ml) {
     g <- ggplot(dat, aes(x = time, y = .data[[var]])) +
         geom_point(shape = 1) +
         facet_grid(domain ~ epoch, scales = "free_x", labeller = labels) +
