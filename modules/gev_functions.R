@@ -18,7 +18,7 @@ default_labels <- labeller(
     epoch = c(historical = "Historical", ssp245 = "SSP245"),
     variable = c(
         hailcast_diam_max = "Maximum hail size",
-        wind_10m = "Maximum 10 m wind with hail"
+        wind_10m = "Max. 10 m wind with hail"
     ),
     parameter = c(
         shape = "Shape",
@@ -35,7 +35,7 @@ default_labels_ml <- labeller(
     epoch = c(historical = "Historical", ssp245 = "SSP245"),
     variable = c(
         hailcast_diam_max = "Maximum hail size",
-        wind_10m = "Maximum 10 m wind with hail"
+        wind_10m = "Max. 10 m wind with hail"
     ),
     parameter = c(
         shape = "Shape",
@@ -48,7 +48,7 @@ default_labels_ml <- labeller(
     .multi_line = TRUE
 )
 
-default_fontsize <- 14 # Font size for plots.
+default_fontsize <- 16 # Font size for plots.
 
 # Read and concatenate all feather files in `results-dir`.
 read_feathers <- function(results_dir) {
@@ -67,7 +67,7 @@ read_feathers <- function(results_dir) {
 
 # Plot a timeseries of data from `dat`.
 plot_ts <- function(dat, var, ylabel, xlabel = "Year", file = NA,
-                    width = 12, height = 10, fontsize = default_fontsize, labels = default_labels) {
+                    width = 12, height = 11, fontsize = default_fontsize, labels = default_labels) {
     g <- ggplot(dat, aes(x = time, y = .data[[var]])) +
         geom_point(shape = 1) +
         facet_wrap(domain ~ epoch, scales = "free_x", ncol = 2, labeller = labels) +
@@ -88,13 +88,13 @@ plot_params <- function(gev_fits, fontsize = 14, dodge = 0.3, labels = default_l
     domain <- low <- high <- epoch <- est <- NULL
 
     g <- ggplot(gev_fits$params) +
-        facet_wrap(variable ~ parameter, scale = "free", ncol = 3, labeller = labels) +
+        ggh4x::facet_grid2(variable ~ parameter, scale = "free", labeller = labels, independent = "y") +
         theme_bw(fontsize) +
         geom_errorbar(aes(x = domain, ymin = low, ymax = high, colour = epoch),
             stat = "identity", width = 0.25, linewidth = 1, position = position_dodge(dodge)
         ) +
         geom_point(aes(x = domain, y = est, colour = epoch), position = position_dodge(dodge), size = 3) +
-        theme(strip.background = element_blank(), strip.text.x = element_text(size = fontsize)) +
+        theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(x = "Domain", y = "Parameter value") +
         scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "SSP245")) +
         theme(axis.text.x = element_text(angle = 25, vjust = 1, hjust = 1))
@@ -134,7 +134,8 @@ plot_quantiles <- function(gev_fits, var, unit, labels = default_labels_ml, font
     maxs <- max(max(vals$model), max(vals$empirical))
 
     g <- ggplot(gev_fits$quantiles %>% filter(variable == var), aes(x = model, y = empirical)) +
-        facet_wrap(epoch ~ domain, nrow = 2, labeller = labels) +
+        #facet_wrap(epoch ~ domain, nrow = 2, labeller = labels) +
+        facet_grid(epoch, domain) + 
         geom_point(shape = 1) +
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text.x = element_text(size = fontsize)) +
