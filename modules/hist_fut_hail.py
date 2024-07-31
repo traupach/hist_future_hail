@@ -244,7 +244,6 @@ def plot_wrf_domains(
             add_box(x, y, ax, colour=colour, linestyle=linestyle)
 
     # Do the plotting.
-    plt.rcParams['font.size'] = fontsize
     _, ax = plt.subplots(figsize=figsize, subplot_kw={'projection': proj})
     ax.coastlines(linewidth=1.5)
 
