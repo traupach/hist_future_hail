@@ -48,7 +48,7 @@ default_labels_ml <- labeller(
     .multi_line = TRUE
 )
 
-default_fontsize <- 16 # Font size for plots.
+default_fontsize <- 18 # Font size for plots.
 
 # Read and concatenate all feather files in `results-dir`.
 read_feathers <- function(results_dir) {
@@ -67,12 +67,12 @@ read_feathers <- function(results_dir) {
 
 # Plot a timeseries of data from `dat`.
 plot_ts <- function(dat, var, ylabel, xlabel = "Year", file = NA,
-                    width = 12, height = 11, fontsize = default_fontsize, labels = default_labels) {
+                    width = 12, height = 10, fontsize = default_fontsize, labels = default_labels) {
     g <- ggplot(dat, aes(x = time, y = .data[[var]])) +
         geom_point(shape = 1) +
-        facet_wrap(domain ~ epoch, scales = "free_x", ncol = 2, labeller = labels) +
+        facet_grid(domain ~ epoch, scales = "free_x", labeller = labels) +
         theme_bw(fontsize) +
-        theme(strip.background = element_blank(), strip.text.x = element_text(size = fontsize)) +
+        theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(x = xlabel, y = ylabel) +
         theme(panel.spacing.x = unit(2, "lines"))
     print(g)
@@ -114,7 +114,7 @@ plot_ks_fits <- function(gev_fits, file = NA, fontsize = default_fontsize, label
         theme_bw(fontsize) +
         scale_fill_discrete(name = "Scenario") +
         geom_hline(yintercept = 0.05, colour = "red") +
-        theme(strip.background = element_blank(), strip.text.x = element_text(size = fontsize)) +
+        theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(y = "p value", x = "Domain") +
         facet_wrap(~variable, nrow = 2, labeller = labels)
     print(g)
@@ -126,7 +126,7 @@ plot_ks_fits <- function(gev_fits, file = NA, fontsize = default_fontsize, label
 
 # Plot qq plots of GEV fitted functions.s
 plot_quantiles <- function(gev_fits, var, unit, labels = default_labels_ml, fontsize = default_fontsize,
-                           width = 12, height = 6, file = NA) {
+                           width = 12, height = 5, file = NA) {
     variable <- model <- empirical <- NULL
 
     vals <- gev_fits$quantiles %>% filter(variable == var)
@@ -135,17 +135,17 @@ plot_quantiles <- function(gev_fits, var, unit, labels = default_labels_ml, font
 
     g <- ggplot(gev_fits$quantiles %>% filter(variable == var), aes(x = model, y = empirical)) +
         #facet_wrap(epoch ~ domain, nrow = 2, labeller = labels) +
-        facet_grid(epoch, domain) + 
+        facet_grid(epoch ~ domain, labeller = labels) + 
         geom_point(shape = 1) +
         theme_bw(fontsize) +
-        theme(strip.background = element_blank(), strip.text.x = element_text(size = fontsize)) +
+        theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(
             x = parse(text = paste("Model~quantile~group('[',", unit, ",']')", sep = "")),
             y = parse(text = paste("Empirical~quantile~group('[',", unit, ",']')", sep = ""))
         ) +
         geom_abline(slope = 1, intercept = 0) +
-        coord_fixed(xlim = c(mins, maxs), ylim = c(mins, maxs)) +
-        theme(panel.spacing.x = unit(2, "lines"))
+        coord_fixed(xlim = c(mins, maxs), ylim = c(mins, maxs))# +
+        #theme(panel.spacing.x = unit(2, "lines"))
     print(g)
 
     if (!is.na(file)) {
@@ -155,7 +155,7 @@ plot_quantiles <- function(gev_fits, var, unit, labels = default_labels_ml, font
 
 # Plot return level curves for fitted GEVs.
 plot_return_levels <- function(gev_fits, var, varname, file = NA, width = 12, height = 3,
-                               fontsize = default_fontsize, labels = default_labels) {
+                               fontsize = default_fontsize, labels = default_labels_ml) {
     variable <- epoch <- low <- high <- est <- NULL
 
     g <- gev_fits$return_levels %>%
@@ -165,7 +165,7 @@ plot_return_levels <- function(gev_fits, var, varname, file = NA, width = 12, he
         geom_line(aes(colour = epoch), linewidth = 1) +
         facet_wrap(~domain, nrow = 1, labeller = labels) +
         theme_bw(fontsize) +
-        theme(strip.background = element_blank(), strip.text.x = element_text(size = fontsize)) +
+        theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(y = parse(text = varname), x = "Return period [hail days]") +
         scale_fill_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "SSP245")) +
         scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "SSP245")) +
@@ -180,14 +180,14 @@ plot_return_levels <- function(gev_fits, var, varname, file = NA, width = 12, he
 # Plot hail probabilities for comparison of GEV fits.
 plot_hail_probs <- function(
     gev_fits, file = NA, width = 12, height = 3,
-    fontsize = default_fontsize, labels = default_labels) {
+    fontsize = default_fontsize, labels = default_labels_ml) {
     diam <- epoch <- p <- NULL
 
     g <- ggplot(gev_fits$hail_probs) +
         geom_point(aes(x = diam, y = p, colour = epoch), shape = 1, size = 3, stroke = 2) +
         facet_wrap(~domain, nrow = 1, labeller = labels) +
         theme_bw(fontsize) +
-        theme(strip.background = element_blank(), strip.text.x = element_text(size = fontsize)) +
+        theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "SSP245")) +
         labs(x = "Hail diameter [mm]", y = "Probability [%]")
     print(g)
