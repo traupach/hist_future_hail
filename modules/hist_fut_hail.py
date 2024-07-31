@@ -1380,9 +1380,11 @@ def plot_maxima(
     _ = fig.colorbar(im, ax=axs.flat[0], cax=cbar_ax, ticks=None, label=scale_label, format=fmt)
 
     for i in [0, 3]:
-        axs[0, i].set_title(maxima.epoch[0].values)
+        assert str(maxima.epoch[0].values) == 'historical', str(maxima.epoch[0].values)
+        axs[0, i].set_title('Historic')
     for i in [1, 4]:
-        axs[0, i].set_title(maxima.epoch[1].values)
+        assert str(maxima.epoch[1].values) == 'ssp245', str(maxima.epoch[1].values)
+        axs[0, i].set_title('SSP245')
 
     if file is not None:
         plt.savefig(fname=file, dpi=300, bbox_inches='tight')
