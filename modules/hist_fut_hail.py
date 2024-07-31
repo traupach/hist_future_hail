@@ -4,6 +4,7 @@ import os
 import glob
 import xarray
 import geopandas
+import itertools
 import numpy as np
 import pandas as pd
 import cartopy.crs as ccrs
@@ -26,6 +27,36 @@ cities = {
     'Adelaide': (138.5999, -34.9287),
     'Kalgoorlie': (121.4656, -30.7582),
 }
+
+# Letters for plot labels.
+letters = [
+    'a',
+    'b',
+    'c',
+    'd',
+    'e',
+    'f',
+    'g',
+    'h',
+    'i',
+    'j',
+    'k',
+    'l',
+    'm',
+    'n',
+    'o',
+    'p',
+    'q',
+    'r',
+    's',
+    't',
+    'u',
+    'v',
+    'w',
+    'x',
+    'y',
+    'z',
+]
 
 
 def gen_download_script(years, out_file, fut_ssp='ssp245', link_list='data/xu_file_list.csv'):
@@ -827,35 +858,6 @@ def plot_map(
     )
     fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
 
-    letters = [
-        'a)',
-        'b)',
-        'c)',
-        'd)',
-        'e)',
-        'f)',
-        'g)',
-        'h)',
-        'i)',
-        'j)',
-        'k)',
-        'l)',
-        'm)',
-        'n)',
-        'o)',
-        'p)',
-        'q)',
-        'r)',
-        's)',
-        't)',
-        'u)',
-        'v)',
-        'w)',
-        'x)',
-        'y)',
-        'z)',
-    ]
-
     if not isinstance(dat, list):
         im = plot_map_to_ax(
             dat=dat,
@@ -1100,7 +1102,13 @@ def process_maxima_set(
     dat = dat.chunk({'time': 3000, 'south_north': -1, 'west_east': -1})
 
     # Adjust to local time.
-    dat = dat.assign_coords({'time': dat.time + np.timedelta64(time_adjust, 'h') + np.timedelta64(time_adjust_mins, 'm')})
+    dat = dat.assign_coords(
+        {
+            'time': dat.time
+            + np.timedelta64(time_adjust, 'h')
+            + np.timedelta64(time_adjust_mins, 'm')
+        }
+    )
 
     # Remove spin up time and trim so all timeseries are the same length.
     for m in drop_months:
@@ -1172,6 +1180,8 @@ def process_maxima(
         file_dir: Figure directory. Defaults to 'paper/figures/'.
         kwargs: Extra arguments to process_maxima_set().
     """
+
+    maxima = []
 
     for domain, d in domains.items():
         print(f'Processing d0{d}...')
@@ -1262,3 +1272,117 @@ def process_maxima(
                 lab='Max wind [m/s]',
                 domain=domain,
             )
+
+        maxima.append(land_maxes.expand_dims({'domain': [domain.replace('_', '/')]}))
+
+    return xarray.merge(maxima)
+
+
+def plot_maxima(
+    maxima,
+    variable,
+    scale_label,
+    file=None,
+    figsize=(12, 7),
+    cbar_adjust=0.862,
+    cbar_pad=0.015,
+    nrows=3,
+    ncols=4,
+    locator_base={'Sydney/Canberra': 1.5, 'Brisbane': 1.5},
+    title_xs={'Kalgoorlie': 0.02, 'Adelaide': 0.05},
+    title_ys={'Kalgoorlie': 0.9, 'Melbourne': 0.9},
+):
+    """
+    Plot maxima for each epoch.
+
+    Args:
+        maxima: The maxima to plot.
+        variable: Variable to plot.
+        scale_label: Label for the shared scale bar.
+        file: Output file for plot.
+        figsize: Figure suze. Defaults to (12, 7).
+        cbar_adjust: cbar adjustment factor. Defaults to 0.862.
+        cbar_pad: cbar padding factor. Defaults to 0.015.
+        nrows, ncols: Number of rows and columns.
+        locator_base: 'base' argument for locator, per domain, to override default of 2.
+        title_xs: x position for inset title, to override default per domain.
+        title_ys: y position for inset title, to override default per domain.
+    """
+
+    fig, axs = plt.subplots(
+        nrows=nrows,
+        ncols=ncols + 1,
+        figsize=figsize,
+        subplot_kw={'projection': ccrs.PlateCarree()},
+        gridspec_kw={'wspace': 0.1, 'width_ratios': [1, 1, 0.22, 1, 1]},
+    )
+
+    zmin = maxima[variable].min()
+    zmax = maxima[variable].max()
+
+    plot_letters = letters.copy()[::-1]
+    pnum = 0
+    for i, (d, e) in enumerate(itertools.product(maxima.domain, maxima.epoch)):
+        x = maxima.sel(epoch=e, domain=d).longitude
+        y = maxima.sel(epoch=e, domain=d).latitude
+        z = maxima.sel(epoch=e, domain=d)[variable]
+
+        x = x.dropna('west_east', how='all').dropna('south_north', how='all')
+        y = y.dropna('west_east', how='all').dropna('south_north', how='all')
+        z = z.sel(south_north=x.south_north, west_east=x.west_east)
+
+        m = xarray.DataArray(
+            z.values,
+            dims=['y', 'x'],
+            coords={'lat': (('y', 'x'), y.values), 'lon': (('y', 'x'), x.values)},
+        )
+
+        im = m.plot(
+            ax=axs.flat[pnum],
+            transform=ccrs.PlateCarree(),
+            add_colorbar=False,
+            x='lon',
+            y='lat',
+            cmap='Spectral_r',
+            vmin=zmin,
+            vmax=zmax,
+            rasterized=True,
+        )
+        axs.flat[pnum].coastlines()
+        title_x = title_xs[str(d.values)] if str(d.values) in title_xs else 0.9
+        title_y = title_ys[str(d.values)] if str(d.values) in title_ys else 0.05
+        axs.flat[pnum].annotate(
+            text=f'{plot_letters.pop()}',
+            xy=(title_x, title_y),
+            xycoords='axes fraction',
+            fontweight='bold',
+            fontsize=plt.rcParams['font.size'],
+        )
+
+        base = locator_base[str(d.values)] if str(d.values) in locator_base else 2
+        locator = mticker.MultipleLocator(base=base)
+        gl = axs.flat[pnum].gridlines(
+            crs=ccrs.PlateCarree(), draw_labels=True, alpha=0.5, xlocs=locator, ylocs=locator
+        )
+        gl.top_labels = gl.right_labels = False
+        if (i + 1) % int(ncols / 2) == 0:
+            gl.left_labels = False
+            if (i + 1) % int(ncols) != 0:
+                pnum = pnum + 1
+                axs.flat[pnum].set_visible(False)
+
+        pnum = pnum + 1
+
+    fig.subplots_adjust(right=cbar_adjust)
+    cbar_ax = fig.add_axes([cbar_adjust + cbar_pad, 0.23, 0.02, 0.55])
+    fmt = mticker.ScalarFormatter(useOffset=False, useMathText=True)
+    fmt.set_powerlimits((-4, 6))
+    _ = fig.colorbar(im, ax=axs.flat[0], cax=cbar_ax, ticks=None, label=scale_label, format=fmt)
+
+    for i in [0, 3]:
+        axs[0, i].set_title('Historic')
+    for i in [1, 4]:
+        axs[0, i].set_title('SSP245')
+
+    if file is not None:
+        plt.savefig(fname=file, dpi=300, bbox_inches='tight')

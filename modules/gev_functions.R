@@ -177,12 +177,14 @@ plot_return_levels <- function(gev_fits, var, varname, file = NA, width = 12, he
 }
 
 # Plot hail probabilities for comparison of GEV fits.
-plot_hail_probs <- function(gev_fits, file = NA, width = 12, height = 3, fontsize = default_fontsize) {
+plot_hail_probs <- function(
+    gev_fits, file = NA, width = 12, height = 3,
+    fontsize = default_fontsize, labels = default_labels) {
     diam <- epoch <- p <- NULL
 
     g <- ggplot(gev_fits$hail_probs) +
         geom_point(aes(x = diam, y = p, colour = epoch), shape = 1, size = 3, stroke = 2) +
-        facet_wrap(~domain, nrow = 1) +
+        facet_wrap(~domain, nrow = 1, labeller = labels) +
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text.x = element_text(size = fontsize)) +
         scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "SSP245")) +
