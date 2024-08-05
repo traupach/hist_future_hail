@@ -1064,10 +1064,10 @@ def plot_maxes(
         ax.coastlines(linewidth=1.5)
 
     domain_str = domain.replace('_', '/')
-    axs[0].set_title(f'{domain_str}\nhist')
-    axs[1].set_title(f'{domain_str}\nssp245')
-    axs[2].set_title(f'{domain_str}\nhist')
-    axs[3].set_title(f'{domain_str}\nssp245')
+    axs[0].set_title(f'{domain_str}\nHistorical')
+    axs[1].set_title(f'{domain_str}\nFuture')
+    axs[2].set_title(f'{domain_str}\nHistorical')
+    axs[3].set_title(f'{domain_str}\nFuture')
 
     if file_dir is not None:
         plt.savefig(fname=f'{file_dir}/maxes_{domain}_{variable}.pdf', dpi=300, bbox_inches='tight')
@@ -1382,10 +1382,10 @@ def plot_maxima(
 
     for i in [0, 3]:
         assert str(maxima.epoch[0].values) == 'historical', str(maxima.epoch[0].values)
-        axs[0, i].set_title('Historic')
+        axs[0, i].set_title('Historical')
     for i in [1, 4]:
         assert str(maxima.epoch[1].values) == 'ssp245', str(maxima.epoch[1].values)
-        axs[0, i].set_title('SSP245')
+        axs[0, i].set_title('Future')
 
     if file is not None:
         plt.savefig(fname=file, dpi=300, bbox_inches='tight')
