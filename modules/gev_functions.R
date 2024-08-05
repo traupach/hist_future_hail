@@ -15,7 +15,7 @@ suppressMessages(library(tables))
 
 # Labellers for plot elements.
 default_labels <- labeller(
-    epoch = c(historical = "Historical", ssp245 = "SSP245"),
+    epoch = c(historical = "Historical", ssp245 = "Future"),
     variable = c(
         hailcast_diam_max = "Maximum hail size",
         wind_10m = "Max. 10 m wind with hail"
@@ -32,7 +32,7 @@ default_labels <- labeller(
 )
 
 default_labels_ml <- labeller(
-    epoch = c(historical = "Historical", ssp245 = "SSP245"),
+    epoch = c(historical = "Historical", ssp245 = "Future"),
     variable = c(
         hailcast_diam_max = "Maximum hail size",
         wind_10m = "Max. 10 m wind with hail"
@@ -99,7 +99,7 @@ plot_params <- function(gev_fits, fontsize = default_fontsize, dodge = 0.3, labe
         geom_point(aes(x = domain, y = est, colour = epoch), position = position_dodge(dodge), size = 3) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(x = "Domain", y = "Parameter value") +
-        scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "SSP245")) +
+        scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
         theme(axis.text.x = element_text(angle = 25, vjust = 1, hjust = 1))
     print(g)
 
@@ -147,8 +147,7 @@ plot_quantiles <- function(gev_fits, var, unit, labels = default_labels_ml, font
             y = parse(text = paste("Empirical~quantile~group('[',", unit, ",']')", sep = ""))
         ) +
         geom_abline(slope = 1, intercept = 0) +
-        coord_fixed(xlim = c(mins, maxs), ylim = c(mins, maxs)) # +
-    # theme(panel.spacing.x = unit(2, "lines"))
+        coord_fixed(xlim = c(mins, maxs), ylim = c(mins, maxs))
     print(g)
 
     if (!is.na(file)) {
@@ -170,8 +169,8 @@ plot_return_levels <- function(gev_fits, var, varname, file = NA, width = 12, he
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(y = parse(text = varname), x = "Return period [hail days]") +
-        scale_fill_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "SSP245")) +
-        scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "SSP245")) +
+        scale_fill_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
+        scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
         scale_x_log10()
     print(g)
 
@@ -181,9 +180,8 @@ plot_return_levels <- function(gev_fits, var, varname, file = NA, width = 12, he
 }
 
 # Plot hail probabilities for comparison of GEV fits.
-plot_hail_probs <- function(
-    gev_fits, file = NA, width = 12, height = 3,
-    fontsize = default_fontsize, labels = default_labels_ml) {
+plot_hail_probs <- function(gev_fits, file = NA, width = 12, height = 3,
+                            fontsize = default_fontsize, labels = default_labels_ml) {
     diam <- epoch <- p <- NULL
 
     g <- ggplot(gev_fits$hail_probs) +
@@ -191,7 +189,7 @@ plot_hail_probs <- function(
         facet_wrap(~domain, nrow = 1, labeller = labels) +
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
-        scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "SSP245")) +
+        scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
         labs(x = "Hail diameter [mm]", y = "Probability [%]")
     print(g)
 
@@ -246,7 +244,7 @@ probabilities_table <- function(gev_fits, var, units) {
     diam <- windspeed <- NULL
     probs <- gev_fits[[var]]
     probs$domain <- factor(probs$domain)
-    probs$epoch <- factor(probs$epoch, levels = c("historical", "ssp245"), labels = c("Historical", "SSP245"))
+    probs$epoch <- factor(probs$epoch, levels = c("historical", "ssp245"), labels = c("Historical", "Future"))
 
     if (var == "hail_probs") {
         probs <- rename(probs, by_var = diam)
@@ -391,8 +389,8 @@ fit_gevs <- function(all_dat,
             "historical model vs ssp245 model"
         ),
         labels = c("Model vs empirical: historical",
-            "ssp245 model vs empirical" = "Model vs empirical: SSP245",
-            "historical model vs ssp245 model" = "Historical model vs SSP245 model"
+            "ssp245 model vs empirical" = "Model vs empirical: future",
+            "historical model vs ssp245 model" = "Historical model vs future model"
         )
     )
 
