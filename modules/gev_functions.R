@@ -12,6 +12,7 @@ suppressMessages(library(dplyr))
 suppressMessages(library(ggplot2))
 suppressMessages(library(stringr))
 suppressMessages(library(tables))
+suppressMessages(library(purrr))
 
 # Labellers for plot elements.
 default_labels <- labeller(
@@ -240,31 +241,34 @@ collect_params <- function(gevs, domains, variables, epochs) {
     return(params)
 }
 
-probabilities_table <- function(gev_fits, var, units) {
-    diam <- windspeed <- NULL
-    probs <- gev_fits[[var]]
-    probs$domain <- factor(probs$domain)
-    probs$epoch <- factor(probs$epoch, levels = c("historical", "ssp245"), labels = c("Historical", "Future"))
+probabilities_table <- function(gev_fits, vars = list(diam = "hail >", windspeed = "wind >"),
+                                units = list(diam = "mm", windspeed = "m/s")) {
+    thresh <- NULL
+    vars <- list(hail_probs = "diam", wind_probs = "windspeed")
+    labels <- list(hail_probs = "hail >", wind_probs = "wind >")
+    units <- list(hail_probs = "mm", wind_probs = "m/s")
 
-    if (var == "hail_probs") {
-        probs <- rename(probs, by_var = diam)
-    } else if (var == "wind_probs") {
-        probs <- rename(probs, by_var = windspeed)
-    } else {
-        stop("Unknown value for var.")
+    probs <- list()
+    for (var in names(vars)) {
+        p <- rename(gev_fits[[var]], "thresh" = vars[[var]])
+        p <- p %>% mutate(thresh = paste(labels[[var]], as.character(thresh), units[[var]]))
+        probs <- c(probs, list(p))
     }
 
-    probs$by_var <- factor(probs$by_var,
-        levels = unique(probs$by_var),
-        labels = paste(unique(probs$by_var), units)
+    probs <- reduce(probs, full_join, by = c("domain", "epoch", "thresh", "p"))
+    probs$domain <- factor(probs$domain)
+    probs$epoch <- factor(probs$epoch, levels = c("historical", "ssp245"), labels = c("Historical", "Future"))
+    probs$thresh <- factor(probs$thresh,
+        levels = unique(probs$thresh),
     )
 
     tab <- tabular(
         Heading("Domain") * domain *
-            Heading("Epoch") * epoch ~ Heading("Probability [\\%]") * by_var *
+            Heading("Epoch") * epoch ~ Heading("Probability [\\%]") * thresh *
             Heading() * p * Heading() * identity * Format(digits = 1),
         data = probs,
     )
+    toLatex(tab, file = "paper/tables/prob_table.tex")
     print(tab)
 }
 
