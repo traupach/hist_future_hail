@@ -241,7 +241,7 @@ collect_params <- function(gevs, domains, variables, epochs) {
     return(params)
 }
 
-probabilities_table <- function(gev_fits,
+probabilities_table <- function(gev_fits, out_file,
                                 vars = list(hail_probs = "diam", wind_probs = "windspeed"),
                                 labels = list(hail_probs = "hail", wind_probs = "wind"),
                                 units = list(hail_probs = "mm", wind_probs = "m s$^{-1}$")) {
@@ -269,7 +269,7 @@ probabilities_table <- function(gev_fits,
             Heading() * Format(digits=3) * p * Heading() * identity * Format(digits = 1),
         data = probs,
     )
-    latexTable(tab, file = "paper/tables/prob_table.tex")
+    toLatex(tab, file = out_file)
     print(tab)
 }
 
