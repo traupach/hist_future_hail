@@ -87,7 +87,7 @@ plot_ts <- function(dat, var, ylabel, xlabel = "Year", file = NA,
 
 # Plot parameters of GEV fits returned by fit_gevs.
 plot_params <- function(gev_fits, fontsize = default_fontsize, dodge = 0.3, labels = default_labels_ml, file = NULL,
-                        width = 12, height = 6) {
+                        width = 12, height = 8) {
     domain <- low <- high <- epoch <- est <- NULL
 
     g <- ggplot(gev_fits$params) +
