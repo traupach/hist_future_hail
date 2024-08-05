@@ -241,17 +241,16 @@ collect_params <- function(gevs, domains, variables, epochs) {
     return(params)
 }
 
-probabilities_table <- function(gev_fits, vars = list(diam = "hail >", windspeed = "wind >"),
-                                units = list(diam = "mm", windspeed = "m/s")) {
+probabilities_table <- function(gev_fits,
+                                vars = list(hail_probs = "diam", wind_probs = "windspeed"),
+                                labels = list(hail_probs = "hail", wind_probs = "wind"),
+                                units = list(hail_probs = "mm", wind_probs = "m s$^{-1}$")) {
     thresh <- NULL
-    vars <- list(hail_probs = "diam", wind_probs = "windspeed")
-    labels <- list(hail_probs = "hail >", wind_probs = "wind >")
-    units <- list(hail_probs = "mm", wind_probs = "m/s")
 
     probs <- list()
     for (var in names(vars)) {
         p <- rename(gev_fits[[var]], "thresh" = vars[[var]])
-        p <- p %>% mutate(thresh = paste(labels[[var]], as.character(thresh), units[[var]]))
+        p <- p %>% mutate(thresh = paste(as.character(thresh), units[[var]], labels[[var]]))
         probs <- c(probs, list(p))
     }
 
@@ -262,13 +261,15 @@ probabilities_table <- function(gev_fits, vars = list(diam = "hail >", windspeed
         levels = unique(probs$thresh),
     )
 
+    probs <- mutate(probs, p = round(p, 1))
+
     tab <- tabular(
         Heading("Domain") * domain *
             Heading("Epoch") * epoch ~ Heading("Probability [\\%]") * thresh *
-            Heading() * p * Heading() * identity * Format(digits = 1),
+            Heading() * Format(digits=3) * p * Heading() * identity * Format(digits = 1),
         data = probs,
     )
-    toLatex(tab, file = "paper/tables/prob_table.tex")
+    latexTable(tab, file = "paper/tables/prob_table.tex")
     print(tab)
 }
 
@@ -293,7 +294,7 @@ probabilities_table <- function(gev_fits, vars = list(diam = "hail >", windspeed
 fit_gevs <- function(all_dat,
                      epochs = c("historical", "ssp245"),
                      prob_diams = c(20, 50, 100),
-                     prob_windspeeds = c(27.78), # 100 km/h
+                     prob_windspeeds = c(22.22, 27.78), # 80 km/h, 100 km/h
                      p = seq(1, 99) / 100,
                      return_periods = seq(2, 100),
                      ks_iterations = 100,
