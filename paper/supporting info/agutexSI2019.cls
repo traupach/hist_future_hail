@@ -1818,7 +1818,12 @@ THE ABSTRACT\vskip12pt}\let\go\relax\fi
 \ifdim\ht\dbltopins<1pt\else\unvbox\dbltopins\fi
      \unvbox\@cclv
 \ifdim\ht\dblbotins<1pt\else\unvbox\dblbotins\fi%
-\ifvoid\footins\else\vskip\skip\footins\footnoterule\unvbox\footins\fi\vss}
+\ifvoid\footins\else\vskip\skip\footins\footnoterule\unvbox\footins\fi
+
+% TR: Code modified based on https://tex.stackexchange.com/questions/703682/infinite-shrinkage-found-in-page-in-agu-template-in-latex to fix infinite glue problem.
+\vskip 0pt plus 1fil minus \maxdimen
+
+}
 %\global\savefigandtabnumber\figandtabnumber
 %\global\advance\savefigandtabnumber by 1 %% Because loop stops one short
                                          %% of the total number of figs

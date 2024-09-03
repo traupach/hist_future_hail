@@ -106,6 +106,30 @@ ABCB_2024}%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+{Australian Bureau of Meteorology}%
+}{%
+{Australian Bureau of Meteorology}%
+}{%
+{\protect \APACyear {2021}}%
+}]{%
+BOM_2021}
+\APACinsertmetastar {%
+BOM_2021}%
+\begin{APACrefauthors}%
+{Australian Bureau of Meteorology}.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2021}{}{}.
+\newblock
+\APACrefbtitle {BUREAU EXPERT EXPLAINS GIANT HAIL PHENOMENON.} {Bureau expert explains giant hail phenomenon.}
+\newblock
+\begin{APACrefURL} \url{https://media.bom.gov.au/releases/908/bureau-expert-explains-giant-hail-phenomenon/} \end{APACrefURL}
+\newblock
+\APACrefnote{Media release, accessed 31 July 2023}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Bell%
 \ \protect \BOthers {.}}{%
 Bell%
@@ -566,6 +590,36 @@ R_software}%
 \APACaddressPublisher{Vienna, Austria}{}.
 \newblock
 \begin{APACrefURL} \url{https://www.R-project.org/} \end{APACrefURL}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Raupach%
+, Soderholm%
+, Warren%
+\BCBL {}\ \BBA {} Sherwood%
+}{%
+Raupach%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2023}}%
+}]{%
+Raupach_npjCAS_2023}
+\APACinsertmetastar {%
+Raupach_npjCAS_2023}%
+\begin{APACrefauthors}%
+Raupach, T\BPBI H.%
+, Soderholm, J\BPBI S.%
+, Warren, R\BPBI A.%
+\BCBL {}\ \BBA {} Sherwood, S\BPBI C.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2023}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Changes in hail hazard across Australia: 1979-2021} {Changes in hail hazard across australia: 1979-2021}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{npj Clim Atmos Sci}{6}{1}{143}.
+\newblock
+\begin{APACrefDOI} \doi{10.1038/s41612-023-00454-8} \end{APACrefDOI}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
