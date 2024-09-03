@@ -418,91 +418,6 @@ def mean_temp_per_year(
     return xarray.open_dataset(outfile)
 
 
-def conv_stats(
-    basic_vars=['hailcast_diam_max', 'longitude', 'latitude'],
-    exclude_vars=['shear_u', 'shear_v', 'positive_shear'],
-    cache_dir='/g/data/up6/tr2908/hist_future_hail/WRF_v4.4/results_cache',
-    cities={'Perth': 3, 'Melbourne': 5, 'Brisbane': 6, 'Sydney + Canberra': 7},
-    sims={
-        'Historical': '/g/data/up6/tr2908/hist_future_hail/WRF_v4.4/simulations/hist/',
-        'SSP2-4.5': '/g/data/up6/tr2908/hist_future_hail/WRF_v4.4/simulations/ssp245/',
-    },
-    city_cells=None,
-):
-    """
-    Process means and quantiles per timestep in basic* and conv* files.
-
-    Arguments:
-        basic_vars: basic*.nc variables to read.
-        exclude_vars: Exclude these variables.
-        cache_dir: Output cache directory.
-        cities: WRF domain numbers for each city.
-        sims: name: directory dictionary for simulations to process.
-        city_cells: isel definition to select city pixels if required.
-
-    Returns: Means and quantiles for each variable.
-    """
-
-    res = []
-    comp = dict(zlib=True, shuffle=True, complevel=5)
-
-    for city in cities:
-        for sim in sims:
-            print(f'{sim} {city}')
-
-            outfile = f'{cache_dir}/{city}_{sim}_hourly_stats.nc'
-            if not os.path.exists(outfile):
-                basic_files = sorted(glob.glob(f'{sims[sim]}/*/WRF/basic_params_d0{cities[city]}*'))
-                conv_files = sorted(glob.glob(f'{sims[sim]}/*/WRF/conv_params_d0{cities[city]}*'))
-
-                print('Opening datasets...')
-                b = xarray.open_mfdataset(
-                    basic_files, parallel=True, combine='nested', concat_dim='time'
-                )[basic_vars]
-                c = xarray.open_mfdataset(
-                    conv_files, parallel=True, combine='nested', concat_dim='time'
-                )
-                dat = xarray.merge([b, c])
-
-                dat = dat.drop(exclude_vars)
-                dat['latitude'] = dat.latitude.isel(time=0)
-                dat['longitude'] = dat.longitude.isel(time=0)
-                dat = dat.chunk({'time': 500})
-
-                # We are only interested in non-zero hail sizes.
-                dat['hailcast_diam_max'] = dat.hailcast_diam_max.where(dat.hailcast_diam_max > 0)
-
-                if city in city_cells:
-                    dat = dat.isel(city_cells[city])
-
-                means = dat.mean(['south_north', 'west_east'])
-                quants = dat.quantile(dim=['south_north', 'west_east'], q=[0, 0.05, 0.5, 0.95, 1])
-                means = means.rename({n: f'{n}_mean' for n in list(means.data_vars)})
-                quants = quants.rename({n: f'{n}_quantile' for n in list(quants.data_vars)})
-                stats = xarray.merge([means, quants])
-
-                stats = stats.drop(
-                    ['longitude_mean', 'latitude_mean', 'longitude_quantile', 'latitude_quantile']
-                )
-                stats = stats.expand_dims({'city': [city], 'sim': [sim]})
-
-                stats['latitude'] = dat.latitude
-                stats['longitude'] = dat.longitude
-
-                print('Writing to netcdf...')
-                encoding = {var: comp for var in stats.data_vars}
-                stats.to_netcdf(outfile, encoding=encoding)
-
-            d = xarray.open_dataset(outfile).load()
-            d['latitude'] = d.latitude.expand_dims({'city': d.city})
-            d['longitude'] = d.longitude.expand_dims({'city': d.city})
-            res.append(d)
-
-    res = xarray.merge(res)
-    res = res.assign_coords({'sim': ['Historical', '+2.8 C']})
-    return res
-
-
 def plot_map_to_ax(
     dat,
     ax,
@@ -1080,7 +995,6 @@ def process_maxima_set(
     epoch,
     domain,
     time_adjust_mins=0,
-    variables=['hailcast_diam_max', 'wind_10m'],
     drop_months=[9, 3],
     max_hailsize=180,
 ):
@@ -1094,7 +1008,6 @@ def process_maxima_set(
         epoch: Epoch descriptor to add to outputs.
         domain: The domain descriptor.
         time_adjust_mins: Additional minutes to add to the time.
-        variables: Variables to process. Defaults to ['hailcast_diam_max', 'wind_10m'].
         drop_months: Months to ignore. Defaults to [9, 3].
         max_hailsize: Maximum hail size to allow [mm].
 
@@ -1112,21 +1025,22 @@ def process_maxima_set(
     )
 
     # Remove spin up time and trim so all timeseries are the same length.
+    # Note adjustment to local time can create leap year days (Feb 29s) which 
+    # are not removed here, so must be removed later before analysis is done. 
+    # In R code these are removed.
     for m in drop_months:
         dat = dat.where(dat.time.dt.month != m, drop=True)
 
     # Subset to only required variables.
     lats = dat.isel(time=0).latitude
     lons = dat.isel(time=0).longitude
-    dat = dat[variables]
 
     # Subset to only those points where surface hail was simulated.
     dat = dat.where(dat.hailcast_diam_max > 0)
 
-    # If getting wind speed, don't worry about wind direction.
-    if 'wind_10m' in variables:
-        dat['wind_10m'] = dat.wind_10m.sel(wspd_wdir='wspd')
-        dat = dat.drop_vars('wspd_wdir').reset_coords()
+    # Don't worry about wind direction.
+    dat['wind_10m'] = dat.wind_10m.sel(wspd_wdir='wspd')
+    dat = dat.drop_vars('wspd_wdir').reset_coords()
 
     # Subset to land points only.
     dat_land = dat.where(lm == 1).reset_coords(drop=True)
@@ -1151,12 +1065,20 @@ def process_maxima_set(
         i['latitude'] = (('south_north', 'west_east'), lats.values)
         i['longitude'] = (('south_north', 'west_east'), lons.values)
 
+    # Persist for speed.    
+    dat_land = dat_land.chunk({'time': -1, 'south_north': 10, 'west_east': 10}).persist()
+
     # Calculate daily maxima for land points only.
-    maxima = dat_land.max(['south_north', 'west_east']).resample(time='1D').max()
+    maxima = dat_land.resample(time='1D').max(dim=['time', 'south_north', 'west_east'])
     maxima = maxima.expand_dims({'domain': [domain.replace('_', ' + ')], 'epoch': [epoch]})
     maxima = maxima.to_dataframe().dropna(how='all')
 
-    return maxima, maxes_all, maxes_land
+    # Calcualte daily mean for land points only.
+    means = dat_land.resample(time='1D').mean(dim=['time', 'south_north', 'west_east'])
+    means = means.expand_dims({'domain': [domain.replace('_', ' + ')], 'epoch': [epoch]})
+    means = means.to_dataframe().dropna(how='all')
+    
+    return maxima, means, maxes_all, maxes_land
 
 
 def process_maxima(
@@ -1167,6 +1089,8 @@ def process_maxima(
     results_dir='/g/data/up6/tr2908/hist_future_hail/results/',
     variables=['hailcast_diam_max', 'wind_10m'],
     file_dir='paper/figures/',
+    drop_vars_basic = ['pressure', 'temperature', 'u', 'v', 'z', 'z_agl', 'mixing_ratio', 'specific_humidity', 'bottom_top'],
+    drop_vars_conv = ['shear_u', 'shear_v' ,'positive_shear'],
     **kwargs,
 ):
     """
@@ -1179,6 +1103,8 @@ def process_maxima(
         results_dir: Where to write results. Defaults to '/g/data/up6/tr2908/hist_future_hail/results/'.
         variables: Variables to process. Defaults to ['hailcast_diam_max', 'wind_10m'].
         file_dir: Figure directory. Defaults to 'paper/figures/'.
+        drop_vars_basic: Basic variables to not include.
+        drop_vars_conv: Conv variables to not include.
         kwargs: Extra arguments to process_maxima_set().
     """
 
@@ -1194,6 +1120,8 @@ def process_maxima(
         land_maxes_file = f'{results_dir}/{dmn}_domain_maximums_subset.nc'
         h_maxima_file = f'{results_dir}/{dmn}_hist_block_maxima.feather'
         f_maxima_file = f'{results_dir}/{dmn}_ssp245_block_maxima.feather'
+        h_means_file = f'{results_dir}/{dmn}_hist_block_means.feather'
+        f_means_file = f'{results_dir}/{dmn}_ssp245_block_means.feather'
 
         # Get land mask.
         if not os.path.exists(lm_file):
@@ -1211,17 +1139,18 @@ def process_maxima(
             or not os.path.exists(land_maxes_file)
             or not os.path.exists(h_maxima_file)
             or not os.path.exists(f_maxima_file)
+            or not os.path.exists(h_means_file)
+            or not os.path.exists(f_means_file)
         ):
-            hist_files = sorted(glob.glob(f'{sim_dir}/hist/*/WRF/basic*d0{d}*.nc'))
-            fut_files = sorted(glob.glob(f'{sim_dir}/ssp245/*/WRF/basic*d0{d}*.nc'))
+            hist_basic = open_set(pattern=f'{sim_dir}/hist/*/WRF/basic*d0{d}*.nc', drop_vars=drop_vars_basic)
+            futu_basic = open_set(pattern=f'{sim_dir}/ssp245/*/WRF/basic*d0{d}*.nc', drop_vars=drop_vars_basic)
+            hist_conv = open_set(pattern=f'{sim_dir}/hist/*/WRF/conv*d0{d}*.nc', drop_vars=drop_vars_conv)
+            futu_conv = open_set(pattern=f'{sim_dir}/ssp245/*/WRF/conv*d0{d}*.nc', drop_vars=drop_vars_conv)
+            
+            hist = xarray.merge([hist_basic, hist_conv])
+            futu = xarray.merge([futu_basic, futu_conv])
 
-            assert len(hist_files) == 3040, 'Missing files for historical period.'
-            assert len(fut_files) == 3040, 'Missing files for future period.'
-
-            hist = xarray.open_mfdataset(hist_files, parallel=True)
-            futu = xarray.open_mfdataset(fut_files, parallel=True)
-
-            hist_maxima, hist_maxes_all, hist_maxes_land = process_maxima_set(
+            hist_maxima, hist_means, hist_maxes_all, hist_maxes_land = process_maxima_set(
                 dat=hist,
                 lm=lm,
                 time_adjust=time_adjust[domain],
@@ -1231,7 +1160,7 @@ def process_maxima(
                 **kwargs,
             )
 
-            futu_maxima, futu_maxes_all, futu_maxes_land = process_maxima_set(
+            futu_maxima, futu_means, futu_maxes_all, futu_maxes_land = process_maxima_set(
                 dat=futu,
                 lm=lm,
                 time_adjust=time_adjust[domain],
@@ -1243,6 +1172,8 @@ def process_maxima(
 
             hist_maxima.to_feather(h_maxima_file)
             futu_maxima.to_feather(f_maxima_file)
+            hist_means.to_feather(h_means_file)
+            futu_means.to_feather(f_means_file)
             del hist_maxima, futu_maxima
 
             all_maxes = xarray.merge([hist_maxes_all, futu_maxes_all])
@@ -1277,7 +1208,6 @@ def process_maxima(
         maxima.append(land_maxes.expand_dims({'domain': [domain.replace('_', '/')]}))
 
     return xarray.merge(maxima)
-
 
 def plot_maxima(
     maxima,
@@ -1389,3 +1319,20 @@ def plot_maxima(
 
     if file is not None:
         plt.savefig(fname=file, dpi=300, bbox_inches='tight')
+
+def open_set(pattern, expected_n=3040, drop_vars=None):
+    """
+    Open a dataset.
+
+    Args:
+        pattern: The pattern to match files for.
+        expected_n: Check there are n files being opened. Defaults to 3040.
+        drop_vars: Optionally drop variables.
+    """
+
+    files = sorted(glob.glob(pattern))
+    assert len(files) == expected_n, f'Missing files for {pattern}'
+    dat = xarray.open_mfdataset(files, parallel=True, combine='nested', concat_dim='time')
+    if drop_vars is not None:
+        dat = dat.drop_vars(drop_vars)
+    return dat

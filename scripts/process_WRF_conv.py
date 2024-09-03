@@ -5,14 +5,9 @@ import sys
 import os
 sys.path.append(f'{os.path.expanduser("~")}/git/xarray_parcel/')
 
-import dask
 import xarray
-import numpy as np
-import pandas as pd
 from glob import glob
-from netCDF4 import Dataset
 import modules.parcel_functions as parcel
-from dask.distributed import Client
 
 parcel.load_moist_adiabat_lookups(base_dir='/g/data/w42/tr2908/aus400_hail/')
 

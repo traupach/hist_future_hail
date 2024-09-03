@@ -2,10 +2,10 @@
 # Calculate convective parameters from basic_params* files.
 
 #PBS -q normal
-#PBS -P li18
+#PBS -P w42
 #PBS -l storage=gdata/up6+gdata/hh5+gdata/w42
 #PBS -l ncpus=28
-#PBS -l walltime=06:00:00
+#PBS -l walltime=03:00:00
 #PBS -l mem=192GB
 #PBS -j oe
 #PBS -W umask=0022

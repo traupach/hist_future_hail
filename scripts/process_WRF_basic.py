@@ -31,7 +31,7 @@ for filename in files:
                           'u': wrf.getvar(nc, 'ua', timeidx=wrf.ALL_TIMES, squeeze=False), 
                           'v': wrf.getvar(nc, 'va', timeidx=wrf.ALL_TIMES, squeeze=False),
                           #'w': wrf.getvar(nc, 'wa', timeidx=wrf.ALL_TIMES, squeeze=False),
-                          #'z': wrf.getvar(nc, 'height', timeidx=wrf.ALL_TIMES, squeeze=False),
+                          'z': wrf.getvar(nc, 'height', timeidx=wrf.ALL_TIMES, squeeze=False),
                           'z_agl': wrf.getvar(nc, 'height_agl', timeidx=wrf.ALL_TIMES, squeeze=False),
                           'mixing_ratio': wrf.getvar(nc, 'QVAPOR', timeidx=wrf.ALL_TIMES, squeeze=False),
                           'wind_10m': wrf.getvar(nc, 'uvmet10_wspd_wdir', timeidx=wrf.ALL_TIMES, squeeze=False),

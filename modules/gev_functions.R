@@ -13,6 +13,9 @@ suppressMessages(library(ggplot2))
 suppressMessages(library(stringr))
 suppressMessages(library(tables))
 suppressMessages(library(purrr))
+suppressMessages(library(broom))
+suppressMessages(library(dplyr))
+suppressMessages(library(tidyr))
 
 # Labellers for plot elements.
 default_labels <- labeller(
@@ -52,10 +55,10 @@ default_labels_ml <- labeller(
 default_fontsize <- 18 # Font size for plots.
 
 # Read and concatenate all feather files in `results-dir`.
-read_feathers <- function(results_dir) {
+read_feathers <- function(results_dir, pattern = "*.feather", remove_leaps = TRUE) {
     all_dat <- list()
 
-    files <- list.files(results_dir, pattern = "*.feather", full.names = TRUE)
+    files <- list.files(results_dir, pattern = pattern, full.names = TRUE)
     for (file in files) {
         print(file)
         dat <- read_feather(file)
@@ -63,6 +66,11 @@ read_feathers <- function(results_dir) {
     }
 
     all_dat <- bind_rows(all_dat)
+
+    if (remove_leaps == TRUE) {
+        all_dat = all_dat %>% filter(!(month(time) == 2 & day(time) == 29)) # Remove 29th of February.
+    }
+
     return(all_dat)
 }
 
@@ -261,16 +269,15 @@ probabilities_table <- function(gev_fits, out_file,
         levels = unique(probs$thresh),
     )
 
-    probs <- mutate(probs, p = round(p, 1))
+    probs <- mutate(probs, p = round(p, 2))
 
     tab <- tabular(
         Heading("Domain") * domain *
             Heading("Epoch") * epoch ~ Heading("Probability [\\%]") * thresh *
-            Heading() * Format(digits=3) * p * Heading() * identity * Format(digits = 1),
+            Heading() * Format(digits = 3) * p * Heading() * identity * Format(digits = 1),
         data = probs,
     )
-    toLatex(tab, file = out_file)
-    print(tab)
+    print(toLatex(tab))
 }
 
 # Do GEV fits per domain, variable and epoch. Collect quantiles for qq plots, do
@@ -405,3 +412,59 @@ fit_gevs <- function(all_dat,
         ks_fits = ks_fits, quantiles = quantiles
     ))
 }
+
+hail_day_changes <- function(dat, fontsize = default_fontsize, plot_file = NA, width = 12, height = 3) {
+    domain <- epoch <- season <- historical <- ssp245 <- estimate1 <- NULL
+    estimate <- p.value <- historic <- rel_change <- sig <- NULL
+
+    hail_days <- dat %>%
+        mutate(season = year(time - ddays(60))) %>%
+        group_by(domain, epoch, season) %>%
+        count() %>%
+        group_by(epoch) %>%
+        mutate(year = season - min(season) + 1) %>%
+        ungroup()
+
+    t_test <- hail_days %>%
+        select(!season) %>%
+        pivot_wider(names_from = "epoch", values_from = "n") %>%
+        group_by(domain) %>%
+        summarise(tidy(t.test(x = ssp245, y = historical)))
+
+    t_test_res <- t_test %>%
+        reframe(domain,
+            historic = estimate2,
+            rel_change = estimate / estimate2 * 100,
+            sig_010 = p.value < 0.1,
+            sig_005 = p.value < 0.05,
+            sig_001 = p.value < 0.01
+        ) %>%
+        arrange(desc(historic))
+
+    t_test_disp <- t_test_res %>%
+        mutate(rel_change = paste(as.character(round(rel_change, 0)), "\\%", sep = "")) %>%
+        mutate(sig = case_when(sig_010 == TRUE ~ "\\,\\ast{}", TRUE ~ "")) %>%
+        mutate(sig = case_when(sig_005 == TRUE ~ paste(sig, "\\!\\ast{}", sep = ""), TRUE ~ sig)) %>%
+        mutate(sig = case_when(sig_001 == TRUE ~ paste(sig, "\\!\\ast{}", sep = ""), TRUE ~ sig)) %>%
+        mutate(sig = paste("$", sig, "$", sep="")) %>% 
+        select(!starts_with("sig_"))
+
+    # Plot boxplot of changes by domain.
+    p <- ggplot(hail_days, aes(x = domain, y = n)) +
+        geom_boxplot(aes(fill = epoch), width=0.75, alpha=0.75) +
+        theme_bw(fontsize) +
+        scale_fill_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
+        labs(x = "Domain", y = "Seasonal hail days")
+    print(p)
+
+    if (!is.na(plot_file)) {
+        ggsave(plot_file, dpi = 300, width = width, height = height)
+    }
+
+    tab <- tabular(Heading("Domain") * Factor(domain) ~
+                       Heading() * identity * (historic + rel_change + sig), data = t_test_disp)
+    print(toLatex(tab))
+
+    return(t_test)
+}
+
