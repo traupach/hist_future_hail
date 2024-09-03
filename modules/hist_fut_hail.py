@@ -1088,7 +1088,7 @@ def process_maxima(
     time_adjust_mins={'Perth': 0, 'Melbourne': 0, 'Brisbane': 0, 'Sydney_Canberra': 0},
     results_dir='/g/data/up6/tr2908/hist_future_hail/results/',
     variables=['hailcast_diam_max', 'wind_10m'],
-    file_dir='paper/figures/',
+    file_dir='paper/supporting info/figures/',
     drop_vars_basic = ['pressure', 'temperature', 'u', 'v', 'z', 'z_agl', 'mixing_ratio', 'specific_humidity', 'bottom_top'],
     drop_vars_conv = ['shear_u', 'shear_v' ,'positive_shear'],
     **kwargs,
