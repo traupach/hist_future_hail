@@ -1,7 +1,12 @@
+% LTeX: language=en-US
+
 \documentclass[draft,grl]{agutexSI2019}
 
 \usepackage{graphicx}
-\setkeys{Gin}{draft=false}
+\setkeys{Gin}{draft=false} % Allow figure display.
+
+\usepackage{color}
+\newcommand*{\todo}[1]{\textbf{\textcolor{red}{(#1)}}}
 
 \authorrunninghead{RAUPACH AND ALDRIDGE}
 \titlerunninghead{CHANGES IN DAMAGING HAIL IN AUSTRALIA}
@@ -36,8 +41,8 @@ Australia
 
 \noindent\textbf{Contents of this file}
 \begin{enumerate}
-    \item Figures S1 to Sx.
-    \item Tables S1 to Sx.
+    \item Figures S1 to \todo{S7}.
+    \item \todo{Tables S1 to ...}
 \end{enumerate}
 
 \clearpage
@@ -46,7 +51,7 @@ Australia
 
 \end{article}
 
-% % \clearpage
+\clearpage
 
 \begin{figure}[!h]
     \includegraphics[width=\textwidth]{figures/domains}
@@ -54,75 +59,69 @@ Australia
     \label{fig:domains}
 \end{figure}
 
+\begin{figure}[!ht]
+    \includegraphics[width=\textwidth]{figures/maxes_Adelaide_hailcast_diam_max}
+    \includegraphics[width=\textwidth]{figures/maxes_Brisbane_hailcast_diam_max}
+    \includegraphics[width=\textwidth]{figures/maxes_Kalgoorlie_hailcast_diam_max}
+    \includegraphics[width=\textwidth]{figures/maxes_Melbourne_hailcast_diam_max}
+    \includegraphics[width=\textwidth]{figures/maxes_Perth_hailcast_diam_max}
+    \includegraphics[width=\textwidth]{figures/maxes_Sydney_Canberra_hailcast_diam_max}
+    \caption{Maximum hail size diameters for the Adelaide, Brisbane, Kalgoorlie, Melbourne, Perth, and Sydney/Canberra domains under the historical and future scenarios, with and without ocean areas removed.}
+    \label{fig:maxes_with_removed_pts}
+\end{figure}
+
+\begin{figure}[!ht]
+    \includegraphics[width=\textwidth]{figures/max_10m_winds_by_domain}
+    \caption{Maximum 10 m wind speed at hail times in historical and future climates, for Adelaide (a, b), Brisbane (c, d), Kalgoorlie (e, f), Melbourne (g, h), Perth (i, j) and Sydney/Canberra (k, l) domains.}
+    \label{fig:max_wind_by_domain}
+\end{figure}
+
+\begin{figure}[!ht]
+    \includegraphics[width=\textwidth]{figures/timeseries_hail}
+    \caption{Time series of daily maximum hail sizes by domain and epoch. Gaps exist because only the convective season was simulated each year.}
+    \label{fig:timeseries_hail}
+\end{figure}
+
+\begin{figure}[!ht]
+    \includegraphics[width=\textwidth]{figures/timeseries_wind}
+    \caption{As for Figure \ref{fig:timeseries_hail}, but for daily maximum 10 m wind collocated with hail.}
+    \label{fig:timeseries_wind}
+\end{figure}
+
+\begin{figure}[!ht]
+    \includegraphics[width=\textwidth]{figures/qq_hail}
+    \caption{Quantile-quantile plots for GEV models fitted to daily maximum hail sizes, per domain and epoch.}
+    \label{fig:qq_hail}
+\end{figure}
+
+\begin{figure}[!ht]
+    \includegraphics[width=\textwidth]{figures/qq_wind}
+    \caption{Quantile-quantile plots for GEV models fitted to daily maximum 10 m wind collocated with hail.}
+    \label{fig:qq_wind}
+\end{figure}
+
+\begin{figure}[!ht]
+    \includegraphics[width=\textwidth]{figures/fit_pvals}
+    \caption{Distributions of $p$ values from KS tests, comparing empirical values GEV models, and historical GEVs to future GEVs, per variable and domain. For each test, the KS test was applied 100 times with 1000 random values drawn from the relevant GEV distribution(s) each time, to obtain a distribution of $p$ values. Bars show medians, box hinges show the interquartile ranges (IQRs), whiskers show the largest (smallest) values no more than 1.5 $\times$ IQR from the upper (lower) hinge, and points show outlier points beyond the whisker ranges. The red horizontal line shows $p = 0.05$; when $p$ values are below this line the null hypothesis that the two samples come from the same distribution can be rejected.}
+    \label{fig:ks_pvals}
+\end{figure}
+
+\clearpage
+
+\begin{table}[!ht]
+    \caption{Parameterization schemes used in the WRF simulations.}
+    \label{tab:schemes}
+    \centering
+    \begin{tabular}{lr}
+          \hline
+          Microphysics & P3-3moment \cite{Milbrandt_JAS_2021} \\
+          Cumulus (medium and coarse nests only) & New Tiedtke \cite{Zhang_JC_2017} \\
+          Long wave and shortwave radiation & RRTMG \cite{Iacono_JGRA_2008} \\
+          Planetary boundary layer & YSU \cite{Hong_MWR_2006} \\
+          Surface layer & Revised MM5 \cite{Jimenez_MWR_2012} \\
+          Land surface & Noah-MP \cite{Niu_JGRA_2011} \\
+          \hline
+    \end{tabular}
+\end{table}
+
 \end{document}
-
-% % % Single-line equations are centered.
-% % % Equation arrays will appear left-aligned.
-
-% % Math coded inside display math mode \[ ...\]
-% %  will not be numbered, e.g.,:
-% %  \[ x^2=y^2 + z^2\]
-
-% %  Math coded inside \begin{equation} and \end{equation} will
-% %  be automatically numbered, e.g.,:
-% %  \begin{equation}
-% %  x^2=y^2 + z^2
-% %  \end{equation}
-
-% % % IF YOU HAVE MULTI-LINE EQUATIONS, PLEASE
-% % % BREAK THE EQUATIONS INTO TWO OR MORE LINES
-% % % OF SINGLE COLUMN WIDTH (20 pc, 8.3 cm)
-% % % using double backslashes (\\).
-
-% % % To create multiline equations, use the
-% % % \begin{eqnarray} and \end{eqnarray} environment
-% % % as demonstrated below.
-% % \begin{eqnarray}
-% %   x_{1} & = & (x - x_{0}) \cos \Theta \nonumber \\
-% %         && + (y - y_{0}) \sin \Theta  \nonumber \\
-% %   y_{1} & = & -(x - x_{0}) \sin \Theta \nonumber \\
-% %         && + (y - y_{0}) \cos \Theta.
-% % \end{eqnarray}
-
-% % %If you don't want an equation number, use the star form:
-% % %\begin{eqnarray*}...\end{eqnarray*}
-
-% % % Break each line at a sign of operation
-% % % (+, -, etc.) if possible, with the sign of operation
-% % % on the new line.
-
-% % % Indent second and subsequent lines to align with
-% % % the first character following the equal sign on the
-% % % first line.
-
-% % % Use an \hspace{} command to insert horizontal space
-% % % into your equation if necessary. Place an appropriate
-% % % unit of measure between the curly braces, e.g.
-% % % \hspace{1in}; you may have to experiment to achieve
-% % % the correct amount of space.
-
-
-% % %% ------------------------------------------------------------------------ %%
-% % %
-% % %  EQUATION NUMBERING: COUNTER
-% % %
-% % %% ------------------------------------------------------------------------ %%
-
-% % % You may change equation numbering by resetting
-% % % the equation counter or by explicitly numbering
-% % % an equation.
-
-% % % To explicitly number an equation, type \eqnum{}
-% % % (with the desired number between the brackets)
-% % % after the \begin{equation} or \begin{eqnarray}
-% % % command.  The \eqnum{} command will affect only
-% % % the equation it appears with; LaTeX will number
-% % % any equations appearing later in the manuscript
-% % % according to the equation counter.
-% % %
-
-% % % If you have a multiline equation that needs only
-% % % one equation number, use a \nonumber command in
-% % % front of the double backslashes (\\) as shown in
-% % % the multiline equa
-% % tion above.

@@ -31,6 +31,30 @@ Adams-Selin, R\BPBI D.%
 
 \bibitem [\protect \citeauthoryear {%
 Allen%
+}{%
+Allen%
+}{%
+{\protect \APACyear {2018}}%
+}]{%
+Allen_2018}
+\APACinsertmetastar {%
+Allen_2018}%
+\begin{APACrefauthors}%
+Allen, J\BPBI T.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2018}{07}{}.
+\newblock
+\APACrefbtitle {Climate Change and Severe Thunderstorms.} {Climate change and severe thunderstorms.}
+\newblock
+\APACaddressPublisher{}{Oxford University Press}.
+\newblock
+\begin{APACrefDOI} \doi{10.1093/acrefore/9780190228620.013.62} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Allen%
 , Karoly%
 \BCBL {}\ \BBA {} Walsh%
 }{%
@@ -156,6 +180,35 @@ Bell, J\BPBI R.%
 \APACjournalVolNumPages{Weather Forecast}{38}{9}{1575 - 1588}.
 \newblock
 \begin{APACrefDOI} \doi{10.1175/WAF-D-22-0210.1} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Brown%
+\ \BBA {} Dowdy%
+}{%
+Brown%
+\ \BBA {} Dowdy%
+}{%
+{\protect \APACyear {2021}}%
+}]{%
+Brown_JGRA_2021}
+\APACinsertmetastar {%
+Brown_JGRA_2021}%
+\begin{APACrefauthors}%
+Brown, A.%
+\BCBT {}\ \BBA {} Dowdy, A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2021}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Severe Convective Wind Environments and Future Projected Changes in {A}ustralia} {Severe convective wind environments and future projected changes in {A}ustralia}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{J Geophys Res-Atmos}{126}{16}{e2021JD034633}.
+\newblock
+\APACrefnote{e2021JD034633 2021JD034633}
+\newblock
+\begin{APACrefDOI} \doi{10.1029/2021JD034633} \end{APACrefDOI}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -291,6 +344,38 @@ Gilleland, E.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Guti\'errez%
+\ \protect \BOthers {.}}{%
+Guti\'errez%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2021}}%
+}]{%
+Gutierrez_2021}
+\APACinsertmetastar {%
+Gutierrez_2021}%
+\begin{APACrefauthors}%
+Guti\'errez, J.%
+, Jones, R.%
+, Narisma, G.%
+, Alves, L.%
+, Amjad, M.%
+, Gorodetskaya, I.%
+\BDBL {}Yoon, J\BHBI H.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2021}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Atlas} {Atlas}.{\BBCQ}
+\newblock
+\BIn{} V.~Masson-Delmotte\ \BOthers {.}\ (\BEDS), \APACrefbtitle {Climate Change 2021: The Physical Science Basis. {C}ontribution of Working Group {I} to the {Sixth Assessment Report} of the {Intergovernmental Panel on Climate Change}} {Climate change 2021: The physical science basis. {C}ontribution of working group {I} to the {Sixth Assessment Report} of the {Intergovernmental Panel on Climate Change}}\ (\BPG~1927–2058).
+\newblock
+\APACaddressPublisher{Cambridge, United Kingdom and New York, NY, USA}{Cambridge University Press}.
+\newblock
+\begin{APACrefDOI} \doi{10.1017/9781009157896.021} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Hersbach%
 \ \protect \BOthers {.}}{%
 Hersbach%
@@ -317,7 +402,7 @@ Hersbach, H.%
 \newblock
 \APACjournalVolNumPages{Q J Roy Meteor Soc}{146}{730}{1999-2049}.
 \newblock
-\begin{APACrefDOI} \doi{https://doi.org/10.1002/qj.3803} \end{APACrefDOI}
+\begin{APACrefDOI} \doi{10.1002/qj.3803} \end{APACrefDOI}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -471,7 +556,7 @@ Jim\'enez, P\BPBI A.%
 \newblock
 \APACrefYearMonthDay{2012}{}{}.
 \newblock
-{\BBOQ}\APACrefatitle {A Revised Scheme for the WRF Surface Layer Formulation} {A revised scheme for the wrf surface layer formulation}.{\BBCQ}
+{\BBOQ}\APACrefatitle {A Revised Scheme for the {WRF} Surface Layer Formulation} {A revised scheme for the {WRF} surface layer formulation}.{\BBCQ}
 \newblock
 \APACjournalVolNumPages{Mon Weather Rev}{140}{3}{898 - 918}.
 \newblock
@@ -531,7 +616,7 @@ Niu, G\BHBI Y.%
 \newblock
 \APACrefYearMonthDay{2011}{}{}.
 \newblock
-{\BBOQ}\APACrefatitle {The community {N}oah land surface model with multiparameterization options ({Noah-MP}): 1. Model description and evaluation with local-scale measurements} {The community {N}oah land surface model with multiparameterization options ({Noah-MP}): 1. model description and evaluation with local-scale measurements}.{\BBCQ}
+{\BBOQ}\APACrefatitle {The community {N}oah land surface model with multiparameterization options ({Noah-MP}): 1. {M}odel description and evaluation with local-scale measurements} {The community {N}oah land surface model with multiparameterization options ({Noah-MP}): 1. {M}odel description and evaluation with local-scale measurements}.{\BBCQ}
 \newblock
 \APACjournalVolNumPages{J Geophys Res-Atmos}{116}{D12}{}.
 \newblock
@@ -594,6 +679,36 @@ R_software}%
 
 \bibitem [\protect \citeauthoryear {%
 Raupach%
+\ \protect \BOthers {.}}{%
+Raupach%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2021}}%
+}]{%
+Raupach_NREE_2021}
+\APACinsertmetastar {%
+Raupach_NREE_2021}%
+\begin{APACrefauthors}%
+Raupach, T\BPBI H.%
+, Martius, O.%
+, Allen, J\BPBI T.%
+, Kunz, M.%
+, Lasher-Trapp, S.%
+, Mohr, S.%
+\BDBL {}Zhang, Q.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2021}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {The effects of climate change on hailstorms} {The effects of climate change on hailstorms}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Nat Rev Earth Environ}{2}{3}{213-226}.
+\newblock
+\begin{APACrefDOI} \doi{10.1038/s43017-020-00133-9} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Raupach%
 , Soderholm%
 , Warren%
 \BCBL {}\ \BBA {} Sherwood%
@@ -615,7 +730,7 @@ Raupach, T\BPBI H.%
 \newblock
 \APACrefYearMonthDay{2023}{}{}.
 \newblock
-{\BBOQ}\APACrefatitle {Changes in hail hazard across Australia: 1979-2021} {Changes in hail hazard across australia: 1979-2021}.{\BBCQ}
+{\BBOQ}\APACrefatitle {Changes in hail hazard across {A}ustralia: 1979-2021} {Changes in hail hazard across {A}ustralia: 1979-2021}.{\BBCQ}
 \newblock
 \APACjournalVolNumPages{npj Clim Atmos Sci}{6}{1}{143}.
 \newblock
@@ -793,7 +908,7 @@ Xu, Z.%
 \newblock
 \APACrefYearMonthDay{2021{\protect \BCnt {2}}}{}{}.
 \newblock
-{\BBOQ}\APACrefatitle {Bias-corrected CMIP6 global dataset for dynamical downscaling of the historical and future climate (1979–2100)} {Bias-corrected cmip6 global dataset for dynamical downscaling of the historical and future climate (1979–2100)}.{\BBCQ}
+{\BBOQ}\APACrefatitle {Bias-corrected {CMIP6} global dataset for dynamical downscaling of the historical and future climate (1979–2100)} {Bias-corrected {CMIP6} global dataset for dynamical downscaling of the historical and future climate (1979–2100)}.{\BBCQ}
 \newblock
 \APACjournalVolNumPages{Sci Data}{8}{1}{293}.
 \newblock
