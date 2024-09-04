@@ -17,12 +17,17 @@ suppressMessages(library(broom))
 suppressMessages(library(dplyr))
 suppressMessages(library(tidyr))
 
+letters = c(
+    "a", "b", "c", "d", "e", " f", "g", "h", "i", "j", "k", "l", "m",
+    "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
+)
+
 # Labellers for plot elements.
 default_labels <- labeller(
     epoch = c(historical = "Historical", ssp245 = "Future"),
     variable = c(
-        hailcast_diam_max = "Maximum hail size",
-        wind_10m = "Max. 10 m wind with hail"
+        hailcast_diam_max = "Max. hail size",
+        wind_10m = "Max. 10 m wind"
     ),
     parameter = c(
         shape = "Shape",
@@ -38,8 +43,8 @@ default_labels <- labeller(
 default_labels_ml <- labeller(
     epoch = c(historical = "Historical", ssp245 = "Future"),
     variable = c(
-        hailcast_diam_max = "Maximum hail size",
-        wind_10m = "Max. 10 m wind with hail"
+        hailcast_diam_max = "Max. hail size",
+        wind_10m = "Max. 10 m wind"
     ),
     parameter = c(
         shape = "Shape",
@@ -96,8 +101,15 @@ plot_ts <- function(dat, var, ylabel, xlabel = "Year", file = NA,
 
 # Plot parameters of GEV fits returned by fit_gevs.
 plot_params <- function(gev_fits, fontsize = default_fontsize, dodge = 0.3, labels = default_labels_ml, file = NULL,
-                        width = 12, height = 8) {
-    domain <- low <- high <- epoch <- est <- NULL
+                        width = 12, height = 6) {
+    domain <- low <- high <- epoch <- est <- parameter <- variable <- NULL
+
+    letter_labels = gev_fits$params %>%
+        select(parameter, variable) %>%
+        unique() %>%
+        group_by(variable, parameter) %>%
+        mutate(label = paste("bold(", letters[cur_group_id()], ")", sep="")) %>%
+        ungroup()
 
     g <- ggplot(gev_fits$params) +
         ggh4x::facet_grid2(variable ~ parameter, scale = "free", labeller = labels, independent = "y") +
@@ -105,6 +117,7 @@ plot_params <- function(gev_fits, fontsize = default_fontsize, dodge = 0.3, labe
         geom_errorbar(aes(x = domain, ymin = low, ymax = high, colour = epoch),
             stat = "identity", width = 0.25, linewidth = 1, position = position_dodge(dodge)
         ) +
+        geom_text(aes(x=Inf, y=Inf, label = label), data = letter_labels, hjust=1.6, vjust=1.6, size=7, parse=TRUE) +
         geom_point(aes(x = domain, y = est, colour = epoch), position = position_dodge(dodge), size = 3) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(x = "Domain", y = "Parameter value") +
