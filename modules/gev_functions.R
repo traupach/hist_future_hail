@@ -34,9 +34,6 @@ default_labels <- labeller(
         location = "Location",
         scale = "Scale"
     ),
-    domain = c(
-        "Sydney + Canberra" = "Sydney/Canberra"
-    ),
     .multi_line = FALSE
 )
 
@@ -52,7 +49,7 @@ default_labels_ml <- labeller(
         scale = "Scale"
     ),
     domain = c(
-        "Sydney + Canberra" = "Sydney/\nCanberra"
+        "Sydney/Canberra" = "Sydney/\nCanberra"
     ),
     .multi_line = TRUE
 )
@@ -75,6 +72,9 @@ read_feathers <- function(results_dir, pattern = "*.feather", remove_leaps = TRU
     if (remove_leaps == TRUE) {
         all_dat = all_dat %>% filter(!(month(time) == 2 & day(time) == 29)) # Remove 29th of February.
     }
+
+    # Replace Sydney + Canberra with Sydney/Canberra.
+    all_dat = all_dat %>% mutate(domain = case_when(domain == "Sydney + Canberra" ~ "Sydney/Canberra", TRUE ~ domain))
 
     return(all_dat)
 }
@@ -102,7 +102,7 @@ plot_ts <- function(dat, var, ylabel, xlabel = "Year", file = NA,
 # Plot parameters of GEV fits returned by fit_gevs.
 plot_params <- function(gev_fits, fontsize = default_fontsize, dodge = 0.3, labels = default_labels_ml, file = NULL,
                         width = 12, height = 6) {
-    domain <- low <- high <- epoch <- est <- parameter <- variable <- NULL
+    domain <- low <- high <- epoch <- est <- parameter <- variable <- label <- NULL
 
     letter_labels = gev_fits$params %>%
         select(parameter, variable) %>%
