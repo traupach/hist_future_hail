@@ -290,7 +290,7 @@ probabilities_table <- function(gev_fits, out_file,
             Heading() * Format(digits = 3) * p * Heading() * identity * Format(digits = 1),
         data = probs,
     )
-    print(toLatex(tab))
+    print(toLatex(tab, file=out_file))
 }
 
 # Do GEV fits per domain, variable and epoch. Collect quantiles for qq plots, do
@@ -426,9 +426,10 @@ fit_gevs <- function(all_dat,
     ))
 }
 
-hail_day_changes <- function(dat, fontsize = default_fontsize, plot_file = NA, width = 12, height = 3) {
+hail_day_changes <- function(dat, out_file, 
+    fontsize = default_fontsize, plot_file = NA, width = 12, height = 3) {
     domain <- epoch <- season <- historical <- ssp245 <- estimate1 <- NULL
-    estimate <- p.value <- historic <- rel_change <- sig <- NULL
+    estimate <- estimate2 <- p.value <- historic <- rel_change <- sig <- NULL
 
     hail_days <- dat %>%
         mutate(season = year(time - ddays(60))) %>%
@@ -437,6 +438,11 @@ hail_day_changes <- function(dat, fontsize = default_fontsize, plot_file = NA, w
         group_by(epoch) %>%
         mutate(year = season - min(season) + 1) %>%
         ungroup()
+
+    stats <- hail_days %>%
+        group_by(domain, epoch) %>%
+        reframe(mean = mean(n), sd = round(sd(n), 1)) %>%
+        pivot_wider(names_from = "epoch", values_from = c("mean", "sd"))
 
     t_test <- hail_days %>%
         select(!season) %>%
@@ -447,15 +453,24 @@ hail_day_changes <- function(dat, fontsize = default_fontsize, plot_file = NA, w
     t_test_res <- t_test %>%
         reframe(domain,
             historic = estimate2,
-            rel_change = estimate / estimate2 * 100,
+            rel_change = estimate / abs(estimate2) * 100,
+            change_from = conf.low / abs(estimate2) * 100,
+            change_to = conf.high / abs(estimate2) * 100,
             sig_010 = p.value < 0.1,
             sig_005 = p.value < 0.05,
             sig_001 = p.value < 0.01
         ) %>%
         arrange(desc(historic))
 
+    t_test_res <- full_join(t_test_res, stats, by = "domain")
+    stopifnot(all(t_test_res$historic == t_test_res$mean_historical))
+
     t_test_disp <- t_test_res %>%
+        mutate(historic = paste(as.character(historic), "$\\pm$", as.character(sd_historical))) %>%
+        mutate(future = paste(as.character(mean_ssp245), "$\\pm$", as.character(sd_ssp245))) %>%
         mutate(rel_change = paste(as.character(round(rel_change, 0)), "\\%", sep = "")) %>%
+        mutate(change_range = paste("(", as.character(round(change_from, 0)), 
+            "\\% to ", as.character(round(change_to, 0)), "\\%)", sep = "")) %>%
         mutate(sig = case_when(sig_010 == TRUE ~ "\\,\\ast{}", TRUE ~ "")) %>%
         mutate(sig = case_when(sig_005 == TRUE ~ paste(sig, "\\!\\ast{}", sep = ""), TRUE ~ sig)) %>%
         mutate(sig = case_when(sig_001 == TRUE ~ paste(sig, "\\!\\ast{}", sep = ""), TRUE ~ sig)) %>%
@@ -475,8 +490,8 @@ hail_day_changes <- function(dat, fontsize = default_fontsize, plot_file = NA, w
     }
 
     tab <- tabular(Heading("Domain") * Factor(domain) ~
-                       Heading() * identity * (historic + rel_change + sig), data = t_test_disp)
-    print(toLatex(tab))
+                       Heading() * identity * (historic + future + rel_change + sig + change_range), data = t_test_disp)
+    print(toLatex(tab, file=out_file))
 
     return(t_test)
 }
