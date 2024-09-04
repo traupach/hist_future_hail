@@ -117,7 +117,7 @@ plot_params <- function(gev_fits, fontsize = default_fontsize, dodge = 0.3, labe
         geom_errorbar(aes(x = domain, ymin = low, ymax = high, colour = epoch),
             stat = "identity", width = 0.25, linewidth = 1, position = position_dodge(dodge)
         ) +
-        geom_text(aes(x=Inf, y=Inf, label = label), data = letter_labels, hjust=1.6, vjust=1.6, size=7, parse=TRUE) +
+        geom_text(aes(x=Inf, y=Inf, label = label), data = letter_labels, hjust=1.6, vjust=1.6, size=5.5, parse=TRUE) +
         geom_point(aes(x = domain, y = est, colour = epoch), position = position_dodge(dodge), size = 3) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(x = "Domain", y = "Parameter value") +
