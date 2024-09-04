@@ -274,7 +274,7 @@ plot_probs <- function(gev_fits, file = NA, width = 12, height = 6,
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
         labs(x = "Damage threshold", y = "Probability [%]") +
-        theme(axis.text.x = element_text(angle = 33, vjust = 1, hjust = 1)) +
+        theme(axis.text.x = element_text(angle = 38, vjust = 1, hjust = 1)) +
         geom_label(aes(x = -Inf, y = -Inf, label = label),
             data = letter_labels, hjust = "left", vjust = "bottom",
             label.size = 0, size = 5.5, parse = TRUE
