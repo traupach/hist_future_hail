@@ -37,6 +37,23 @@ default_labels <- labeller(
     .multi_line = FALSE
 )
 
+default_labels_units <- labeller(
+    epoch = c(historical = "Historical", ssp245 = "Future"),
+    variable = c(
+        hailcast_diam_max = "Max. hail size [mm]",
+        wind_10m = "Max. 10 m wind [m/s]"
+    ),
+    parameter = c(
+        shape = "Shape",
+        location = "Location",
+        scale = "Scale"
+    ),
+    domain = c(
+        "Sydney/Canberra" = "Sydney/\nCanberra"
+    ),
+    .multi_line = FALSE
+)
+
 default_labels_ml <- labeller(
     epoch = c(historical = "Historical", ssp245 = "Future"),
     variable = c(
@@ -178,22 +195,21 @@ plot_quantiles <- function(gev_fits, var, unit, labels = default_labels_ml, font
 }
 
 # Plot return level curves for fitted GEVs.
-plot_return_levels <- function(gev_fits, var, varname, file = NA, width = 12, height = 3,
-                               fontsize = default_fontsize, labels = default_labels_ml) {
+plot_return_levels <- function(gev_fits, var, file = NA, width = 12, height = 6.5,
+                               fontsize = default_fontsize, labels = default_labels_units) {
     variable <- epoch <- low <- high <- est <- NULL
 
     g <- gev_fits$return_levels %>%
-        filter(variable == var) %>%
-        ggplot(aes(x = period, y = est)) +
-        geom_ribbon(aes(fill = epoch, ymin = low, ymax = high), linewidth = 0.5, alpha = 0.2) +
-        geom_line(aes(colour = epoch), linewidth = 1) +
-        facet_wrap(~domain, nrow = 1, labeller = labels) +
-        theme_bw(fontsize) +
-        theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
-        labs(y = parse(text = varname), x = "Return period [hail days]") +
-        scale_fill_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
-        scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
-        scale_x_log10()
+            ggplot(aes(x = period, y = est)) +
+            geom_ribbon(aes(fill = epoch, ymin = low, ymax = high), linewidth = 0.5, alpha = 0.2) +
+            geom_line(aes(colour = epoch), linewidth = 1) +
+            facet_grid(variable~domain, scale="free_y", labeller = labels) +
+            theme_bw(fontsize) +
+            theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
+            labs(y = "Extreme value", x = "Return period [hail days]") +
+            scale_fill_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
+            scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
+            scale_x_log10()
     print(g)
 
     if (!is.na(file)) {
