@@ -40,18 +40,18 @@ default_labels <- labeller(
 default_labels_units <- labeller(
     epoch = c(historical = "Historical", ssp245 = "Future"),
     variable = c(
-        hailcast_diam_max = "Max. hail size [mm]",
-        wind_10m = "Max. 10 m wind [m/s]"
-    ),
-    parameter = c(
-        shape = "Shape",
-        location = "Location",
-        scale = "Scale"
+        hailcast_diam_max = "Max.~hail~size~group('[',mm,']')",
+        wind_10m = "Max.~wind~group('[',m~s^{-1},']')"
     ),
     domain = c(
-        "Sydney/Canberra" = "Sydney/\nCanberra"
+        "Adelaide" = "Adelaide",
+        "Melbourne" = "Melbourne",
+        "Brisbane" = "Brisbane",
+        "Kalgoorlie" = "Kalgoorlie",
+        "Perth" = "Perth",
+        "Sydney/Canberra" = "'Sydney/\nCanberra'"
     ),
-    .multi_line = FALSE
+    .default = label_parsed
 )
 
 default_labels_ml <- labeller(
@@ -134,7 +134,8 @@ plot_params <- function(gev_fits, fontsize = default_fontsize, dodge = 0.3, labe
         geom_errorbar(aes(x = domain, ymin = low, ymax = high, colour = epoch),
             stat = "identity", width = 0.25, linewidth = 1, position = position_dodge(dodge)
         ) +
-        geom_text(aes(x=Inf, y=Inf, label = label), data = letter_labels, hjust=1.6, vjust=1.6, size=5.5, parse=TRUE) +
+        geom_label(aes(x=Inf, y=-Inf, label = label), data = letter_labels, hjust="right", vjust="bottom", size=5.5, 
+                   parse=TRUE, label.size=0) +
         geom_point(aes(x = domain, y = est, colour = epoch), position = position_dodge(dodge), size = 3) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(x = "Domain", y = "Parameter value") +
@@ -199,6 +200,13 @@ plot_return_levels <- function(gev_fits, var, file = NA, width = 12, height = 6.
                                fontsize = default_fontsize, labels = default_labels_units) {
     variable <- epoch <- low <- high <- est <- NULL
 
+    letter_labels = gev_fits$return_levels %>%
+        select(variable, domain) %>%
+        unique() %>%
+        group_by(variable, domain) %>%
+        mutate(label = paste("bold(", letters[cur_group_id()], ")", sep="")) %>%
+        ungroup()
+
     g <- gev_fits$return_levels %>%
             ggplot(aes(x = period, y = est)) +
             geom_ribbon(aes(fill = epoch, ymin = low, ymax = high), linewidth = 0.5, alpha = 0.2) +
@@ -209,6 +217,8 @@ plot_return_levels <- function(gev_fits, var, file = NA, width = 12, height = 6.
             labs(y = "Extreme value", x = "Return period [hail days]") +
             scale_fill_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
             scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
+            geom_label(aes(x=Inf, y=-Inf, label = label), data = letter_labels, hjust="right", vjust="bottom", 
+                      label.size=0, size=5.5, parse=TRUE) +
             scale_x_log10()
     print(g)
 
