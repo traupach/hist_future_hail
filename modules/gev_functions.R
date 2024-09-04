@@ -17,7 +17,7 @@ suppressMessages(library(broom))
 suppressMessages(library(dplyr))
 suppressMessages(library(tidyr))
 
-letters = c(
+letters <- c(
     "a", "b", "c", "d", "e", " f", "g", "h", "i", "j", "k", "l", "m",
     "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
 )
@@ -87,11 +87,11 @@ read_feathers <- function(results_dir, pattern = "*.feather", remove_leaps = TRU
     all_dat <- bind_rows(all_dat)
 
     if (remove_leaps == TRUE) {
-        all_dat = all_dat %>% filter(!(month(time) == 2 & day(time) == 29)) # Remove 29th of February.
+        all_dat <- all_dat %>% filter(!(month(time) == 2 & day(time) == 29)) # Remove 29th of February.
     }
 
     # Replace Sydney + Canberra with Sydney/Canberra.
-    all_dat = all_dat %>% mutate(domain = case_when(domain == "Sydney + Canberra" ~ "Sydney/Canberra", TRUE ~ domain))
+    all_dat <- all_dat %>% mutate(domain = case_when(domain == "Sydney + Canberra" ~ "Sydney/Canberra", TRUE ~ domain))
 
     return(all_dat)
 }
@@ -121,11 +121,11 @@ plot_params <- function(gev_fits, fontsize = default_fontsize, dodge = 0.3, labe
                         width = 12, height = 6) {
     domain <- low <- high <- epoch <- est <- parameter <- variable <- label <- NULL
 
-    letter_labels = gev_fits$params %>%
+    letter_labels <- gev_fits$params %>%
         select(parameter, variable) %>%
         unique() %>%
         group_by(variable, parameter) %>%
-        mutate(label = paste("bold(", letters[cur_group_id()], ")", sep="")) %>%
+        mutate(label = paste("bold(", letters[cur_group_id()], ")", sep = "")) %>%
         ungroup()
 
     g <- ggplot(gev_fits$params) +
@@ -134,8 +134,10 @@ plot_params <- function(gev_fits, fontsize = default_fontsize, dodge = 0.3, labe
         geom_errorbar(aes(x = domain, ymin = low, ymax = high, colour = epoch),
             stat = "identity", width = 0.25, linewidth = 1, position = position_dodge(dodge)
         ) +
-        geom_label(aes(x=Inf, y=-Inf, label = label), data = letter_labels, hjust="right", vjust="bottom", size=5.5, 
-                   parse=TRUE, label.size=0) +
+        geom_label(aes(x = Inf, y = -Inf, label = label),
+            data = letter_labels, hjust = "right", vjust = "bottom", size = 5.5,
+            parse = TRUE, label.size = 0
+        ) +
         geom_point(aes(x = domain, y = est, colour = epoch), position = position_dodge(dodge), size = 3) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(x = "Domain", y = "Parameter value") +
@@ -198,28 +200,30 @@ plot_quantiles <- function(gev_fits, var, unit, labels = default_labels_ml, font
 # Plot return level curves for fitted GEVs.
 plot_return_levels <- function(gev_fits, var, file = NA, width = 12, height = 6.5,
                                fontsize = default_fontsize, labels = default_labels_units) {
-    variable <- epoch <- low <- high <- est <- NULL
+    variable <- epoch <- low <- high <- est <- domain <- label <- NULL
 
-    letter_labels = gev_fits$return_levels %>%
+    letter_labels <- gev_fits$return_levels %>%
         select(variable, domain) %>%
         unique() %>%
         group_by(variable, domain) %>%
-        mutate(label = paste("bold(", letters[cur_group_id()], ")", sep="")) %>%
+        mutate(label = paste("bold(", letters[cur_group_id()], ")", sep = "")) %>%
         ungroup()
 
     g <- gev_fits$return_levels %>%
-            ggplot(aes(x = period, y = est)) +
-            geom_ribbon(aes(fill = epoch, ymin = low, ymax = high), linewidth = 0.5, alpha = 0.2) +
-            geom_line(aes(colour = epoch), linewidth = 1) +
-            facet_grid(variable~domain, scale="free_y", labeller = labels) +
-            theme_bw(fontsize) +
-            theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
-            labs(y = "Extreme value", x = "Return period [hail days]") +
-            scale_fill_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
-            scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
-            geom_label(aes(x=Inf, y=-Inf, label = label), data = letter_labels, hjust="right", vjust="bottom", 
-                      label.size=0, size=5.5, parse=TRUE) +
-            scale_x_log10()
+        ggplot(aes(x = period, y = est)) +
+        geom_ribbon(aes(fill = epoch, ymin = low, ymax = high), linewidth = 0.5, alpha = 0.2) +
+        geom_line(aes(colour = epoch), linewidth = 1) +
+        facet_grid(variable ~ domain, scale = "free_y", labeller = labels) +
+        theme_bw(fontsize) +
+        theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
+        labs(y = "Extreme value", x = "Return period [hail days]") +
+        scale_fill_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
+        scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
+        geom_label(aes(x = Inf, y = -Inf, label = label),
+            data = letter_labels, hjust = "right", vjust = "bottom",
+            label.size = 0, size = 5.5, parse = TRUE
+        ) +
+        scale_x_log10()
     print(g)
 
     if (!is.na(file)) {
@@ -228,17 +232,53 @@ plot_return_levels <- function(gev_fits, var, file = NA, width = 12, height = 6.
 }
 
 # Plot hail probabilities for comparison of GEV fits.
-plot_hail_probs <- function(gev_fits, file = NA, width = 12, height = 3,
-                            fontsize = default_fontsize, labels = default_labels_ml) {
-    diam <- epoch <- p <- NULL
+plot_probs <- function(gev_fits, file = NA, width = 12, height = 6,
+                       fontsize = default_fontsize, labels = default_labels_ml) {
+    diam <- epoch <- p <- thresh <- windspeed <- NULL
 
-    g <- ggplot(gev_fits$hail_probs) +
-        geom_point(aes(x = diam, y = p, colour = epoch), shape = 1, size = 3, stroke = 2) +
-        facet_wrap(~domain, nrow = 1, labeller = labels) +
+    probs <- rbind(
+        gev_fits$hail_probs %>%
+            rename(thresh = diam) %>%
+            mutate(variable = "hailcast_diam_max", thresh = factor(paste(thresh, "mm hail"),
+                levels = c(
+                    "20 mm hail",
+                    "50 mm hail",
+                    "100 mm hail"
+                )
+            )),
+        gev_fits$wind_probs %>%
+            rename(thresh = windspeed) %>%
+            mutate(variable = "wind_10m", thresh = factor(paste(thresh, "m/s wind"),
+                levels = c(
+                    "22.22 m/s wind",
+                    "27.78 m/s wind"
+                ),
+                labels = c(
+                    "80 km/h wind",
+                    "100 km/h wind"
+                )
+            ))
+    )
+
+    letter_labels <- probs %>%
+        select(variable, domain) %>%
+        unique() %>%
+        group_by(variable, domain) %>%
+        mutate(label = paste("bold(", letters[cur_group_id()], ")", sep = "")) %>%
+        ungroup()
+
+    g <- ggplot(probs) +
+        geom_point(aes(x = factor(thresh), y = p, colour = epoch), shape = 1, size = 3, stroke = 2) +
+        facet_grid(variable ~ domain, labeller = labels, scales = "free") +
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
-        labs(x = "Hail diameter [mm]", y = "Probability [%]")
+        labs(x = "Damage threshold", y = "Probability [%]") +
+        theme(axis.text.x = element_text(angle = 33, vjust = 1, hjust = 1)) +
+        geom_label(aes(x = -Inf, y = -Inf, label = label),
+            data = letter_labels, hjust = "left", vjust = "bottom",
+            label.size = 0, size = 5.5, parse = TRUE
+        )
     print(g)
 
     if (!is.na(file)) {
@@ -316,7 +356,7 @@ probabilities_table <- function(gev_fits, out_file,
             Heading() * Format(digits = 3) * p * Heading() * identity * Format(digits = 1),
         data = probs,
     )
-    print(toLatex(tab, file=out_file))
+    print(toLatex(tab, file = out_file))
 }
 
 # Do GEV fits per domain, variable and epoch. Collect quantiles for qq plots, do
@@ -452,10 +492,10 @@ fit_gevs <- function(all_dat,
     ))
 }
 
-hail_day_changes <- function(dat, out_file, 
-    fontsize = default_fontsize, plot_file = NA, width = 12, height = 3) {
-    domain <- epoch <- season <- historical <- ssp245 <- estimate1 <- NULL
-    estimate <- estimate2 <- p.value <- historic <- rel_change <- sig <- NULL
+hail_day_changes <- function(dat, out_file, fontsize = default_fontsize, plot_file = NA, width = 12, height = 3) {
+    domain <- epoch <- season <- historical <- ssp245 <- change_from <- change_to <- NULL
+    estimate <- estimate2 <- p.value <- historic <- rel_change <- sig <- NULL # nolint
+    conf.low <- conf.high <- mean_ssp245 <- sd_historical <- sd_ssp245 <- NULL # nolint
 
     hail_days <- dat %>%
         mutate(season = year(time - ddays(60))) %>%
@@ -495,17 +535,19 @@ hail_day_changes <- function(dat, out_file,
         mutate(historic = paste(as.character(historic), "$\\pm$", as.character(sd_historical))) %>%
         mutate(future = paste(as.character(mean_ssp245), "$\\pm$", as.character(sd_ssp245))) %>%
         mutate(rel_change = paste(as.character(round(rel_change, 0)), "\\%", sep = "")) %>%
-        mutate(change_range = paste("(", as.character(round(change_from, 0)), 
-            "\\% to ", as.character(round(change_to, 0)), "\\%)", sep = "")) %>%
+        mutate(change_range = paste("(", as.character(round(change_from, 0)),
+            "\\% to ", as.character(round(change_to, 0)), "\\%)",
+            sep = ""
+        )) %>%
         mutate(sig = case_when(sig_010 == TRUE ~ "\\,\\ast{}", TRUE ~ "")) %>%
         mutate(sig = case_when(sig_005 == TRUE ~ paste(sig, "\\!\\ast{}", sep = ""), TRUE ~ sig)) %>%
         mutate(sig = case_when(sig_001 == TRUE ~ paste(sig, "\\!\\ast{}", sep = ""), TRUE ~ sig)) %>%
-        mutate(sig = paste("$", sig, "$", sep="")) %>% 
+        mutate(sig = paste("$", sig, "$", sep = "")) %>%
         select(!starts_with("sig_"))
 
     # Plot boxplot of changes by domain.
     p <- ggplot(hail_days, aes(x = domain, y = n)) +
-        geom_boxplot(aes(fill = epoch), width=0.75, alpha=0.75) +
+        geom_boxplot(aes(fill = epoch), width = 0.75, alpha = 0.75) +
         theme_bw(fontsize) +
         scale_fill_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
         labs(x = "Domain", y = "Seasonal hail days")
@@ -515,10 +557,9 @@ hail_day_changes <- function(dat, out_file,
         ggsave(plot_file, dpi = 300, width = width, height = height)
     }
 
-    tab <- tabular(Heading("Domain") * Factor(domain) ~
-                       Heading() * identity * (historic + future + rel_change + sig + change_range), data = t_test_disp)
-    print(toLatex(tab, file=out_file))
+    tab <- tabular(Heading("Domain") * Factor(domain) ~ Heading() * identity *
+                       (historic + future + rel_change + sig + change_range), data = t_test_disp)
+    print(toLatex(tab, file = out_file))
 
     return(t_test)
 }
-
