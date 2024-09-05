@@ -1,58 +1,11 @@
 % LTeX: language=en-US
 
+<<libraries, echo=FALSE, include=FALSE>>=
+require(readr, quietly=TRUE)
+require(stringr, quietly=TRUE)
+@
 
-
-\documentclass[draft,grl]{agutexSI2019}\usepackage[]{graphicx}\usepackage[]{xcolor}
-% maxwidth is the original width if it is less than linewidth
-% otherwise use linewidth (to make sure the graphics do not exceed the margin)
-\makeatletter
-\def\maxwidth{ %
-  \ifdim\Gin@nat@width>\linewidth
-    \linewidth
-  \else
-    \Gin@nat@width
-  \fi
-}
-\makeatother
-
-\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
-\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
-\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
-\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
-\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
-\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
-\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
-\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
-\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
-\let\hlipl\hlkwb
-
-\usepackage{framed}
-\makeatletter
-\newenvironment{kframe}{%
- \def\at@end@of@kframe{}%
- \ifinner\ifhmode%
-  \def\at@end@of@kframe{\end{minipage}}%
-  \begin{minipage}{\columnwidth}%
- \fi\fi%
- \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
- \colorbox{shadecolor}{##1}\hskip-\fboxsep
-     % There is no \\@totalrightmargin, so:
-     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
- \MakeFramed {\advance\hsize-\width
-   \@totalleftmargin\z@ \linewidth\hsize
-   \@setminipage}}%
- {\par\unskip\endMakeFramed%
- \at@end@of@kframe}
-\makeatother
-
-\definecolor{shadecolor}{rgb}{.97, .97, .97}
-\definecolor{messagecolor}{rgb}{0, 0, 0}
-\definecolor{warningcolor}{rgb}{1, 0, 1}
-\definecolor{errorcolor}{rgb}{1, 0, 0}
-\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
-
-\usepackage{alltt}
+\documentclass[draft,grl]{agutexSI2019}
 
 \usepackage{graphicx}
 \setkeys{Gin}{draft=false} % Allow figure display.
@@ -70,7 +23,7 @@ UNSW Sydney,
 New South Wales 2052,
 Australia
 (timothy.h.raupach@gmail.com)}
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+
 \begin{document}
 
 \title{Supporting Information for ``Changes in damaging hail in major Australian cities with global warming''}
@@ -185,7 +138,12 @@ Australia
     & & \multicolumn{3}{c}{Hail probability [\%]} & \multicolumn{2}{c}{Wind probability [\%]} \\ 
     Domain & Epoch & 20 mm & 50 mm & 100 mm & 80 km h$^{-1}$ & \multicolumn{1}{c}{100 km h$^{-1}$} \\ 
     \hline
-Adelaide & Historical  & $49.99$ & $10.49$ & $\phantom{0}3.45$ & $\phantom{0}1.70$ & $\phantom{0}0.00$ \\ & Future  & $48.70$ & $\phantom{0}9.23$ & $\phantom{0}2.62$ & $\phantom{0}5.41$ & $\phantom{0}1.00$ \\Brisbane & Historical  & $68.34$ & $12.65$ & $\phantom{0}2.48$ & $\phantom{0}1.64$ & $\phantom{0}0.02$ \\ & Future  & $72.17$ & $13.12$ & $\phantom{0}2.30$ & $\phantom{0}2.06$ & $\phantom{0}0.01$ \\Kalgoorlie & Historical  & $43.85$ & $\phantom{0}6.22$ & $\phantom{0}1.51$ & $\phantom{0}9.03$ & $\phantom{0}0.00$ \\ & Future  & $46.79$ & $\phantom{0}8.89$ & $\phantom{0}2.57$ & $13.02$ & $\phantom{0}0.23$ \\Melbourne & Historical  & $45.82$ & $\phantom{0}4.29$ & $\phantom{0}0.65$ & $\phantom{0}1.26$ & $\phantom{0}0.05$ \\ & Future  & $60.50$ & $12.77$ & $\phantom{0}3.66$ & $\phantom{0}0.59$ & $\phantom{0}0.00$ \\Perth & Historical  & $45.57$ & $\phantom{0}6.02$ & $\phantom{0}1.11$ & $\phantom{0}1.84$ & $\phantom{0}0.00$ \\ & Future  & $49.06$ & $\phantom{0}6.98$ & $\phantom{0}1.35$ & $\phantom{0}0.89$ & $\phantom{0}0.00$ \\Sydney/Canberra & Historical  & $49.26$ & $\phantom{0}6.01$ & $\phantom{0}1.04$ & $\phantom{0}0.57$ & $\phantom{0}0.01$ \\ & Future  & $61.83$ & $\phantom{0}9.93$ & $\phantom{0}1.78$ & $\phantom{0}0.24$ & $\phantom{0}0.00$ \\
+    <<probabilities_table, echo=FALSE, include=TRUE, results="asis">>=
+    lines = read_lines("tables/probabilities_table.tex")
+    for (line in lines[6:17]) {
+          cat(line)
+    }
+    @
     \hline 
     \end{tabular}
 \end{table}

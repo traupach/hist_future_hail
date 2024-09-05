@@ -5,6 +5,13 @@
 \usepackage{soul}
 \linenumbers
 
+<<libraries, echo=FALSE, include=FALSE>>=
+require(readr, quietly=TRUE)
+require(stringr, quietly=TRUE)
+require(arrow, quietly=TRUE)
+require(dplyr, quietly=TRUE)
+@
+
 % LTeX: language=en-US
 
 \usepackage{color}
@@ -113,155 +120,112 @@ Before taking a more rigorous statistical approach, it is useful to consider the
       \label{fig:max_hail_sizes_by_domain}
 \end{figure}
 
-\subsection{GEV analysis and goodness of fit}
+\subsection{Changes in frequency of hail}
 
-GEV models were fitted to time series of daily maximum hail sizes and 10 m wind speeds at hail hours (Supporting Information Figures \ref{SM-fig:timeseries_hail} and \ref{SM-fig:timeseries_wind}). QQ plots for hail size show acceptable agreement with some model overestimation of high quantiles (Supporting Information Figure \ref{SM-fig:qq_hail}), while QQ plots for wind speed at hail hours show excellent agreement between modelled and empirical quantiles (Supporting Information Figure \ref{SM-fig:qq_wind}). In all cases where the model was compared to empirical values, either all or the bulk of KS test $p$ values were above the 0.05 level, indicating that the null hypothesis that the two samples are drawn from the same distribution can not be rejected (Supporting Material Figure \ref{SM-fig:ks_pvals}). The QQ plot and KS test results show that the GEV models have sufficient goodness of fit for the analyses here. 
- 
-Having determined that the GEV fits to empirical data are valid, we now consider whether the fitted models show any significant difference between the historical and future epochs. Figure \ref{fig:gev_parameters} shows the fitted parameters and their confidence intervals for all the GEV models used in this study. The models fitted for the Melbourne and Sydney/Canberra domains both show significant differences in the location and scale parameters between the historical and future scenarios, whereas the models for the other domains have parameters with overlapping confidence intervals. These results are further supported by the $p$ value distributions from KS tests (Figure \ref{fig:ks_pvals}) when historical models are compared to the future model. For maximum hail size, the null hypothesis that the samples are drawn from the same distribution can be rejected for the Melbourne and Sydney/Canberra domains, while for 10 m wind this null hypothesis can be rejected for Melbourne, Perth, and Sydney/Canberra. To be conservative, we conclude that the changes between epochs are significant in the Melbourne and Sydney/Canberra domains, but not significant in the other domains.
-
-\begin{figure}[!ht]
-      \includegraphics[width=\textwidth]{figures/fit_params}
-      \caption{Location, scale, and shape parameters for fitted GEV distributions for maximum hail size (top row) and 10 m wind collocated with hail occurrence (bottom row). Parameter values are shown as a point; whiskers show 95\% confidence intervals.}
-      \label{fig:gev_parameters}
-\end{figure}
-
-\subsection{Changes in hailstorm frequency}
-
-\begin{itemize}
-\item \todo{Include changes in variability in annual hailstorm frequency.}
-\end{itemize}
+Table \ref{tab:frequency} shows changes in the frequency of hail days across the six study domains. There are significant increases in hail frequency in the Sydney/Canberra and Brisbane domains, with a 29\% increase in seasonal hail days in the Sydney/Canberra region. There are small non-significant frequency decreases in Adelaide, the Goldfields (Kalgoorlie) and Melbourne domains, and an indication of an increase in seasonal hail days in the Perth region, albeit not statistically significant. The variability in seasonal hail days is similar between epochs.
 
 \begin{table}[!ht]
       \centering
-      \caption{\todo{changes}}  
-      \begin{tabular}{lrr@{}l}
+      \caption{Mean and standard deviation of seasonal hail days in the historic and future simulations, and relative future changes with 95\% confidence interval according to Welch's two-sample t-test, per domain. Statistical significance of the change calculated by Welch's two-sample t-test is indicated by $\ast{}$ for a 90\% confidence level ($p < 0.1$) and $\ast{}\!\ast{}$ for a 95\% confidence level ($p < 0.05$).}
+      \label{tab:frequency}  
+      \begin{tabular}{lrrr@{}l@{}r}
             \hline
-            Domain & Historic mean & Relative change & \\ 
+            Domain & Historic days & Future days & \multicolumn{3}{r}{Future change} \\ 
             \hline
-            %%%%%%%%%%%%%%%%%%%%%%
-            Adelaide  & $\phantom{0}8.70$ & -4\% & $$ \\
-            Brisbane  & $32.95$ & 15\% & $\,\ast{}$ \\
-            Kalgoorlie  & $10.00$ & -2\% & $$ \\
-            Melbourne  & $11.70$ & -2\% & $$ \\
-            Perth  & $\phantom{0}6.80$ & 11\% & $$ \\
-            Sydney + Canberra  & $24.30$ & 29\% & $\,\ast{}\!\ast{}$ \\
-            %%%%%%%%%%%%%%%%%%%%%%
+            <<hail_freq_table, echo=FALSE, include=TRUE, results="asis">>=
+            lines = read_lines("tables/hail_freq_table.tex")
+            for (line in lines[5:10]) {
+                  cat(line)
+            }
+            @
             \hline 
        \end{tabular}
 \end{table}
 
-\subsection{Changes in hail size}
+\subsection{Extreme value analysis}
+
+\subsubsection{GEV goodness of fit}
+
+GEV models were fitted to time series of daily maximum hail sizes and 10 m wind speeds at hail hours (Supporting Information Figures \ref{SM-fig:timeseries_hail} and \ref{SM-fig:timeseries_wind}). QQ plots for hail size show acceptable agreement with some model overestimation of high quantiles (Supporting Information Figure \ref{SM-fig:qq_hail}), while QQ plots for wind speed at hail hours show excellent agreement between modelled and empirical quantiles (Supporting Information Figure \ref{SM-fig:qq_wind}). In all cases where the model was compared to empirical values, either all or the bulk of KS test $p$ values were above the 0.05 level, indicating that the null hypothesis that the two samples are drawn from the same distribution can not be rejected (Supporting Material Figure \ref{SM-fig:ks_pvals}). The QQ plot and KS test results show that the GEV models have sufficient goodness of fit for the analyses here. 
+
+\subsubsection{Significance of changes}
+
+Having determined that the GEV fits to empirical data are valid, we now consider whether the fitted models show any significant difference between the historical and future epochs. Figure \ref{fig:gev_parameters} shows the fitted parameters and their confidence intervals for all the GEV models used in this study. The models fitted for the Melbourne and Sydney/Canberra domains both show significant differences between epochs in the location or scale parameters for both hail size and wind at hail hours, whereas the models for the other domains have parameters with overlapping confidence intervals. These results are further supported by the $p$ value distributions from KS tests when historical models are compared to future models (Supporting Information Figure \ref{SM-fig:ks_pvals}). The null hypothesis that the samples are drawn from the same distribution can be rejected for the Melbourne and Sydney/Canberra domains for both maximum hail size and maximum wind speed at hail hours, and for the Perth domain for wind only. To be conservative, we conclude that the changes in maxima between epochs are significant in the Melbourne and Sydney/Canberra domains, but not significant in the other domains.
 
 \begin{figure}[!ht]
-      \includegraphics[width=\textwidth]{figures/return_periods_hail}
-      \includegraphics[width=\textwidth]{figures/hail_probs}
-      \caption{Return period plots by domain for maximum hail size (top row), and the probability of a hail day delivering severe (20 mm), giant (50 mm) and 100 mm hail by domain and epoch (bottom row).}
+      \includegraphics[width=\textwidth]{figures/fit_params}
+      \caption{Location (a, d), scale (b, e), and shape (c, f) parameters for fitted GEV distributions for maximum hail size (a--c) and 10 m wind at hail hours (d--f). Parameter values are shown as a point and whiskers show 95\% confidence intervals.}
+      \label{fig:gev_parameters}
+\end{figure}
+
+\subsubsection{Return periods}
+
+Figure \ref{fig:return_periods_probs_hail} shows return period curves for maximum hail size and maximum wind speed at hail hours. Because our analysis is limited to hail days, the return periods are in number of hail days, not overall days. It is not uncommon for return period models based on the GEV family to produce non-physical extreme values such as the extremely large hail sizes predicted for large return periods here \cite[p. 66]{Coles_2001}. We take the advice of \citeA{Coles_2001} and interpret the results here based on the shorter return periods, thus keeping physical principles in mind. In Melbourne and Sydney/Canberra, the two domains with significant changes, there are increases in the maximum expected hail size for return periods longer than about three hail days, with the largest increase in the Melbourne region where the return period for 100 mm hail is reduced from more than 100 hail days to about 30 hail days. In both domains with significant changes the return period for lighter winds (less than about 18 m s$^{-1}$) is markedly shorter in the future scenario, but the return period for very strong winds is longer in the warmer scenario. For the other domains, with non-significant differences in GEV distributions, the most notable changes are a decrease in strong wind return periods for Adelaide and Goldfields (Kalgoorlie) regions and light wind return periods in the Perth region.
+
+\begin{figure}[!ht]
+      \includegraphics[width=\textwidth]{figures/return_periods}
+      \caption{Return period plots for maximum hail size (a--f) and maximum wind at hail hours (g--l) for the domains of Adelaide (a, g), Brisbane (b, h), Goldfields (Kalgoorlie) (c, i), Melbourne (d, j), Perth (e, k), and Sydney/Canberra (f, l).}
       \label{fig:return_periods_probs_hail}
 \end{figure}
 
-<<readResults, echo=FALSE, include=FALSE>>=
-library(arrow)
-library(dplyr)
+\subsubsection{Probability of exceeding damaging thresholds}
+
+<<readResults, echo=FALSE, include=TRUE>>=
 hail_probs = read_feather("../../results/hail_probs.feather")
 wind_probs = read_feather("../../results/wind_probs.feather")
-@
 
-<<hailProbResultsMelb, echo=FALSE, include=TRUE, results="asis">>=
-melbSevereHist = round(filter(hail_probs, domain == "Melbourne", diam==20, epoch=="historical")$p, 0)
-melbSevereFut = round(filter(hail_probs, domain == "Melbourne", diam==20, epoch=="ssp245")$p, 0)
-melbGiantHist = round(filter(hail_probs, domain == "Melbourne", diam==50, epoch=="historical")$p, 0)
-melbGiantFut = round(filter(hail_probs, domain == "Melbourne", diam==50, epoch=="ssp245")$p, 0)
-melb100Hist = round(filter(hail_probs, domain == "Melbourne", diam==100, epoch=="historical")$p, 0)
-melb100Fut = round(filter(hail_probs, domain == "Melbourne", diam==100, epoch=="ssp245")$p, 0)
-
-# Check claims in text.
-if (melbGiantFut < melbGiantHist * 2) {
-      cat("\\todo{Melbourne giant hail does not double.}")
+prob = function(d, di, e) {
+      return(round(filter(hail_probs, domain==d, diam==di, epoch==e)$p, 0))
 }
-if (melb100Fut < melb100Hist * 3) {
-      cat("\\todo{Melbourne 100 mm hail does not triple.}")
+
+probw = function(d, s, e) {
+      return(round(filter(wind_probs, domain==d, windspeed==s, epoch==e)$p, 0))
 }
 @
 
-<<hailProbResultsSydCan, echo=FALSE, include=TRUE, results="asis">>=
-scSevereHist = round(filter(hail_probs, domain == "Sydney + Canberra", diam==20, epoch=="historical")$p, 0)
-scSevereFut = round(filter(hail_probs, domain == "Sydney + Canberra", diam==20, epoch=="ssp245")$p, 0)
-scGiantHist = round(filter(hail_probs, domain == "Sydney + Canberra", diam==50, epoch=="historical")$p, 0)
-scGiantFut = round(filter(hail_probs, domain == "Sydney + Canberra", diam==50, epoch=="ssp245")$p, 0)
-sc100Hist = round(filter(hail_probs, domain == "Sydney + Canberra", diam==100, epoch=="historical")$p, 0)
-sc100Fut = round(filter(hail_probs, domain == "Sydney + Canberra", diam==100, epoch=="ssp245")$p, 0)
+% <<hailProbResultsSydCan, echo=FALSE, include=TRUE, results="asis">>=
+% scSevereHist = round(filter(hail_probs, domain == "Sydney + Canberra", diam==20, epoch=="historical")$p, 0)
+% scSevereFut = round(filter(hail_probs, domain == "Sydney + Canberra", diam==20, epoch=="ssp245")$p, 0)
+% scGiantHist = round(filter(hail_probs, domain == "Sydney + Canberra", diam==50, epoch=="historical")$p, 0)
+% scGiantFut = round(filter(hail_probs, domain == "Sydney + Canberra", diam==50, epoch=="ssp245")$p, 0)
+% sc100Hist = round(filter(hail_probs, domain == "Sydney + Canberra", diam==100, epoch=="historical")$p, 0)
+% sc100Fut = round(filter(hail_probs, domain == "Sydney + Canberra", diam==100, epoch=="ssp245")$p, 0)
 
-# Check claims in text.
-if (scSevereHist > scSevereFut) {
-      cat("\\todo{Sydney severe hail does not increase.}")
-}
-if (sc100Hist > sc100Fut) {
-      cat("\\todo{Sydney 100 mm hail does not increase.}")
-}
-@
+% # Check claims in text.
+% if (scSevereHist > scSevereFut) {
+%       cat("\\todo{Sydney severe hail does not increase.}")
+% }
+% if (sc100Hist > sc100Fut) {
+%       cat("\\todo{Sydney 100 mm hail does not increase.}")
+% }
+% @
 
-Figure \ref{fig:return_periods_probs_hail} shows return periods for maximum hail size. It is not uncommon for return period models based on the GEV family to produce non-physical extreme values such as the extremely large hail sizes predicted for large return periods here \cite[p. 66]{Coles_2001}. We take the advice of \citeA{Coles_2001} and interpret the results here based on the shorter return periods, thus keeping physical principles in mind. In the two domains with significant changes there are increases in the maximum expected hail size for return periods out to about 30 hail days. Figure \ref{fig:return_periods_probs_hail} also shows the probability of a hail day producing severe (20 mm), giant (50 mm), and 100 mm hail, respectively. In the Melbourne domain, the probability of a hail day producing severe hail jumps from \Sexpr{melbSevereHist}\% to \Sexpr{melbSevereFut}\%, the probability of a hail day producing giant hail more than doubles from \Sexpr{melbGiantHist}\% to \Sexpr{melbGiantFut}\%, and the probability of a hail day producing 100 mm hail triples from \Sexpr{melb100Hist}\% to \Sexpr{melb100Fut}\%. In the Sydney/Canberra domain, the probability of a hail day producing severe hail increases from \Sexpr{scSevereHist}\% to \Sexpr{scSevereFut}\%, while the probability of a hail day producing giant hail goes from \Sexpr{scGiantHist}\% to \Sexpr{scGiantFut}\% and the probability of a hail day producing 100 mm hail increases from \Sexpr{sc100Hist}\% to \Sexpr{sc100Fut}\%. The other two domains, in which the changes are not significant, show increases for severe hail but no changes in larger hail.
+% <<windProbResultsMelb, echo=FALSE, include=TRUE, results="asis">>=
+% melbWindHist = round(filter(wind_probs, domain == "Melbourne", epoch=="historical")$p, 3)
+% melbWindFut = round(filter(wind_probs, domain == "Melbourne", epoch=="ssp245")$p, 3)
+% scWindHist = round(filter(wind_probs, domain == "Sydney + Canberra", epoch=="historical")$p, 3)
+% scWindFut = round(filter(wind_probs, domain == "Sydney + Canberra", epoch=="ssp245")$p, 3)
 
-\begin{table}
-      \centering
-      \caption{Probability of exceeding hail sizes of 20, 50, or 100 mm, and of coincident wind exceeding 80 and 100 km h$^{-1}$, per domain and epoch.}
-      \begin{tabular}{llccccc}
-      \hline
-      & & \multicolumn{3}{c}{Hail probability [\%]} & \multicolumn{2}{c}{Wind probability [\%]} \\ 
-      Domain & Epoch & 20 mm & 50 mm & 100 mm & 80 km h$^{-1}$ & \multicolumn{1}{c}{100 km h$^{-1}$} \\ 
-      \hline
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%
-      Adelaide & Historical  & $49.99$ & $10.49$ & $\phantom{0}3.45$ & $\phantom{0}1.70$ & $\phantom{0}0.00$ \\
-      & Future  & $48.70$ & $\phantom{0}9.23$ & $\phantom{0}2.62$ & $\phantom{0}5.41$ & $\phantom{0}1.00$ \\
-     Brisbane & Historical  & $68.34$ & $12.65$ & $\phantom{0}2.48$ & $\phantom{0}1.64$ & $\phantom{0}0.02$ \\
-      & Future  & $72.17$ & $13.12$ & $\phantom{0}2.30$ & $\phantom{0}2.06$ & $\phantom{0}0.01$ \\
-     Kalgoorlie & Historical  & $43.85$ & $\phantom{0}6.22$ & $\phantom{0}1.51$ & $\phantom{0}9.03$ & $\phantom{0}0.00$ \\
-      & Future  & $46.79$ & $\phantom{0}8.89$ & $\phantom{0}2.57$ & $13.02$ & $\phantom{0}0.23$ \\
-     Melbourne & Historical  & $45.82$ & $\phantom{0}4.29$ & $\phantom{0}0.65$ & $\phantom{0}1.26$ & $\phantom{0}0.05$ \\
-      & Future  & $60.50$ & $12.77$ & $\phantom{0}3.66$ & $\phantom{0}0.59$ & $\phantom{0}0.00$ \\
-     Perth & Historical  & $45.57$ & $\phantom{0}6.02$ & $\phantom{0}1.11$ & $\phantom{0}1.84$ & $\phantom{0}0.00$ \\
-      & Future  & $49.06$ & $\phantom{0}6.98$ & $\phantom{0}1.35$ & $\phantom{0}0.89$ & $\phantom{0}0.00$ \\
-     Sydney + Canberra & Historical  & $49.26$ & $\phantom{0}6.01$ & $\phantom{0}1.04$ & $\phantom{0}0.57$ & $\phantom{0}0.01$ \\
-      & Future  & $61.83$ & $\phantom{0}9.93$ & $\phantom{0}1.78$ & $\phantom{0}0.24$ & $\phantom{0}0.00$ \\
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%
-      \hline 
-      \end{tabular}
-\end{table}
+% # Check statements in text.
+% if (any(scWindHist > 0.1) || any(melbWindHist > 0.1)) {
+%       cat("\\noindent\\todo{Hist wind probs are $>$ 0.1.}\\\\")
+% }
+% if (any(melbWindFut != 0) || any(scWindFut != 0)) {
+%       cat("\\noindent\\todo{Future wind probabilities are not zero.}")
+% } 
+% @
 
-\subsection{Changes in 10 m wind at hail locations and times}
+Figure \ref{fig:thresholds} shows the probability of a hail day producing various damaging hail and wind thresholds at hail hours (numerical results are shown in Supporting Information Table \ref{SM-tab:exceedence_probs}), comparing historical to future epochs. For hail we examine the probability of a hail day producing severe (20 mm), giant (50 mm), and 100 mm hail, while for wind we examine 80 and 100 km h$^{-1}$ as damaging thresholds. In the Melbourne domain for any given hail day, the probability of severe hail jumps from $\sim$\Sexpr{prob("Melbourne", 20, "historical")}\% in the historical epoch to $\sim$\Sexpr{prob("Melbourne", 20, "ssp245")}\% in the future scenario, while giant hail probability roughly triples (from $\sim$\Sexpr{prob("Melbourne", 50, "historical")}\% to $\sim$\Sexpr{prob("Melbourne", 50, "ssp245")}\%), and 100 mm hail is more than 5 times more likely (from $\sim$\Sexpr{prob("Melbourne", 100, "historical")}\% to $\sim$\Sexpr{prob("Melbourne", 100, "ssp245")}\%) in the future epoch. In the Sydney/Canberra domain, any given hail day has a probability of severe hail of $\sim$\Sexpr{prob("Sydney/Canberra", 20, "historical")}\% in the historical epoch which increases to $\sim$\Sexpr{prob("Sydney/Canberra", 20, "ssp245")}\% in the future scenario, while giant hail probability ($\sim$\Sexpr{prob("Sydney/Canberra", 50, "historical")}\% to $\sim$\Sexpr{prob("Sydney/Canberra", 50, "ssp245")}\%) and 100 mm hail probability ($\sim$\Sexpr{prob("Sydney/Canberra", 100, "historical")}\% to $\sim$\Sexpr{prob("Sydney/Canberra", 100, "ssp245")}\%) both come close to doubling in the future epoch. Other non-significant increases in severe hail probability are shown for Brisbane, Perth, and Goldfields (Kalgoorlie) areas, with non-significant decreases in the Adelaide region, and the Goldfields region shows a non-significant increase also for giant hail probability. In Melbourne and Sydney/Canberra, the domains with significant differences, the probability of damaging winds at hail hours on a hail day decreases by about half for 80 km h$^{-1}$ wind speed at hail hours. Non-significant changes include an increase in the probability of 80 km h$^{-1}$ wind speed at hail hours in the Goldfields (Kalgoorlie) region (from $\sim$\Sexpr{probw("Kalgoorlie", 22.22, "historical")}\% to $\sim$\Sexpr{probw("Kalgoorlie", 22.22, "ssp245")}\%) and Adelaide domain (from $\sim$\Sexpr{probw("Adelaide", 22.22, "historical")}\% to $\sim$\Sexpr{probw("Adelaide", 22.22, "ssp245")}\%), and for 100 km h$^{-1}$ winds at hail hours for the Adelaide region (from $\sim$\Sexpr{probw("Adelaide", 27.78, "historical")}\% to $\sim$\Sexpr{probw("Adelaide", 27.78, "ssp245")}\%).  Other than for Adelaide, the probability of hail days producing 100 km h$^{-1}$ wind speed at hail hours is close to zero in all domains across both epochs. 
 
 \begin{figure}[!ht]
-      \includegraphics[width=\textwidth]{figures/return_periods_wind}
-      \caption{Return period plots by domain for 10 m wind collocated with hail.}
-      \label{fig:return_periods_wind}
+      \includegraphics[width=\textwidth]{figures/threshold_probs}
+      \caption{Changes in the probability of exceeding thresholds on hail size (a--f), and 10 m wind speed at hail hours (g--l), on any given hail day, for the domains of Adelaide (a, g), Brisbane (b, h), Goldfields (Kalgoorlie) (c, i), Melbourne (d, j), Perth (e, k), and Sydney/Canberra (f, l).}
+      \label{fig:thresholds}
 \end{figure}
-
-<<windProbResultsMelb, echo=FALSE, include=TRUE, results="asis">>=
-melbWindHist = round(filter(wind_probs, domain == "Melbourne", epoch=="historical")$p, 3)
-melbWindFut = round(filter(wind_probs, domain == "Melbourne", epoch=="ssp245")$p, 3)
-scWindHist = round(filter(wind_probs, domain == "Sydney + Canberra", epoch=="historical")$p, 3)
-scWindFut = round(filter(wind_probs, domain == "Sydney + Canberra", epoch=="ssp245")$p, 3)
-
-# Check statements in text.
-if (any(scWindHist > 0.1) || any(melbWindHist > 0.1)) {
-      cat("\\noindent\\todo{Hist wind probs are $>$ 0.1.}\\\\")
-}
-if (any(melbWindFut != 0) || any(scWindFut != 0)) {
-      cat("\\noindent\\todo{Future wind probabilities are not zero.}")
-} 
-@
-
-Figure \ref{fig:return_periods_wind} shows return periods for 10 m wind collocated with hail. In Melbourne and Sydney/Canberra, the two domains with significant changes, there are increases in wind speeds for low return periods (up to 10 hail days), and decreases in wind speeds with very long return periods (50 to 100 hail days). We examined 100 km h$^{-1}$ as a threshold for wind speeds that combined with hail can cause structural damage \todo{references}. In both the Melbourne and Sydney/Canberra domains, the historical probability of a hail day producing a 100 km h$^{-1}$ wind collocated with surface hail was very low (less than 0.1\%) and the future probability is zero, according to the fitted GEVs. We note that extrapolating to very high levels in GEVs is discouraged \cite{Coles_2001}, so these results must be interpreted with caution.
-
-\subsection{Changes in co-occurrence of hail and wind}
-
-\begin{itemize}
-\item \todo{Caution that hail is max size per hour and wind is hourly instantaneous wind}.
-\end{itemize}
 
 \subsection{Changes in relevant atmospheric properties}
 
-\begin{table}
+\begin{table}[h!]
       \caption{Projected relative changes in mean convective available potential energy (CAPE), convective inhibition (CIN), freezing-level height (FLH), hail size, lifted index (LI), lapse rate from 700 to 500 hPa (LR), bulk vertical wind shear from 0-6 km (S06), temperature at 500 hPa (T500), and 10 m wind at hail times (Wind), by domain.  Statistical significance of the difference between historical and future seasonal mean values, calculated using Welch's two-sample t-test, is shown by $\ast{}$ for the 90\% confidence level, $\ast{}\!\ast{}$ for the 95\% confidence level, and $\ast{}\!\ast{}\!\!\ast{}$ for the 99\% confidence level. Bracketed ranges show the 95\% confidence interval on the changes.}
       \centering
       \begin{tabular}{lr@{}l@{}rr@{}l@{}rr@{}l@{}r}
@@ -299,7 +263,13 @@ Wind  & 3\% & $$ & (-2\% to 8\%) & 9\% & $\ast{}\!\ast{}\!\!\ast{}$ & (3\% to 15
             \end{tabular}
 \end{table}
 
+\subsection{Region correlations}
+
 \section{Conclusions}
+
+\begin{itemize}
+      \item \todo{Caution that hail is max size per hour and wind is hourly instantaneous wind}.
+\end{itemize}
 
 \section*{Open Research Section}
 
@@ -319,8 +289,6 @@ Since March 2024, THR's position at UNSW Sydney has been supported by QBE Insura
 
 %% Include references from supporting information.
 <<bibliographySupp, echo=FALSE, include=TRUE, results="asis">>=
-require(readr, quietly=TRUE)
-require(stringr, quietly=TRUE)
 lines = read_lines("../supporting info/supp_info_hail.aux")
 lines = str_extract(lines, "citation\\{(.*)\\}", group=1)
 cat(paste("\\nocite{", lines[!is.na(lines)], "}\n", sep=""))
