@@ -235,6 +235,7 @@ plot_return_levels <- function(gev_fits, var, file = NA, width = 12, height = 6.
 plot_probs <- function(gev_fits, file = NA, width = 12, height = 6,
                        fontsize = default_fontsize, labels = default_labels_ml) {
     diam <- epoch <- p <- thresh <- windspeed <- NULL
+    variable <- domain <- NULL
 
     probs <- rbind(
         gev_fits$hail_probs %>%
@@ -520,11 +521,11 @@ hail_day_changes <- function(dat, out_file, fontsize = default_fontsize, plot_fi
         reframe(domain,
             historic = estimate2,
             rel_change = estimate / abs(estimate2) * 100,
-            change_from = conf.low / abs(estimate2) * 100,
-            change_to = conf.high / abs(estimate2) * 100,
-            sig_010 = p.value < 0.1,
-            sig_005 = p.value < 0.05,
-            sig_001 = p.value < 0.01
+            change_from = conf.low / abs(estimate2) * 100, # nolint
+            change_to = conf.high / abs(estimate2) * 100, # nolint
+            sig_010 = p.value < 0.1, # nolint
+            sig_005 = p.value < 0.05, # nolint
+            sig_001 = p.value < 0.01 # nolint
         ) %>%
         arrange(desc(historic))
 
@@ -562,4 +563,75 @@ hail_day_changes <- function(dat, out_file, fontsize = default_fontsize, plot_fi
     print(toLatex(tab, file = out_file))
 
     return(t_test)
+}
+
+ingredients_changes <- function(means) {
+    domain <- historical <- ssp245 <- estimate2 <- estimate <- v <- variable <- NULL
+    conf.low <- conf.high <- p.value <- NULL # nolint
+
+    vars <- c(
+        "wind_10m", "hailcast_diam_max", "mixed_100_cape", "mixed_100_cin", "mixed_100_lifted_index",
+        "lapse_rate_700_500", "temp_500", "freezing_level", "melting_level", "shear_magnitude"
+    )
+
+    t_results <- tibble()
+    for (var in vars) {
+        d <- means %>% select("domain", "time", "epoch", v = all_of(var))
+
+        t_res <- d %>%
+            pivot_wider(names_from = epoch, values_from = v) %>%
+            select(domain, historical, ssp245) %>%
+            group_by(domain) %>%
+            summarise(tidy(t.test(x = ssp245, y = historical))) %>%
+            mutate(variable = var)
+
+        t_results <- rbind(t_results, t_res)
+    }
+
+    t_test_res <- t_results %>%
+        reframe(domain, variable,
+            historic = estimate2,
+            rel_change = estimate / abs(estimate2) * 100,
+            change_from = conf.low / abs(estimate2) * 100,
+            change_to = conf.high / abs(estimate2) * 100,
+            sig_010 = p.value < 0.1,
+            sig_005 = p.value < 0.05,
+            sig_001 = p.value < 0.01
+        )
+
+    t_test_disp <- t_test_res %>%
+        mutate(rel_change = paste(as.character(round(rel_change, 0)), "\\%", sep = "")) %>%
+        mutate(change_range = paste("(", as.character(round(change_from, 0)),
+            "\\% to ", as.character(round(change_to, 0)), "\\%)",
+            sep = ""
+        )) %>%
+        mutate(sig = case_when(sig_010 == TRUE ~ "\\ast{}", TRUE ~ "")) %>%
+        mutate(sig = case_when(sig_005 == TRUE ~ paste(sig, "\\!\\ast{}", sep = ""), TRUE ~ sig)) %>%
+        mutate(sig = case_when(sig_001 == TRUE ~ paste(sig, "\\!\\!\\ast{}", sep = ""), TRUE ~ sig)) %>%
+        mutate(sig = paste("$", sig, "$", sep = "")) %>%
+        select(!starts_with("sig_"))
+
+    t_test_disp <- t_test_disp %>%
+        mutate(variable = replace(variable, variable == "hailcast_diam_max", "Hail size")) %>%
+        mutate(variable = replace(variable, variable == "mixed_100_cape", "CAPE")) %>%
+        mutate(variable = replace(variable, variable == "mixed_100_cin", "CIN")) %>%
+        mutate(variable = replace(variable, variable == "mixed_100_lifted_index", "LI")) %>%
+        mutate(variable = replace(variable, variable == "wind_10m", "Wind")) %>%
+        mutate(variable = replace(variable, variable == "lapse_rate_700_500", "LR")) %>%
+        mutate(variable = replace(variable, variable == "temp_500", "T500")) %>%
+        mutate(variable = replace(variable, variable == "freezing_level", "FLH")) %>%
+        mutate(variable = replace(variable, variable == "melting_level", "MLH")) %>%
+        mutate(variable = replace(variable, variable == "shear_magnitude", "S06"))
+
+    # Error-bar plot.
+    g = t_test_res %>% ggplot(aes(x = variable, y = rel_change)) +
+        geom_point(aes(color = domain), position = position_dodge(0.5)) +
+        geom_errorbar(aes(ymax = change_to, ymin = change_from, color = domain),
+            width = 0.5,
+            linewidth = 1, position = position_dodge(0.5)
+        ) +
+        theme_bw()
+    print(g)
+
+    return(t_test_disp)
 }
