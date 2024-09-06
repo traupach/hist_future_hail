@@ -16,6 +16,8 @@ suppressMessages(library(purrr))
 suppressMessages(library(broom))
 suppressMessages(library(dplyr))
 suppressMessages(library(tidyr))
+suppressMessages(library(psych))
+suppressMessages(library(tibble))
 
 letters <- c(
     "a", "b", "c", "d", "e", " f", "g", "h", "i", "j", "k", "l", "m",
@@ -235,7 +237,7 @@ plot_return_levels <- function(gev_fits, var, file = NA, width = 12, height = 6.
 plot_probs <- function(gev_fits, file = NA, width = 12, height = 6,
                        fontsize = default_fontsize, labels = default_labels_ml) {
     diam <- epoch <- p <- thresh <- windspeed <- NULL
-    variable <- domain <- NULL
+    variable <- domain <- label <- NULL
 
     probs <- rbind(
         gev_fits$hail_probs %>%
@@ -559,7 +561,7 @@ hail_day_changes <- function(dat, out_file, fontsize = default_fontsize, plot_fi
     }
 
     tab <- tabular(Heading("Domain") * Factor(domain) ~ Heading() * identity *
-                       (historic + future + rel_change + sig + change_range), data = t_test_disp)
+        (historic + future + rel_change + sig + change_range), data = t_test_disp)
     print(toLatex(tab, file = out_file))
 
     return(t_test)
@@ -568,6 +570,7 @@ hail_day_changes <- function(dat, out_file, fontsize = default_fontsize, plot_fi
 ingredients_changes <- function(means) {
     domain <- historical <- ssp245 <- estimate2 <- estimate <- v <- variable <- NULL
     conf.low <- conf.high <- p.value <- NULL # nolint
+    epoch <- rel_change <- change_from <- change_to <- sig <- NULL
 
     vars <- c(
         "wind_10m", "hailcast_diam_max", "mixed_100_cape", "mixed_100_cin", "mixed_100_lifted_index",
@@ -624,7 +627,7 @@ ingredients_changes <- function(means) {
         mutate(variable = replace(variable, variable == "shear_magnitude", "S06"))
 
     # Error-bar plot.
-    g = t_test_res %>% ggplot(aes(x = variable, y = rel_change)) +
+    g <- t_test_res %>% ggplot(aes(x = variable, y = rel_change)) +
         geom_point(aes(color = domain), position = position_dodge(0.5)) +
         geom_errorbar(aes(ymax = change_to, ymin = change_from, color = domain),
             width = 0.5,
@@ -634,4 +637,141 @@ ingredients_changes <- function(means) {
     print(g)
 
     return(t_test_disp)
+}
+
+domain_correlation_plot <- function(means, fontsize = default_fontsize, plot_file = NA, width = 12, height = 4.5) {
+    v <- domain <- epoch <- season <- rowname <- name <- value <- from <- to <- sig <- NULL
+
+    vars <- c(
+        "wind_10m", "hailcast_diam_max", "mixed_100_cape", "mixed_100_cin", "mixed_100_lifted_index",
+        "lapse_rate_700_500", "temp_500", "freezing_level", "melting_level", "shear_magnitude"
+    )
+
+    domains <- (means %>% select(domain) %>% unique())[["domain"]]
+    mask <- lower.tri(matrix(nrow = length(domains), ncol = length(domains)))
+
+    seasonal <- means %>%
+        mutate(season = year(time - ddays(60))) %>%
+        group_by(domain, epoch, season) %>%
+        summarise_at(vars, mean) %>%
+        arrange(domain, epoch, season) %>%
+        ungroup()
+
+    counts <- means %>%
+        mutate(season = year(time - ddays(60))) %>%
+        group_by(domain, epoch, season) %>%
+        count() %>%
+        rename(hail_days=n) %>%
+        ungroup()
+
+    seasonal <- full_join(seasonal, counts, by=c("domain", "epoch", "season"))
+    corrs <- tibble()
+    ps <- tibble()
+
+    for (var in c(vars, "hail_days")) {
+        d <- seasonal %>% select(domain, epoch, season, v = all_of(var))
+
+        r <- d %>%
+            pivot_wider(names_from = domain, values_from = v) %>%
+            arrange(epoch, season) %>%
+            select(!season) %>%
+            group_by(epoch) %>%
+            group_map(~ rownames_to_column(cbind(.y, var, replace(corr.test(.x, ci = FALSE)$r, !mask, NA))))
+
+        p <- d %>%
+            pivot_wider(names_from = domain, values_from = v) %>%
+            arrange(epoch, season) %>%
+            select(!season) %>%
+            group_by(epoch) %>%
+            group_map(~ rownames_to_column(cbind(.y, var, replace(corr.test(.x, ci = FALSE)$p, !mask, NA))))
+
+        corrs <- rbind(corrs, bind_rows(r))
+        ps <- rbind(ps, bind_rows(p))
+    }
+
+    corrs <- corrs %>%
+        pivot_longer(cols = all_of(domains)) %>%
+        rename(from = rowname, to = name, r = value) %>%
+        drop_na()
+    ps <- ps %>%
+        pivot_longer(cols = all_of(domains)) %>%
+        rename(from = rowname, to = name, p = value) %>%
+        drop_na()
+
+    corrs <- full_join(corrs, ps, by = c("from", "epoch", "var", "to"))
+
+    corrs <- corrs %>% mutate(sig = case_when(p < 0.1 ~ "*", TRUE ~ ""))
+    corrs <- corrs %>% mutate(sig = case_when(p < 0.05 ~ "**", TRUE ~ sig))
+    corrs <- corrs %>% mutate(sig = case_when(p < 0.01 ~ "***", TRUE ~ sig))
+
+    ing_labels <- labeller(
+        epoch = c(historical = "Hist.", ssp245 = "Fut."),
+        var = c(
+            freezing_level = "FLH",
+            hailcast_diam_max = "Diam",
+            lapse_rate_700_500 = "LR",
+            melting_level = "MLH",
+            wind_10m = "Wind",
+            mixed_100_cape = "CAPE",
+            mixed_100_cin = "CIN",
+            mixed_100_lifted_index = "LI",
+            shear_magnitude = "S06",
+            temp_500 = "T500",
+            hail_days = "Days"
+        ),
+        .multi_line = FALSE
+    )
+
+    corrs <- corrs %>% mutate(
+        var = factor(var, levels = c(
+            "hail_days",
+            "hailcast_diam_max",
+            "wind_10m",
+            "shear_magnitude",
+            "mixed_100_cape",
+            "mixed_100_lifted_index",
+            "mixed_100_cin",
+            "lapse_rate_700_500",
+            "freezing_level",
+            "melting_level",
+            "temp_500"
+        )),
+        from = factor(from, levels = domains, labels = str_sub(domains, end = 1)), 
+        to = factor(to, levels = domains, labels = str_sub(domains, end = 1))
+    )
+
+    letter_labels <- corrs %>%
+        select(epoch, var) %>%
+        unique() %>%
+        group_by(epoch, var) %>%
+        mutate(label = paste("bold(", letters[cur_group_id()], ")", sep = "")) %>%
+        ungroup()
+
+    g = ggplot(corrs, aes(x = from, y = to)) +
+        geom_tile(aes(fill = r)) +
+        facet_grid(epoch ~ var, labeller = ing_labels) +
+        theme_bw(fontsize) +
+        theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
+        scale_fill_gradientn(
+            colours = c("darkblue", "white", "darkred"),
+            na.value = "white", limits = c(-1, 1),
+            name = "Pearson's r"
+        ) +
+        geom_text(aes(label = sig), vjust = 1, hjust = 0.5) +
+        coord_equal() +
+        labs(x = "", y = "") +
+        guides(fill = guide_colourbar(
+            position = "bottom",
+            theme = theme(legend.key.width = unit(20, "lines"))
+        )) +
+        theme(panel.spacing = unit(0.15, "lines")) +
+        geom_label(aes(x = -Inf, y = Inf, label = label),
+            data = letter_labels, hjust = "left", vjust = "top",
+            label.size = 0, size = 5.5, parse = TRUE
+        )
+    print(g)
+
+    if (!is.na(plot_file)) {
+        ggsave(plot_file, dpi = 300, width = width, height = height)
+    }
 }

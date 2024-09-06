@@ -1073,7 +1073,7 @@ def process_maxima_set(
     maxima = maxima.expand_dims({'domain': [domain.replace('_', ' + ')], 'epoch': [epoch]})
     maxima = maxima.to_dataframe().dropna(how='all')
 
-    # Calcualte daily mean for land points only.
+    # Calculate daily mean for land points only.
     means = dat_land.resample(time='1D').mean(dim=['time', 'south_north', 'west_east'])
     means = means.expand_dims({'domain': [domain.replace('_', ' + ')], 'epoch': [epoch]})
     means = means.to_dataframe().dropna(how='all')
