@@ -18,6 +18,7 @@ suppressMessages(library(dplyr))
 suppressMessages(library(tidyr))
 suppressMessages(library(psych))
 suppressMessages(library(tibble))
+suppressMessages(library(gridExtra))
 
 letters <- c(
     "a", "b", "c", "d", "e", " f", "g", "h", "i", "j", "k", "l", "m",
@@ -639,7 +640,7 @@ ingredients_changes <- function(means) {
     return(t_test_disp)
 }
 
-domain_correlation_plot <- function(means, fontsize = default_fontsize, plot_file = NA, width = 12, height = 4.5) {
+domain_correlation_plot <- function(means, fontsize = default_fontsize, plot_file = NA, width = 12, height = 10) {
     v <- domain <- epoch <- season <- rowname <- name <- value <- from <- to <- sig <- NULL
 
     vars <- c(
@@ -661,10 +662,10 @@ domain_correlation_plot <- function(means, fontsize = default_fontsize, plot_fil
         mutate(season = year(time - ddays(60))) %>%
         group_by(domain, epoch, season) %>%
         count() %>%
-        rename(hail_days=n) %>%
+        rename(hail_days = n) %>%
         ungroup()
 
-    seasonal <- full_join(seasonal, counts, by=c("domain", "epoch", "season"))
+    seasonal <- full_join(seasonal, counts, by = c("domain", "epoch", "season"))
     corrs <- tibble()
     ps <- tibble()
 
@@ -722,56 +723,55 @@ domain_correlation_plot <- function(means, fontsize = default_fontsize, plot_fil
         .multi_line = FALSE
     )
 
-    corrs <- corrs %>% mutate(
-        var = factor(var, levels = c(
-            "hail_days",
-            "hailcast_diam_max",
-            "wind_10m",
-            "shear_magnitude",
-            "mixed_100_cape",
-            "mixed_100_lifted_index",
-            "mixed_100_cin",
-            "lapse_rate_700_500",
-            "freezing_level",
-            "melting_level",
-            "temp_500"
-        )),
-        from = factor(from, levels = domains, labels = str_sub(domains, end = 1)), 
-        to = factor(to, levels = domains, labels = str_sub(domains, end = 1))
-    )
+    grobs = list()
+    i = 1
+    for (p in list(c(1:6), c(7:11))) {
+        vs = c(vars, "hail_days")[p]
+        dat = corrs %>% filter(var %in% vs)
 
-    letter_labels <- corrs %>%
-        select(epoch, var) %>%
-        unique() %>%
-        group_by(epoch, var) %>%
-        mutate(label = paste("bold(", letters[cur_group_id()], ")", sep = "")) %>%
-        ungroup()
+        letter_labels <- dat %>%
+            select(epoch, var) %>%
+            unique() %>%
+            group_by(epoch, var) %>%
+            mutate(label = paste("bold(", letters[cur_group_id()+(min(p)*2)-2], ")", sep = "")) %>%
+            ungroup()
 
-    g = ggplot(corrs, aes(x = from, y = to)) +
-        geom_tile(aes(fill = r)) +
-        facet_grid(epoch ~ var, labeller = ing_labels) +
-        theme_bw(fontsize) +
-        theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
-        scale_fill_gradientn(
-            colours = c("darkblue", "white", "darkred"),
-            na.value = "white", limits = c(-1, 1),
-            name = "Pearson's r"
-        ) +
-        geom_text(aes(label = sig), vjust = 1, hjust = 0.5) +
-        coord_equal() +
-        labs(x = "", y = "") +
-        guides(fill = guide_colourbar(
-            position = "bottom",
-            theme = theme(legend.key.width = unit(20, "lines"))
-        )) +
-        theme(panel.spacing = unit(0.15, "lines")) +
-        geom_label(aes(x = -Inf, y = Inf, label = label),
-            data = letter_labels, hjust = "left", vjust = "top",
-            label.size = 0, size = 5.5, parse = TRUE
-        )
-    print(g)
+        grobs[[i]] = ggplot(dat, aes(x = from, y = to)) +
+            geom_tile(aes(fill = r)) +
+            facet_grid(epoch ~ var, labeller = ing_labels) +
+            theme_bw(fontsize) +
+            theme(
+                strip.background = element_blank(),
+                strip.text = element_text(size = fontsize)
+            ) +
+            scale_fill_gradientn(
+                colours = c("darkblue", "white", "darkred"),
+                na.value = "white", limits = c(-1, 1),
+                name = "Pearson's r"
+            ) +
+            geom_text(aes(label = sig), vjust = 1, hjust = 0.5) +
+            coord_equal() +
+            labs(x = "", y = "") +
+            theme(panel.spacing = unit(0.15, "lines")) +
+            theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+            geom_label(aes(x = -Inf, y = Inf, label = label),
+                data = letter_labels,
+                hjust = "left", vjust = "top",
+                label.size = 0, size = 5.5, parse = TRUE
+            )
+
+        if (i == 1) {
+            grobs[[i]] = grobs[[i]] + guides(fill = "none")
+            grobs[[i]] = grobs[[i]] + theme(axis.text.x = element_blank())
+        }
+        
+        i = i + 1
+    }
 
     if (!is.na(plot_file)) {
-        ggsave(plot_file, dpi = 300, width = width, height = height)
+       ggsave(plot_file, arrangeGrob(grobs = grobs, nrow = 2, heights = c(1, 1.3)),
+           dpi = 300, width = width, height = height
+       )
     }
+    grid.arrange(grobs = grobs, nrow = 2, heights = c(1, 1.285))
 }
