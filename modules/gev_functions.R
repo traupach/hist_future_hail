@@ -644,8 +644,8 @@ domain_correlation_plot <- function(means, fontsize = default_fontsize, plot_fil
     v <- domain <- epoch <- season <- rowname <- name <- value <- from <- to <- sig <- NULL
 
     vars <- c(
-        "wind_10m", "hailcast_diam_max", "mixed_100_cape", "mixed_100_cin", "mixed_100_lifted_index",
-        "lapse_rate_700_500", "temp_500", "freezing_level", "melting_level", "shear_magnitude"
+        "hailcast_diam_max", "wind_10m", "shear_magnitude", "mixed_100_cape", "mixed_100_lifted_index", 
+        "mixed_100_cin", "lapse_rate_700_500", "temp_500", "freezing_level", "melting_level"
     )
 
     domains <- (means %>% select(domain) %>% unique())[["domain"]]
@@ -709,7 +709,7 @@ domain_correlation_plot <- function(means, fontsize = default_fontsize, plot_fil
         epoch = c(historical = "Hist.", ssp245 = "Fut."),
         var = c(
             freezing_level = "FLH",
-            hailcast_diam_max = "Diam",
+            hailcast_diam_max = "Hail size",
             lapse_rate_700_500 = "LR",
             melting_level = "MLH",
             wind_10m = "Wind",
@@ -726,8 +726,8 @@ domain_correlation_plot <- function(means, fontsize = default_fontsize, plot_fil
     grobs = list()
     i = 1
     for (p in list(c(1:6), c(7:11))) {
-        vs = c(vars, "hail_days")[p]
-        dat = corrs %>% filter(var %in% vs)
+        vs = c("hail_days", vars)[p]
+        dat = corrs %>% filter(var %in% vs) %>% mutate(var = factor(var, levels=vs))
 
         letter_labels <- dat %>%
             select(epoch, var) %>%
@@ -764,14 +764,14 @@ domain_correlation_plot <- function(means, fontsize = default_fontsize, plot_fil
             grobs[[i]] = grobs[[i]] + guides(fill = "none")
             grobs[[i]] = grobs[[i]] + theme(axis.text.x = element_blank())
         }
-        
+
         i = i + 1
     }
 
     if (!is.na(plot_file)) {
-       ggsave(plot_file, arrangeGrob(grobs = grobs, nrow = 2, heights = c(1, 1.3)),
-           dpi = 300, width = width, height = height
-       )
+        ggsave(plot_file, arrangeGrob(grobs = grobs, nrow = 2, heights = c(1, 1.3)),
+            dpi = 300, width = width, height = height
+        )
     }
     grid.arrange(grobs = grobs, nrow = 2, heights = c(1, 1.285))
 }
