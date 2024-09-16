@@ -183,6 +183,34 @@ Bell, J\BPBI R.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Brimelow%
+, Reuter%
+\BCBL {}\ \BBA {} Poolman%
+}{%
+Brimelow%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2002}}%
+}]{%
+Brimelow_WF_2002}
+\APACinsertmetastar {%
+Brimelow_WF_2002}%
+\begin{APACrefauthors}%
+Brimelow, J\BPBI C.%
+, Reuter, G\BPBI W.%
+\BCBL {}\ \BBA {} Poolman, E\BPBI R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2002}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Modeling Maximum Hail Size in {A}lberta Thunderstorms} {Modeling maximum hail size in {A}lberta thunderstorms}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Weather Forecast}{17}{5}{1048-1062}.
+\newblock
+\begin{APACrefDOI} \doi{10.1175/1520-0434(2002)017<1048:MMHSIA>2.0.CO;2} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Brown%
 \ \BBA {} Dowdy%
 }{%
@@ -284,6 +312,36 @@ Coles, S.%
 \APACaddressPublisher{}{Springer London}.
 \newblock
 \begin{APACrefDOI} \doi{10.1007/978-1-4471-3675-0} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Eccel%
+, Cau%
+, Riemann-Campe%
+\BCBL {}\ \BBA {} Biasioli%
+}{%
+Eccel%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2012}}%
+}]{%
+Eccel_IJC_2012}
+\APACinsertmetastar {%
+Eccel_IJC_2012}%
+\begin{APACrefauthors}%
+Eccel, E.%
+, Cau, P.%
+, Riemann-Campe, K.%
+\BCBL {}\ \BBA {} Biasioli, F.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2012}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Quantitative hail monitoring in an Alpine area: 35-year climatology and links with atmospheric variables} {Quantitative hail monitoring in an alpine area: 35-year climatology and links with atmospheric variables}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Int J Climatol}{32}{4}{503-517}.
+\newblock
+\begin{APACrefDOI} \doi{10.1002/joc.2291} \end{APACrefDOI}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -710,11 +768,47 @@ Raupach, T\BPBI H.%
 \bibitem [\protect \citeauthoryear {%
 Raupach%
 , Soderholm%
+, Protat%
+\BCBL {}\ \BBA {} Sherwood%
+}{%
+Raupach%
+, Soderholm%
+, Protat%
+\BCBL {}\ \BBA {} Sherwood%
+}{%
+{\protect \APACyear {2023}}%
+}]{%
+Raupach_MWR_2023}
+\APACinsertmetastar {%
+Raupach_MWR_2023}%
+\begin{APACrefauthors}%
+Raupach, T\BPBI H.%
+, Soderholm, J.%
+, Protat, A.%
+\BCBL {}\ \BBA {} Sherwood, S\BPBI C.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2023}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {An Improved Instability–Shear Hail Proxy for Australia} {An improved instability–shear hail proxy for australia}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Mon Weather Rev}{151}{2}{545-567}.
+\newblock
+\begin{APACrefDOI} \doi{10.1175/MWR-D-22-0127.1} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Raupach%
+, Soderholm%
 , Warren%
 \BCBL {}\ \BBA {} Sherwood%
 }{%
 Raupach%
-\ \protect \BOthers {.}}{%
+, Soderholm%
+, Warren%
+\BCBL {}\ \BBA {} Sherwood%
+}{%
 {\protect \APACyear {2023}}%
 }]{%
 Raupach_npjCAS_2023}

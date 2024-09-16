@@ -137,6 +137,10 @@ INPUT ./figures/threshold_probs.pdf
 INPUT ./figures/threshold_probs.pdf
 INPUT ./figures/threshold_probs.pdf
 INPUT ./figures/threshold_probs.pdf
+INPUT ./figures/correlations.pdf
+INPUT ./figures/correlations.pdf
+INPUT ./figures/correlations.pdf
+INPUT ./figures/correlations.pdf
 INPUT ./future_hail_australia.bbl
 INPUT ./future_hail_australia.bbl
 INPUT future_hail_australia.bbl
