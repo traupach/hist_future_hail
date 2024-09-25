@@ -7,9 +7,9 @@ __pycache__/
 *.vscode*
 *.fls
 *.fdb_latexmk
-*/supp_info_hail.pdf
+supp_info_hail.pdf
 *.synctex.gz
-*/supp_info_hail.tex
+supp_info_hail.tex
 .gitignore.swp
 output.png
 *.aux
@@ -17,8 +17,8 @@ output.png
 *.blg
 *.fls
 *.log
-*/future_hail_australia.pdf
-*/future_hail_australia.tex
+future_hail_australia.pdf
+future_hail_australia.tex
 
 # C extensions
 *.so
