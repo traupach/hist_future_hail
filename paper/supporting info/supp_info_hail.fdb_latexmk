@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex supp_info_hail"] 1725492985.51083 "supp_info_hail.aux" "supp_info_hail.bbl" "supp_info_hail" 1725861435.52817 0
-  "../main/library.bib" 1725407041.36446 17061 8364a37c05b197a136f8ef56f1f5b94c ""
+["bibtex supp_info_hail"] 1726465926.25219 "supp_info_hail.aux" "supp_info_hail.bbl" "supp_info_hail" 1726465965.96174 0
+  "../main/library.bib" 1726464417.30544 18469 ce1b17e1a23b4c4dc9d91bdb14e7cf22 ""
   "/usr/local/texlive/2024basic/texmf-dist/bibtex/bst/apacite/apacite.bst" 1374530685 141073 9d7b79dbf9d91133318126032cff8c27 ""
-  "supp_info_hail.aux" 1725861435.44889 2248 5cf6261cc30f6db7ea5402abbf18f751 "pdflatex"
+  "supp_info_hail.aux" 1726465965.89063 2248 5cf6261cc30f6db7ea5402abbf18f751 "pdflatex"
   (generated)
   "supp_info_hail.bbl"
   "supp_info_hail.blg"
   (rewritten before read)
-["pdflatex"] 1725861435.1998 "/Users/traupach/Library/CloudStorage/OneDrive-UNSW/git/hist_future_hail/paper/supporting info/supp_info_hail.tex" "supp_info_hail.pdf" "supp_info_hail" 1725861435.52831 0
-  "/Users/traupach/Library/CloudStorage/OneDrive-UNSW/git/hist_future_hail/paper/supporting info/supp_info_hail.tex" 1725861435.04834 9347 d8f87ff4876e83d9183623b836ca88e5 ""
+["pdflatex"] 1726465965.64697 "/Users/traupach/Library/CloudStorage/OneDrive-UNSW/git/hist_future_hail/paper/supporting info/supp_info_hail.tex" "supp_info_hail.pdf" "supp_info_hail" 1726465965.96188 0
+  "/Users/traupach/Library/CloudStorage/OneDrive-UNSW/git/hist_future_hail/paper/supporting info/supp_info_hail.tex" 1726465965.54165 9333 5362c02ef430aeb8902e43275823729b ""
   "/usr/local/texlive/2024basic/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm" 1136768653 1328 c834bbb027764024c09d3d2bf908b5f0 ""
   "/usr/local/texlive/2024basic/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1136768653 1324 c910af8c371558dc20f2d7822f66fe64 ""
   "/usr/local/texlive/2024basic/texmf-dist/fonts/tfm/public/cm/cmcsc10.tfm" 1136768653 1300 63a6111ee6274895728663cf4b4e7e81 ""
@@ -65,7 +65,7 @@
   "/usr/local/texlive/2024basic/texmf.cnf" 1710011638 628 8b896f7d9d41b43f4346b9091e52171f ""
   "agutexSI2019.cls" 1725252532.53527 222344 65b1c281e04c00b96a58e70d87242542 ""
   "figures/domains.pdf" 1725323034.62034 53942 751084481599879b1e967fe8986f9abf ""
-  "figures/fit_pvals.pdf" 1725853537.05486 12338 786042a0b414277af2e292ff9b8f105a ""
+  "figures/fit_pvals.pdf" 1726465923.63119 12338 2b6edb2a4a4e8ab6575e56162715c99f ""
   "figures/max_10m_winds_by_domain.pdf" 1725323034.62191 514798 492e04a6d3692b3b9ab9426d3c4931b6 ""
   "figures/maxes_Adelaide_hailcast_diam_max.pdf" 1725323034.62279 121867 6ae4d89da547ac1e51a0555d0fa3f2b0 ""
   "figures/maxes_Brisbane_hailcast_diam_max.pdf" 1725323034.62333 145756 8d54cbbd337411ad0b31ba2a9489d832 ""
@@ -73,13 +73,13 @@
   "figures/maxes_Melbourne_hailcast_diam_max.pdf" 1725323034.62427 135045 e352a15ca2e6ff5dc53437bb078f4b27 ""
   "figures/maxes_Perth_hailcast_diam_max.pdf" 1725323034.62481 143663 4e3cf876c42856a69d71b245478d90d9 ""
   "figures/maxes_Sydney_Canberra_hailcast_diam_max.pdf" 1725323034.62565 153972 b4c5497d6fc272c67931339b4863adc1 ""
-  "figures/qq_hail.pdf" 1725853537.05668 73722 80e5c27436ec49f6922971ac0be33b00 ""
-  "figures/qq_wind.pdf" 1725853537.05906 74476 2a6f44cdc57f82ec59e11b822fab4f14 ""
-  "figures/timeseries_hail.pdf" 1725853537.06067 230389 b297678dcaa5ed757d9182388cf9f493 ""
-  "figures/timeseries_wind.pdf" 1725853537.06491 230218 82093fe17e01c3be23435a287385e7c6 ""
-  "supp_info_hail.aux" 1725861435.44889 2248 5cf6261cc30f6db7ea5402abbf18f751 "pdflatex"
-  "supp_info_hail.bbl" 1725492985.55391 5044 dff01c2937719b8a10b9d78e56164cf3 "bibtex supp_info_hail"
-  "supp_info_hail.tex" 1725861435.04834 9347 d8f87ff4876e83d9183623b836ca88e5 ""
+  "figures/qq_hail.pdf" 1726465923.63216 73722 4e5b55532829097401b5da8ce3cb0cfd ""
+  "figures/qq_wind.pdf" 1726465923.63306 74476 cc0d1563eb725e5d37a9abe617a2ba16 ""
+  "figures/timeseries_hail.pdf" 1726465923.63417 230389 f1cecbf77ad8fd704d80d4efb4e16ec9 ""
+  "figures/timeseries_wind.pdf" 1726465923.63579 230218 fb81878b67257155dfaeb0e91ae9dc25 ""
+  "supp_info_hail.aux" 1726465965.89063 2248 5cf6261cc30f6db7ea5402abbf18f751 "pdflatex"
+  "supp_info_hail.bbl" 1726465926.31252 5044 dff01c2937719b8a10b9d78e56164cf3 "bibtex supp_info_hail"
+  "supp_info_hail.tex" 1726465965.54165 9333 5362c02ef430aeb8902e43275823729b ""
   (generated)
   "supp_info_hail.aux"
   "supp_info_hail.log"

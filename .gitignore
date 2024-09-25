@@ -5,6 +5,11 @@ __pycache__/
 
 *.DS_Store*
 *.vscode*
+*.fls
+*.fdb_latexmk
+*/supp_info_hail.pdf
+*.synctex.gz
+*/supp_info_hail.tex
 
 # C extensions
 *.so
