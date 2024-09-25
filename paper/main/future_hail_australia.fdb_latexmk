@@ -1,16 +1,16 @@
 # Fdb version 4
-["bibtex future_hail_australia"] 1726465261.22731 "future_hail_australia.aux" "future_hail_australia.bbl" "future_hail_australia" 1726465261.61413 0
+["bibtex future_hail_australia"] 1727240135.31537 "future_hail_australia.aux" "future_hail_australia.bbl" "future_hail_australia" 1727240135.75335 0
   "./library.bib" 1726464417.30544 18469 ce1b17e1a23b4c4dc9d91bdb14e7cf22 ""
   "/usr/local/texlive/2024basic/texmf-dist/bibtex/bst/apacite/apacite.bst" 1374530685 141073 9d7b79dbf9d91133318126032cff8c27 ""
-  "future_hail_australia.aux" 1726465261.53068 12560 94d6ded273c99f02114e113044a5eca4 "pdflatex"
+  "future_hail_australia.aux" 1727240135.66886 12564 fe71621134ecb01e328240550a539e56 "pdflatex"
   (generated)
   "future_hail_australia.bbl"
   "future_hail_australia.blg"
   (rewritten before read)
-["pdflatex"] 1726465261.26219 "/Users/traupach/Library/CloudStorage/OneDrive-UNSW/git/hist_future_hail/paper/main/future_hail_australia.tex" "future_hail_australia.pdf" "future_hail_australia" 1726465261.6143 0
-  "../supporting info/supp_info_hail.aux" 1725861435.44889 2248 5cf6261cc30f6db7ea5402abbf18f751 ""
-  "../supporting info/supp_info_hail.tex" 1725861435.04834 9347 d8f87ff4876e83d9183623b836ca88e5 ""
-  "/Users/traupach/Library/CloudStorage/OneDrive-UNSW/git/hist_future_hail/paper/main/future_hail_australia.tex" 1726465260.73304 39639 9b2680e73fe65c3f9e0a621c9d2efb81 ""
+["pdflatex"] 1727240135.35306 "/Users/traupach/Library/CloudStorage/OneDrive-UNSW/git/hist_future_hail/paper/main/future_hail_australia.tex" "future_hail_australia.pdf" "future_hail_australia" 1727240135.75352 0
+  "../supporting info/supp_info_hail.aux" 1726465965.89063 2248 5cf6261cc30f6db7ea5402abbf18f751 ""
+  "../supporting info/supp_info_hail.tex" 1726465973.70246 9333 5362c02ef430aeb8902e43275823729b ""
+  "/Users/traupach/Library/CloudStorage/OneDrive-UNSW/git/hist_future_hail/paper/main/future_hail_australia.tex" 1727240134.77877 51227 6036bb7b57fbf04c90be62aa9d1b4b2e ""
   "/Users/traupach/Library/texlive/2024basic/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk" 1721608238.72079 11524 09f5c8bee96c4a8346ae8e894fdf910f ""
   "/usr/local/texlive/2024basic/texmf-dist/fonts/tfm/jknappen/ec/ectt1000.tfm" 1136768653 1536 06717a2b50de47d4087ac0e6cd759455 ""
   "/usr/local/texlive/2024basic/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1136768653 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
@@ -93,18 +93,18 @@
   "/usr/local/texlive/2024basic/texmf-dist/tex/latex/url/url.sty" 1388531844 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "/usr/local/texlive/2024basic/texmf-dist/tex/latex/xcolor/xcolor.sty" 1700082560 55487 80a65caedd3722f4c20a14a69e785d8f ""
   "/usr/local/texlive/2024basic/texmf-dist/web2c/texmf.cnf" 1719785820 42007 0b741a3c21a5ca32b40e3846e75b3548 ""
-  "/usr/local/texlive/2024basic/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1721092297 79600 fcfecde0502e781571fc049b0747f9f2 ""
+  "/usr/local/texlive/2024basic/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1726796874 153867 8d663b6fd419ff3d8ceb895a8cb5d023 ""
   "/usr/local/texlive/2024basic/texmf-var/web2c/pdftex/pdflatex.fmt" 1721092302 7554133 ea594e4f26b9133b200fcbc6703fee97 ""
   "/usr/local/texlive/2024basic/texmf.cnf" 1710011638 628 8b896f7d9d41b43f4346b9091e52171f ""
   "agujournal2019.cls" 1719448460.29149 40688 b442a0d4e8a299883855595037ff6651 ""
-  "figures/correlations.pdf" 1725862300.34417 18767 7569f7e5c34f3372a1c177f952055223 ""
-  "figures/fit_params.pdf" 1725853537.05182 14736 f5d87ba35c800a5e16599b719be9bd9d ""
+  "figures/correlations.pdf" 1726465923.62748 18767 80a73d18c5b61670801831d5d421b531 ""
+  "figures/fit_params.pdf" 1726465923.62816 14736 4d2f12f8a352e59dd48e23119b3056e3 ""
   "figures/max_hail_sizes_by_domain.pdf" 1725323034.61832 487459 19dd41618ec760809a41473f5f40f929 ""
-  "figures/return_periods.pdf" 1725853537.05242 47080 90fa1af6665ae1374ac0aaa76a1d8adf ""
-  "figures/threshold_probs.pdf" 1725853537.05401 13513 70acfc683bb54ffdd2bcd65c72fd50b2 ""
-  "future_hail_australia.aux" 1726465261.53068 12560 94d6ded273c99f02114e113044a5eca4 "pdflatex"
-  "future_hail_australia.bbl" 1726465261.25987 28595 6c5365f1ae9b4716b517383cce08720b "bibtex future_hail_australia"
-  "future_hail_australia.tex" 1726465260.73304 39639 9b2680e73fe65c3f9e0a621c9d2efb81 ""
+  "figures/return_periods.pdf" 1726465923.62903 47080 093ab6110828ce44181df25b09ae6e96 ""
+  "figures/threshold_probs.pdf" 1726465923.63013 13513 e0f08963b13f76470e2f14725ed0aaf2 ""
+  "future_hail_australia.aux" 1727240135.66886 12564 fe71621134ecb01e328240550a539e56 "pdflatex"
+  "future_hail_australia.bbl" 1727240135.35091 28595 6c5365f1ae9b4716b517383cce08720b "bibtex future_hail_australia"
+  "future_hail_australia.tex" 1727240134.77877 51227 6036bb7b57fbf04c90be62aa9d1b4b2e ""
   "trackchanges.sty" 1719448686.99224 26287 09689e5e9db973d136f0537b8570fadf ""
   (generated)
   "future_hail_australia.aux"
