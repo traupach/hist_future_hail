@@ -12,6 +12,13 @@ __pycache__/
 */supp_info_hail.tex
 .gitignore.swp
 output.png
+*.aux
+*.bbl
+*.blg
+*.fls
+*.log
+*/future_hail_australia.pdf
+*/future_hail_australia.tex
 
 # C extensions
 *.so
