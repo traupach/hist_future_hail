@@ -5,14 +5,16 @@ import glob
 import xarray
 import geopandas
 import itertools
+import geopandas
 import numpy as np
 import pandas as pd
 import cartopy.crs as ccrs
+from matplotlib import colors
 from skimage import morphology
 import matplotlib.pyplot as plt
 from cartopy.io import shapereader
 import matplotlib.ticker as mticker
-from matplotlib import colors
+from shapely.geometry import Polygon
 from matplotlib.patches import Rectangle
 from shapely.geometry.polygon import LinearRing
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
@@ -1222,6 +1224,8 @@ def plot_maxima(
     locator_base={'Sydney/Canberra': 1.5, 'Brisbane': 1.5},
     title_xs={'Kalgoorlie': 0.02, 'Adelaide': 0.05},
     title_ys={'Kalgoorlie': 0.9, 'Melbourne': 0.9},
+    city_polygons_file = 'data/SUA_2021_AUST_GDA2020_SHP.zip',
+    polygons_colour='fuchsia'
 ):
     """
     Plot maxima for each epoch.
@@ -1238,7 +1242,12 @@ def plot_maxima(
         locator_base: 'base' argument for locator, per domain, to override default of 2.
         title_xs: x position for inset title, to override default per domain.
         title_ys: y position for inset title, to override default per domain.
+        city_polygons_file: File containin urban regions polygons to include.
     """
+
+    if city_polygons_file is not None:
+        cities = geopandas.read_file(city_polygons_file)
+        cities = cities[['Not in any' not in x for x in cities.SUA_NAME21]]
 
     fig, axs = plt.subplots(
         nrows=nrows,
@@ -1279,7 +1288,20 @@ def plot_maxima(
             vmax=zmax,
             rasterized=True,
         )
+
         axs.flat[pnum].coastlines()
+
+        if city_polygons_file is not None:
+                    bbox = Polygon([(np.min(x), np.min(y)),
+                                    (np.min(x), np.max(y)),
+                                    (np.max(x), np.max(y)),
+                                    (np.max(x), np.min(y))])
+                    city_polygons = cities.clip(bbox).geometry
+                    city_polygons = geopandas.GeoSeries(city_polygons).unary_union
+
+                    axs.flat[pnum].add_geometries(city_polygons, crs=ccrs.PlateCarree(), facecolor='none', 
+                                                edgecolor=polygons_colour, linewidth=0.75)
+
         title_x = title_xs[str(d.values)] if str(d.values) in title_xs else 0.9
         title_y = title_ys[str(d.values)] if str(d.values) in title_ys else 0.05
         axs.flat[pnum].annotate(
@@ -1289,7 +1311,6 @@ def plot_maxima(
             fontweight='bold',
             fontsize=plt.rcParams['font.size'],
         )
-
         base = locator_base[str(d.values)] if str(d.values) in locator_base else 2
         locator = mticker.MultipleLocator(base=base)
         gl = axs.flat[pnum].gridlines(
@@ -1301,7 +1322,7 @@ def plot_maxima(
             if (i + 1) % int(ncols) != 0:
                 pnum = pnum + 1
                 axs.flat[pnum].set_visible(False)
-
+            
         pnum = pnum + 1
 
     fig.subplots_adjust(right=cbar_adjust)
