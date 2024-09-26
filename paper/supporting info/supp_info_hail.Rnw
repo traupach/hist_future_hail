@@ -48,6 +48,7 @@ Australia
 \begin{enumerate}
     \item Figures S1 to S8.
     \item Tables S1 to S2.
+    \item Description of recent large-loss-causing hail events in Australia.
 \end{enumerate}
 
 \clearpage
@@ -147,5 +148,74 @@ Australia
     \hline 
     \end{tabular}
 \end{table}
+
+\newpage
+\section*{Description of recent large-loss-causing hail events in Australia}
+
+\subsection*{``Hailoween''}
+
+The 31 October 2020 ``Hailoween'' hail storm generated a series of at least nine
+supercells in a corridor from Amberley to Logan, Queensland \cite<unless
+otherwise noted, details here are sourced from the>{AIDR_2021}. The cells
+generated giant hail stones reported as 7 cm in Gympie, up to 14 cm at
+Forestdale, 13 cm at Hillcrest, 9.5 cm at Amberley, 8 cm at Springfield, 7 cm at
+Gatton, and 5 cm at Seventeen Mile Rocks. The hardest hit suburbs were
+Springfield, Springfield Lakes, Rosewood, Thagoona \todo{ref} and Willowbank.
+Strong winds were also recorded, with 100 km h$^{-1}$ gusts occurring around
+Moreton Bay, and wind damage evident from Redcliffe to Kingston. The State
+Emergency Service received over 2,900 callouts and power outages affected 95,000
+homes. The storms were associated with a series of complex fronts and embedded
+lows in the monsoon inland trough, following a week of instability over eastern
+Australia \todo{ref}. The Queensland Reconstruction Authority (QRA)’s initial
+assessment immediately after the hailstorm identified 520 properties with severe
+damage, 602 dwellings with moderate damage and 652 properties with minor damage
+\todo{ref}. Extensive damage was reported to roofs, skylights, solar panels,
+interiors, awnings, windows, shutters, including ceiling collapse and fallen
+trees \todo{ref}. Water ingress following hail damage was widespread, leading to
+damage to interior walls and floors, mold, and contents damage \todo{ref}. Some
+houses experienced hail damage through the roof, solar panels and interior
+ceiling and into the living areas of the home \todo{ref}. This event resulted in
+an insured loss of \$A1.056b from around 44,700 claims \cite{ICA_2024}.
+
+\subsection*{Tri-city storms}
+
+The 18-20th January 2020 ``tri-city'' storms impacted a wide area of eastern
+Australia immediately following the devastating ``Black Summer'' bushfires
+\cite<unless otherwise noted, details here are sourced from the>{AIDR_2020}. The
+storms impacted three major cities: Canberra, Sydney, and Melbourne, as well as
+country New South Wales areas of Queanbeyan and Goulburn \cite{ICA_2024}.
+Canberra received 4--6 cm hail which impacted the central business district and
+densely populated inner suburbs including the Australian National University. A
+117 km h$^{-1}$ wind gust was recorded at Canberra Airport. The extensive damage
+in Canberra included broken windows and skylights in homes and commercial
+buildings, flooding, and thousands of cars damaged by hailstones. Wind damage
+included fallen trees, branches and power lines, and blocked roads. There was
+structural damage to buildings at the Australian National University and civil
+buildings in the central business district \todo{ref}. Melbourne received hail
+of up to 5.5 cm over the southeastern suburbs, and there were damaging winds,
+heavy rainfall and flash flooding across broader regions. Sydney received up to
+7 cm hail over the outer southern suburbs of Campbelltown and the Sutherland
+Shire \todo{ref}. The meteorological situation showed an inland trough extending
+from central Queensland through southeastern Australia, with an upper level low
+and associated surface level low creating moist unstable air \todo{ref}. In
+total, this event resulted in around 132,000 claims and a \$A1.68b insured loss
+\cite{ICA_2024}.
+
+\subsection*{Rockhampton hailstorm}
+
+The 19 April 2020 hailstorm \cite{ABC_2020, EWN_2020, Swissre_2021} impacted the
+central Queensland towns of Rockhampton and Yeppoon and surrounding areas
+\cite{ABC_2020} located near the Tropic of Capricorn. The weather pattern was
+due to an upper-level trough crossing central Queensland, combined with a
+surface trough \cite{EWN_2020}. Storm activity propagated from inland moving
+northeast to the coast \cite{EWN_2020}, with a large supercell impacting the
+corridor from Rockhampton to Yeppoon. Giant hail of up to 12 cm was reported
+\cite{EWN_2020}, as well as 100 km h$^{-1}$ wind gusts \cite{ABC_2020}. Damage
+included holes in roofs, smashed windows and car windscreens, some flooding and
+tree damage \todo{ref}. The timing of this event during the first Covid lockdown
+complicated recovery efforts \todo{ref}. An insured loss of \$A503m from around
+15,000 claims was incurred \cite{ICA_2024}. In the Whitsunday region, golf ball
+size hail was reported in Sarina \cite{EWN_2020}. The time of year, size of hail
+and the tropical latitude of this event made it highly unusual.
 
 \end{document}

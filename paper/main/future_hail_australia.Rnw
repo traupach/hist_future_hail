@@ -67,11 +67,10 @@ $\sim$2.8 warming over pre-industrial global mean temperature were used to
 investigate possible future changes in hail size and coincident wind strength
 over major Australian cities and the remote Western Australian Goldfields
 region.
-\item The simulations project increases in hailstorm severity in areas around
-the major population centers of Melbourne, Canberra and Sydney, with increased
-windblown hail risk in the remote Goldfields region, and non-significant changes
-in other studied domains. \todo{JA: confusing, doesn't say same thing as
-abstract}
+\item The simulations project increases in some regions, with increases in hail
+frequency in the Sydney/Canberra and Brisbane regions and robust increases in
+maximum hail size and coincident wind strength in the Melbourne and
+Sydney/Canberra regions.
 \end{keypoints}
 
 \begin{abstract} %% 150 words
@@ -125,14 +124,32 @@ compare changes in hail damage potential over hail-prone areas of Australia.
 for the reader to understand upfront – ie one climate scenario, one time frame,
 CMIP6 ensemble}
 
+\todo{What is known of hail and wind changes with global warming}
+\cite{Allen_JC_2014} used an environment-based approach to suggest an increase
+in severe thunderstorm incidence in south-east Australia, although with a wide
+range of uncertainty. \cite{Walsh_CC_2016} review the current and future
+storm-related wind and hail hazard in Australia and found future projections of
+wind hazard increase along the populated east coast of Australia. \todo{More to
+add here. JA: You need to add your own studies.}
+
 \todo{Impacts in Australia} Severe convective storms are responsible for insured
 losses of over \$A40b in Australia from 1967 to 2023 (in 2022 dollars),
 accounting for 25\% of insured catastrophe losses \cite{ICA_2024}. The largest
 insured loss for any catastrophe event in Australian history, at \$A8.845b
 \cite<normalized to 2022 dollars, >{ICA_2024}, was caused by the April 1999
-hailstorm impacting the eastern suburbs of Sydney. Canberra and Brisbane have
-also experienced hail events with normalized losses over \$A1b \cite{ICA_2024}
-\todo{check ref}. 
+hailstorm impacting the eastern suburbs of Sydney. Examples of recent
+large-loss-causing hail events in Australia associated with both giant hail and
+strong winds include the January 2020 ``tri-city'' storms which impacted
+Canberra, Melbourne and Sydney over three days, bringing 6 cm hail and a record
+117 km h$^{-1}$ wind gust to Canberra, 5.5 cm hail to Melbourne, and 7 cm hail
+to Sydney \cite{AIDR_2020}, and causing \$A1.68b in insured losses
+\cite{ICA_2024}; the April 2020 Rockhampton hail storm, which delivered up to 12
+cm hail and 100 km h$^{-1}$ wind gusts to the Queensland towns of Rockhampton
+and Yeppoon \cite{ABC_2020} and caused \$A0.5b in insured losses
+\cite{ICA_2024}; and the 31 October 2020 ``hailoween'' hailstorm that impacted
+the southern suburbs of Brisbane with up to 14 cm hail and extensive wind damage
+\cite{AIDR_2021} and caused \$A1.056b in insured losses \cite{ICA_2024}. These
+events are discussed in greater detail in the Supporting Material.
 
 \todo{Reasons for combining hail and wind} Hail and convective winds are often
 studied separately, with typical severe convective storm catastrophe models
@@ -157,92 +174,6 @@ cells as the most frequent systems associated with wind driven hail
 swaths for the mid-west of the USA using satellite observations for use in
 future understanding of the frequency of these events. No such studies for
 Australia have been identified.
-
-\todo{What is known of hail and wind changes with global warming}
-\cite{Allen_JC_2014} used an environment-based approach to suggest an increase
-in severe thunderstorm incidence in south-east Australia, although with a wide
-range of uncertainty. \cite{Walsh_CC_2016} review the current and future
-storm-related wind and hail hazard in Australia and found future projections of
-wind hazard increase along the populated east coast of Australia. \todo{More to
-add here. JA: You need to add your own studies – I suggest we could move this to
-be Para 2 in the introduction?}
-
-\todo{JA's text re case study events} A selection of recent large loss causing hail events in Australia associated with both giant hail and strong winds include:
-
-\begin{itemize}
-\item October 2020 ``Hailoween'' hail storm impacting the southern suburbs of
-Brisbane;
-\item January 2020 ``Tri City'' hail storm impacting Canberra, Melbourne and
-Sydney;
-\item April 2020 Rockhampton hail storm impacting the Queensland towns of
-Rockhampton and Yeppoon.
-\end{itemize}
-
-These three case studies are described in more detail below.
-
-\todo{JA: To Add: Coloured charts? I don’t have any that aren’t proprietary. JA
-provided black and white synoptic charts in word document.}
-
-\todo{Hailoween} The October 2020 ‘Hailoween’ hail storm generated a series of
-at least nine super cells in a corridor from Amberley to Logan that generated
-giant hail stones reported as 7 cm in Gympie, giant hail up to 14 cm at
-Forestdale, 13cm at Hillcrest, 9.5 cm at Amberley, 8 cm at Springfield, 7 cm at
-Gatton, and 5 cm at Seventeen Mile Rocks. The hardest hit suburbs were
-Singfield, Springfield Lakes, Rosewood, Thagoona and Willowbank. Strong winds
-were also recorded, with 100 kmh 3-second gusts occurring around Moreton Bay and
-wind damage evident from Redcliffe to Kingston. The State Emergency Service
-received 2900 call outs and power outages affected 95 000 people. The storms
-were associated with a series of complex fronts and embedded lows in the monsoon
-inland trough, following a week of instability over eastern Australia (Figure
-X). The Queensland Reconstruction Authority (QRA)’s initial assessment
-immediately after the hailstorm identified 520 properties with severe damage,
-602 dwellings with moderate damage and 652 properties with minor damage.
-Extensive damage was reported to roofs, skylights, solar panels, interior,
-awnings, windows, shutters, ceiling collapse, falling trees. Water ingress
-following hail damage was widespread, leading to damage to interior walls and
-floors, mould, and contents damage. Some houses experienced hail damage through
-the roofs, solar panels and interior ceiling into the living areas of the home.
-This event resulted in an insured loss of \$A1.056b from around  44,700 claims
-\todo{(Insurance Council of Australia, 2024)}. \todo{Reference:
-https://knowledge.aidr.org.au/resources/hailstorm-south-east-queensland-2020/}
-
-\todo{Tri-city storm} The 20th January 2020 ``Tri-City'' storms impacted a wide
-area of eastern Australia immediately following the devastating ``Black Summer''
-bushfires. The storms impacted three major cities: Canberra, Sydney and
-Melbourne as well as country NSW areas of Queanbeyan and Goulburn. Canberra
-received 5–7 cm hail impacting the Central Business District and densely
-populated inner suburbs including the Australian National University. A 117 km h
-wind gust was recorded at Canberra Airport. Melbourne received hail of up to 5.5
-cm over the southeastern suburbs along with damaging winds, heavy rainfall and
-flash flooding. Sydney received up to 7 cm hail over the outer southern suburbs
-of Campbelltown and the Sutherland Shire. The meteorological situation showed an
-inland trough extending from central Queensland through southeastern Australia,
-with an upper level low and associated surface level low creating moist unstable
-air. The extensive damage in Canberra included broken windows and sky lights in
-homes and commercial buildings, flooding, and thousands of cars damaged by
-hailstones.  Wind damage includes fallen trees, branches and power lines, and
-blocked roads. There was structural damage to buildings at the Australian
-National University and civil buildings in the central business district. This
-event resulted in around 132 000 claims and a \$A1.68b insured loss
-\todo{(Insurance Council of Australia, 2024)}. \todo{Reference:
-\url{https://knowledge.aidr.org.au/resources/hailstorms-and-heavy-rainfall-victoria-january-2020/}}
-
-\todo{Rockhampton} The April 2020 hailstorm impacted the central Queensland
-towns of Rockhampton and Yeppoon and surrounding areas located on the Tropic of
-Capricorn. The weather pattern was due to an upper-level trough crossing central
-Queensland combined with a surface trough. Storm activity propagated from inland
-moving northeast to the coast, with a large supercell impacting the corridor
-from Rockhampton to Yeppoon. Giant hail of 8 to 12 cm was reported as well as
-100 kmh 3-second wind gusts. Damage included holes in roofs, smashed windows and
-car windscreens, some flooding and tree damage. The timing of this event during
-the first Covid lockdown complicated recovery efforts. An insured loss of
-\$A503m from around 15 000 claims was incurred (Insurance Council of Australia,
-2024). In the Whitsunday region, golf ball size hail was reported in Sarina. The
-time of year, size of hail and the tropical latitude of this event made it
-highly unusual. \todo{References:
-\url{https://www.swissre.com/australia_newzealand/insights/rockhampton--hail.html}
-\url{https://www.earlywarningnetwork.com.au/news/record-hailstorms-lash-central-queensland}
-\url{https://www.abc.net.au/news/2020-04-20/supercell-storm-causes-widespread-damage-in-central-queensland/12163780}}
 
 \todo{Australian context re building codes} While wind loadings are currently
 considered in the Australian building code \cite{ABCB_2024} under standard
@@ -276,19 +207,15 @@ conducted analyses covering the major Australian cities of Perth, Adelaide,
 Melbourne, Canberra, Sydney, and Brisbane, and a remote region around the town
 of Kalgoorlie in the Western Australian Goldfields. The populations of these
 cities covers over 60\% of the total Australian population \mref{}. Proxy-based
-climatologies show these regions to be hail-prone \cite{Raupach_npjCAS_2023}.
-
-\todo{JA: mention additional results that are presented in the results section
-and why we ar e considering these ie regional correlations in hail trends,
-changes in convective parameters. ``We investigate regional correlations in hail
-trends both directly from the hail size datasets and indirectly via the trends
-in convective parameters, in order to better understand the potential for growth
-in hail hazard in the domains surrounding Australia’s major population centres.
-Growing risk in multiple locations may present a challenge to community
-resilience and the insurance industry by requiring more robustness and
-redundancy in both the supply chain and capital to repair damage across several
-states. Understanding the trends in the contributing convective parameters aids
-our understanding of the driving processes behind projected hail changes.''}
+climatologies show these regions to be hail-prone \cite{Raupach_npjCAS_2023}. We
+investigate regional correlations in hail frequency, hail size and convective
+parameters, to better understand the potential for growth in hail hazard in the
+domains surrounding Australia's major population centers. Growing risk in
+multiple locations may present a challenge to community resilience and the
+insurance industry by requiring more robustness and redundancy in both the
+supply chain and capital to repair damage across several states. Understanding
+projected changes in the contributing convective parameters aids our
+understanding of the driving processes behind projected hail changes.
 
 \section{Methods}
 
@@ -313,19 +240,19 @@ February 28, with hourly output resolution. Outputs were converted to local
 summer time and subset to cover October 1 to February 28 inclusive in each
 season. For each season the 14 to 16 simulated hours on 30 September local time
 were discarded as model spin-up time. Model outputs provide instantaneous hourly
-values for most variables, including wind speed at 10 m \todo{JA: above ground
-level?}. In contrast, for each grid point and each hour, HAILCAST output the
-maximum hail diameter over all model time steps during the previous hour. The
-time step for the coarse domain was set to 100 s, but reduced to 80 s or 60 s
-for simulation days on which Courant-Friedrichs-Lewy (CFL) errors occurred.
-HAILCAST was run at every model time step, so on those days for which the time
-step was reduced, HAILCAST ran more often. However, here we use maximum hail
-sizes per day, and the sample of hail sizes per day is large, so we expect
-minimal effect of this time step variability. Except for the overall maxima
-shown in Section \ref{sec:overall_maxima}, we subset all our analyses to
-consider only times and locations where there was non-zero surface hail recorded
-in the preceding hour. Wind speeds and convective parameters are thus
-instantaneous values in temporal proximity to hail occurrences.
+values for most variables, including wind speed at 10 m above ground level. In
+contrast, for each grid point and each hour, HAILCAST output the maximum hail
+diameter over all model time steps during the previous hour. The time step for
+the coarse domain was set to 100 s, but reduced to 80 s or 60 s for simulation
+days on which Courant-Friedrichs-Lewy (CFL) errors occurred. HAILCAST was run at
+every model time step, so on those days for which the time step was reduced,
+HAILCAST ran more often. However, here we use maximum hail sizes per day, and
+the sample of hail sizes per day is large, so we expect minimal effect of this
+time step variability. Except for the overall maxima shown in Section
+\ref{sec:overall_maxima}, we subset all our analyses to consider only times and
+locations where there was non-zero surface hail recorded in the preceding hour.
+Wind speeds and convective parameters are thus instantaneous values in temporal
+proximity to hail occurrences.
 
 \subsection{Processing of simulation outputs}
 
@@ -338,16 +265,14 @@ over the ocean, large bodies of water, or directly over the coastal boundary are
 not considered in this study. Further, we removed from consideration any
 HAILCAST value of surface hail over 180 mm diameter \cite<this value being
 greater than the largest hail ever observed in Australia, at $\sim$16
-cm,>{BOM_2021} \todo{JA: discarding HAILCAST outputs >18 cm – would it be more
-reasonable to cap it then discard this data?}. HAILCAST has been updated in more
-recent versions of WRF than used here, and while the updated version reduces the
-occurrence of unrealistically large hail sizes the changes do not affect the
-majority of HAILCAST results, meaning that removing very large hail sizes, as we
-do here, leaves a reasonable dataset for analysis (pers. comm. B. Adams-Selin,
-2024). In all, less than 0.006\% of non-zero hail-diameter values (not over
-water) were removed for being too large, per domain. Convective parameters were
-calculated as described in \citeA{Raupach_MWR_2023}. \todo{JA: Suggest
-mentioning what the parameters are and maybe a brief description.}
+cm,>{BOM_2021}. HAILCAST has been updated in more recent versions of WRF than
+used here, and while the updated version reduces the occurrence of
+unrealistically large hail sizes the changes do not affect the majority of
+HAILCAST results, meaning that removing possibly erroneous very large hail
+sizes, as we do here, leaves a reasonable dataset for analysis (pers. comm. B.
+Adams-Selin, 2024). In all, less than 0.006\% of non-zero hail-diameter values
+(not over water) were removed for being too large, per domain. Convective
+parameters were calculated as described in \citeA{Raupach_MWR_2023}.
 
 \subsection{Statistical modelling of extreme values}
 
@@ -365,7 +290,7 @@ the fitted GEV distributions. The KS test was also used to examine the
 When the KS test was used, we generated a probabilistic view of the similarity
 between distributions by drawing 1000 values from the GEV distribution(s),
 applying the KS test, and repeating this process 100 times to generate 100 KS
-test results. \todo{JA: suggest moving the EV section below the Data Section.}
+test results.
 
 \section{Data}
 
@@ -377,7 +302,7 @@ trend derived from the ensemble mean of 18 Coupled Model Intercomparison Project
 Phase 6 \cite<CMIP6,>{Eyring_GMD_2016} models \cite{Xu_SD_2021}. Future
 projections used the ``middle-of-the-road'' SSP2-4.5 shared socioeconomic
 pathway \cite<SSP,>{ONeill_GEC_2017}. On average the historical period in our
-simulations (1989--2019) had a global mean temperature 0.39 K above
+simulations (1980--1999) had a global mean temperature 0.39 K above
 pre-industrial temperatures \cite<1850--1990, using the CMIP6 35-model
 ensemble,>{Gutierrez_2021} while the future period (2080--2099) had a global
 mean temperature 2.81 K over pre-industrial temperatures. The historical and
@@ -406,9 +331,7 @@ the Goldfields (Kalgoorlie) region (Supporting Information Figure
       \includegraphics[width=\textwidth]{figures/max_hail_sizes_by_domain}
       \caption{Maximum hail sizes in historical and future climates, for
       Adelaide (a, b), Brisbane (c, d), Goldfields (Kalgoorlie) (e, f),
-      Melbourne (g, h), Perth (i, j) and Sydney/Canberra (k, l) domains.
-      \todo{JA: the time period in past and future maps is not equal? 30 years
-      vs 20 years?} \todo{JA: – (k,l) can you plot the location of Canberra and
+      Melbourne (g, h), Perth (i, j) and Sydney/Canberra (k, l) domains. \todo{JA: – (k,l) can you plot the location of Canberra and
       Sydney? I feel the reviewers might comment that this domain has a boundary
       issue coming from the upper left corner. I don’t feel that hail storms
       typically propagate NW to SW in this region, they typically track from the
@@ -726,19 +649,19 @@ projections, and the eastern domains of Brisbane and Sydney/Canberra.
 In this study we used downscaled regional analyses to project changes in hail
 diameter and coincident wind speeds in warmer conditions, over hail-prone
 regions of Australia. The climate scenario considered was for SSP2-4.5 for the
-period 2080--2099 compared to a 1989--2019 baseline, using \todo{eight} CMIP
-ensemble members. The domains covered more than 60\% of Australia's population,
-including the major cities of Perth, Adelaide, Melbourne, Canberra, Sydney, and
-Brisbane. The results show projected increases in hail frequency around
-Sydney/Canberra and Brisbane, projected increases in hail size around
-Sydney/Canberra and Melbourne, and indications of increased wind at hail hours
-in Adelaide and the remote Goldfields region but decreased probability of
-damaging wind at hail hours in Melbourne, Perth, and Sydney/Canberra. An
-analysis of the changes in mean atmospheric conditions at hail hours shows
-projected increases in atmospheric instability and freezing level height, and
-little change in bulk vertical wind shear in the warmer scenario. Correlations
-in seasonal average hail size between regions are stronger in the future than
-present scenario. \todo{JA: Conclusion – add quantification}
+period 2080--2099 compared to a 1980--1999 baseline, using 18 CMIP ensemble
+members. The domains covered more than 60\% of Australia's population, including
+the major cities of Perth, Adelaide, Melbourne, Canberra, Sydney, and Brisbane.
+The results show projected increases in hail frequency around Sydney/Canberra
+and Brisbane, projected increases in hail size around Sydney/Canberra and
+Melbourne, and indications of increased wind at hail hours in Adelaide and the
+remote Goldfields region but decreased probability of damaging wind at hail
+hours in Melbourne, Perth, and Sydney/Canberra. An analysis of the changes in
+mean atmospheric conditions at hail hours shows projected increases in
+atmospheric instability and freezing level height, and little change in bulk
+vertical wind shear in the warmer scenario. Correlations in seasonal average
+hail size between regions are stronger in the future than present scenario.
+\todo{JA: Conclusion – add quantification}
 
 \todo{Relate changes to similar studies, eg for wind.}
 
