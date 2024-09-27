@@ -670,7 +670,7 @@ ingredients_changes <- function(means) {
     t_test_disp <- t_test_res %>%
         mutate(rel_change = paste(as.character(round(rel_change, 0)), "\\%", sep = "")) %>%
         mutate(change_range = paste("(", as.character(round(change_from, 0)),
-            "\\% to ", as.character(round(change_to, 0)), "\\%)",
+            " to ", as.character(round(change_to, 0)), "\\%)",
             sep = ""
         )) %>%
         mutate(sig = case_when(sig_010 == TRUE ~ "\\ast{}", TRUE ~ "")) %>%
