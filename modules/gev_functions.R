@@ -659,6 +659,7 @@ ingredients_changes <- function(means) {
         reframe(domain, variable,
             historic = estimate2,
             rel_change = estimate / abs(estimate2) * 100,
+            abs_change = estimate,
             change_from = conf.low / abs(estimate2) * 100,
             change_to = conf.high / abs(estimate2) * 100,
             sig_010 = p.value < 0.1,
