@@ -153,6 +153,43 @@ plot_params <- function(gev_fits, fontsize = default_fontsize, dodge = 0.3, labe
     }
 }
 
+plot_densities <- function(
+        gev_fits, variable, label, 
+        epochs = c("historical", "ssp245"),
+        x = seq(0, 100), fontsize = default_fontsize, labels = default_labels_ml,
+        file = NA, width = 12, height = 5) {
+
+    domains <- unique(gev_fits$params$domain)
+    densities <- tibble()
+
+    for (domain in domains) {
+        for (epoch in epochs) {
+            d <- gev_fits$gev[[domain]][[variable]][[epoch]]
+            y <- devd(
+                x = x,
+                loc = d$results$par[["location"]],
+                scale = d$results$par[["scale"]],
+                shape = d$results$par[["shape"]]
+            )
+            res <- tibble(epoch = epoch, variable = variable, domain = domain, x = x, density = y)
+            densities <- rbind(densities, res)
+        }
+    }
+
+    g <- ggplot(densities, aes(x = x, y = density)) +
+        facet_wrap(~domain, ncol = 3) +
+        geom_line(aes(colour = epoch), linewidth=1) +
+        theme_bw(fontsize) +
+        theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
+        labs(x = parse(text=label), y = "Density") +
+        scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future"))
+    print(g)
+
+    if (!is.na(file)) {
+        ggsave(file, dpi = 300, width = width, height = height)
+    }
+}
+
 # Plot KS test p value distributions for the various fits in a fitted set of GEVs.
 plot_ks_fits <- function(gev_fits, file = NA, fontsize = default_fontsize, labels = default_labels) {
     domain <- scenario <- pval <- NULL
