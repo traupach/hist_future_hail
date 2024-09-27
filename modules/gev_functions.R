@@ -157,6 +157,8 @@ plot_densities <- function(gev_fits, variable, label,
                            epochs = c("historical", "ssp245"),
                            x = seq(0, 100), fontsize = default_fontsize, labels = default_labels_ml,
                            file = NA, width = 12, height = 5) {
+    datagrabber <- Data <- NULL # nolint
+
     domains <- unique(gev_fits$params$domain)
     densities <- tibble()
 
@@ -172,22 +174,22 @@ plot_densities <- function(gev_fits, variable, label,
             emp <- density(datagrabber(d), n = length(x), from = min(x), to = max(x))$y
 
             res_mod <- tibble(
-                epoch = epoch, variable = variable, domain = domain, 
+                epoch = epoch, variable = variable, domain = domain,
                 x = x, density = mod, Data = "Modelled"
             )
-            
+
             res_emp <- tibble(
-                epoch = epoch, variable = variable, domain = domain, 
+                epoch = epoch, variable = variable, domain = domain,
                 x = x, density = emp, Data = "Empirical"
             )
-            
+
             densities <- rbind(densities, res_mod, res_emp)
         }
     }
 
     g <- ggplot(densities, aes(x = x, y = density)) +
         facet_wrap(~domain, ncol = 3) +
-        geom_line(aes(colour = epoch, linetype=Data), linewidth = 1) +
+        geom_line(aes(colour = epoch, linetype = Data), linewidth = 1) +
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(x = parse(text = label), y = "Density") +
@@ -265,14 +267,13 @@ plot_return_levels <- function(gev_fits, var, file = NA, width = 12, height = 6.
         facet_grid(variable ~ domain, scale = "free_y", labeller = labels) +
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
-        labs(y = "Extreme value", x = "Return period [hail days]") +
+        labs(y = "Extreme value", x = "Return period [years]") +
         scale_fill_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
         scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
         geom_label(aes(x = Inf, y = -Inf, label = label),
             data = letter_labels, hjust = "right", vjust = "bottom",
             label.size = 0, size = 5.5, parse = TRUE
-        ) +
-        scale_x_log10()
+        )
     print(g)
 
     if (!is.na(file)) {
@@ -414,10 +415,11 @@ probabilities_table <- function(gev_fits, out_file,
 #
 # Arguments:
 #   all_dat: The data to fit to.
+#   seasonal_hail_days: Number of hail days on average each season, per domain and epoch. For return period analysis.
 #   epochs: Epochs to calculate for.
 #   prob_diams: Hail sizes to find probabilities for.
 #   p: Quantiles to use in qqplots.
-#   return_periods: Return periods to use (years of hail days).
+#   return_periods: Return periods to use (years/seasons).
 #   ks.iterations: Iterations to use for ks tests.
 #
 # Returns: gevs: GEV objects,
@@ -428,11 +430,12 @@ probabilities_table <- function(gev_fits, out_file,
 #   ks_fits: KS test results,
 #   quantiles: Quantiles of empirical vs modeled amounts.
 fit_gevs <- function(all_dat,
+                     seasonal_hail_days,
                      epochs = c("historical", "ssp245"),
                      prob_diams = c(20, 50, 100),
                      prob_windspeeds = c(22.22, 27.78), # 80 km/h, 100 km/h
                      p = seq(1, 99) / 100,
-                     return_periods = seq(2, 100),
+                     return_periods = seq(1, 15, by = 0.2),
                      ks_iterations = 100,
                      variables = c("hailcast_diam_max", "wind_10m")) {
     # Set tidyverse components to NULL to avoid lintr complaints.
@@ -473,7 +476,14 @@ fit_gevs <- function(all_dat,
                 quantiles <- append(quantiles, list(qs))
 
                 # Calculate return levels for given periods.
-                ret_level <- return.level(gev, return.period = return_periods, do.ci = TRUE)
+                hail_days <- seasonal_hail_days %>%
+                    filter(domain == d, epoch == e) %>%
+                    select(frequency) %>%
+                    deframe()
+                ret_level <- return.level(gev,
+                    return.period = return_periods * hail_days,
+                    do.ci = TRUE
+                )
                 return_levels <- append(return_levels, list(tibble(
                     low = ret_level[, 1], est = ret_level[, 2],
                     high = ret_level[, 3], domain = d, epoch = e,
@@ -544,7 +554,7 @@ fit_gevs <- function(all_dat,
 
 hail_day_changes <- function(dat, out_file, fontsize = default_fontsize, plot_file = NA, width = 12, height = 3) {
     domain <- epoch <- season <- historical <- ssp245 <- change_from <- change_to <- NULL
-    estimate <- estimate2 <- p.value <- historic <- rel_change <- sig <- NULL # nolint
+    estimate <- estimate1 <- estimate2 <- p.value <- historic <- rel_change <- sig <- NULL # nolint
     conf.low <- conf.high <- mean_ssp245 <- sd_historical <- sd_ssp245 <- NULL # nolint
 
     hail_days <- dat %>%
@@ -608,10 +618,17 @@ hail_day_changes <- function(dat, out_file, fontsize = default_fontsize, plot_fi
     }
 
     tab <- tabular(Heading("Domain") * Factor(domain) ~ Heading() * identity *
-        (historic + future + rel_change + sig + change_range), data = t_test_disp)
+                       (historic + future + rel_change + sig + change_range), data = t_test_disp)
     print(toLatex(tab, file = out_file))
 
-    return(t_test)
+    print(t_test)
+
+    seasonal_hail_days <- t_test %>%
+        select(domain, estimate1, estimate2) %>%
+        rename(historical = estimate2, ssp245 = estimate1) %>%
+        pivot_longer(cols = c("ssp245", "historical"), names_to = "epoch", values_to = "frequency")
+
+    return(seasonal_hail_days)
 }
 
 ingredients_changes <- function(means) {
@@ -687,7 +704,7 @@ ingredients_changes <- function(means) {
 }
 
 domain_correlation_plot <- function(means, fontsize = default_fontsize, plot_file = NA, width = 12, height = 10) {
-    v <- domain <- epoch <- season <- rowname <- name <- value <- from <- to <- sig <- NULL
+    v <- domain <- epoch <- season <- rowname <- name <- value <- from <- to <- sig <- label <- NULL
 
     vars <- c(
         "hailcast_diam_max", "wind_10m", "shear_magnitude", "mixed_100_cape", "mixed_100_lifted_index",
@@ -695,7 +712,7 @@ domain_correlation_plot <- function(means, fontsize = default_fontsize, plot_fil
     )
 
     domains <- (means %>% select(domain) %>% unique())[["domain"]]
-    mask <- lower.tri(matrix(nrow = length(domains), ncol = length(domains)))
+    mask <- lower.tri(matrix(nrow = length(domains), ncol = length(domains))) # nolint
 
     seasonal <- means %>%
         mutate(season = year(time - ddays(60))) %>%

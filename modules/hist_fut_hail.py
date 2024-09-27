@@ -5,7 +5,6 @@ import glob
 import xarray
 import geopandas
 import itertools
-import geopandas
 import numpy as np
 import pandas as pd
 import cartopy.crs as ccrs
