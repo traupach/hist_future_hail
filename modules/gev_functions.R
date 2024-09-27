@@ -153,35 +153,44 @@ plot_params <- function(gev_fits, fontsize = default_fontsize, dodge = 0.3, labe
     }
 }
 
-plot_densities <- function(
-        gev_fits, variable, label, 
-        epochs = c("historical", "ssp245"),
-        x = seq(0, 100), fontsize = default_fontsize, labels = default_labels_ml,
-        file = NA, width = 12, height = 5) {
-
+plot_densities <- function(gev_fits, variable, label,
+                           epochs = c("historical", "ssp245"),
+                           x = seq(0, 100), fontsize = default_fontsize, labels = default_labels_ml,
+                           file = NA, width = 12, height = 5) {
     domains <- unique(gev_fits$params$domain)
     densities <- tibble()
 
     for (domain in domains) {
         for (epoch in epochs) {
             d <- gev_fits$gev[[domain]][[variable]][[epoch]]
-            y <- devd(
+            mod <- devd(
                 x = x,
                 loc = d$results$par[["location"]],
                 scale = d$results$par[["scale"]],
                 shape = d$results$par[["shape"]]
             )
-            res <- tibble(epoch = epoch, variable = variable, domain = domain, x = x, density = y)
-            densities <- rbind(densities, res)
+            emp <- density(datagrabber(d), n = length(x), from = min(x), to = max(x))$y
+
+            res_mod <- tibble(
+                epoch = epoch, variable = variable, domain = domain, 
+                x = x, density = mod, Data = "Modelled"
+            )
+            
+            res_emp <- tibble(
+                epoch = epoch, variable = variable, domain = domain, 
+                x = x, density = emp, Data = "Empirical"
+            )
+            
+            densities <- rbind(densities, res_mod, res_emp)
         }
     }
 
     g <- ggplot(densities, aes(x = x, y = density)) +
         facet_wrap(~domain, ncol = 3) +
-        geom_line(aes(colour = epoch), linewidth=1) +
+        geom_line(aes(colour = epoch, linetype=Data), linewidth = 1) +
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
-        labs(x = parse(text=label), y = "Density") +
+        labs(x = parse(text = label), y = "Density") +
         scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future"))
     print(g)
 
@@ -681,7 +690,7 @@ domain_correlation_plot <- function(means, fontsize = default_fontsize, plot_fil
     v <- domain <- epoch <- season <- rowname <- name <- value <- from <- to <- sig <- NULL
 
     vars <- c(
-        "hailcast_diam_max", "wind_10m", "shear_magnitude", "mixed_100_cape", "mixed_100_lifted_index", 
+        "hailcast_diam_max", "wind_10m", "shear_magnitude", "mixed_100_cape", "mixed_100_lifted_index",
         "mixed_100_cin", "lapse_rate_700_500", "temp_500", "freezing_level", "melting_level"
     )
 
@@ -760,20 +769,22 @@ domain_correlation_plot <- function(means, fontsize = default_fontsize, plot_fil
         .multi_line = FALSE
     )
 
-    grobs = list()
-    i = 1
+    grobs <- list()
+    i <- 1
     for (p in list(c(1:6), c(7:11))) {
-        vs = c("hail_days", vars)[p]
-        dat = corrs %>% filter(var %in% vs) %>% mutate(var = factor(var, levels=vs))
+        vs <- c("hail_days", vars)[p]
+        dat <- corrs %>%
+            filter(var %in% vs) %>%
+            mutate(var = factor(var, levels = vs))
 
         letter_labels <- dat %>%
             select(epoch, var) %>%
             unique() %>%
             group_by(epoch, var) %>%
-            mutate(label = paste("bold(", letters[cur_group_id()+(min(p)*2)-2], ")", sep = "")) %>%
+            mutate(label = paste("bold(", letters[cur_group_id() + (min(p) * 2) - 2], ")", sep = "")) %>%
             ungroup()
 
-        grobs[[i]] = ggplot(dat, aes(x = from, y = to)) +
+        grobs[[i]] <- ggplot(dat, aes(x = from, y = to)) +
             geom_tile(aes(fill = r)) +
             facet_grid(epoch ~ var, labeller = ing_labels) +
             theme_bw(fontsize) +
@@ -798,11 +809,11 @@ domain_correlation_plot <- function(means, fontsize = default_fontsize, plot_fil
             )
 
         if (i == 1) {
-            grobs[[i]] = grobs[[i]] + guides(fill = "none")
-            grobs[[i]] = grobs[[i]] + theme(axis.text.x = element_blank())
+            grobs[[i]] <- grobs[[i]] + guides(fill = "none")
+            grobs[[i]] <- grobs[[i]] + theme(axis.text.x = element_blank())
         }
 
-        i = i + 1
+        i <- i + 1
     }
 
     if (!is.na(plot_file)) {
