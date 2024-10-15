@@ -580,6 +580,7 @@ hail_day_changes <- function(dat, out_file, fontsize = default_fontsize, plot_fi
         reframe(domain,
             historic = estimate2,
             rel_change = estimate / abs(estimate2) * 100,
+            abs_change = estimate,
             change_from = conf.low / abs(estimate2) * 100, # nolint
             change_to = conf.high / abs(estimate2) * 100, # nolint
             sig_010 = p.value < 0.1, # nolint
@@ -592,16 +593,14 @@ hail_day_changes <- function(dat, out_file, fontsize = default_fontsize, plot_fi
     stopifnot(all(t_test_res$historic == t_test_res$mean_historical))
 
     t_test_disp <- t_test_res %>%
-        mutate(historic = paste(as.character(historic), "$\\pm$", as.character(sd_historical))) %>%
-        mutate(future = paste(as.character(mean_ssp245), "$\\pm$", as.character(sd_ssp245))) %>%
         mutate(rel_change = paste(as.character(round(rel_change, 0)), "\\%", sep = "")) %>%
         mutate(change_range = paste("(", as.character(round(change_from, 0)),
-            "\\% to ", as.character(round(change_to, 0)), "\\%)",
+            " to ", as.character(round(change_to, 0)), "\\%)",
             sep = ""
         )) %>%
-        mutate(sig = case_when(sig_010 == TRUE ~ "\\,\\ast{}", TRUE ~ "")) %>%
+        mutate(sig = case_when(sig_010 == TRUE ~ "\\ast{}", TRUE ~ "")) %>%
         mutate(sig = case_when(sig_005 == TRUE ~ paste(sig, "\\!\\ast{}", sep = ""), TRUE ~ sig)) %>%
-        mutate(sig = case_when(sig_001 == TRUE ~ paste(sig, "\\!\\ast{}", sep = ""), TRUE ~ sig)) %>%
+        mutate(sig = case_when(sig_001 == TRUE ~ paste(sig, "\\!\\!\\ast{}", sep = ""), TRUE ~ sig)) %>%
         mutate(sig = paste("$", sig, "$", sep = "")) %>%
         select(!starts_with("sig_"))
 
@@ -617,10 +616,6 @@ hail_day_changes <- function(dat, out_file, fontsize = default_fontsize, plot_fi
         ggsave(plot_file, dpi = 300, width = width, height = height)
     }
 
-    tab <- tabular(Heading("Domain") * Factor(domain) ~ Heading() * identity *
-                       (historic + future + rel_change + sig + change_range), data = t_test_disp)
-    print(toLatex(tab, file = out_file))
-
     print(t_test)
 
     seasonal_hail_days <- t_test %>%
@@ -628,22 +623,22 @@ hail_day_changes <- function(dat, out_file, fontsize = default_fontsize, plot_fi
         rename(historical = estimate2, ssp245 = estimate1) %>%
         pivot_longer(cols = c("ssp245", "historical"), names_to = "epoch", values_to = "frequency")
 
-    return(seasonal_hail_days)
+    return(list(seasonal_hail_days = seasonal_hail_days, t_test_disp = t_test_disp))
 }
 
-ingredients_changes <- function(means) {
+ingredients_changes <- function(ings, plot=FALSE) {
     domain <- historical <- ssp245 <- estimate2 <- estimate <- v <- variable <- NULL
     conf.low <- conf.high <- p.value <- NULL # nolint
     epoch <- rel_change <- change_from <- change_to <- sig <- NULL
 
     vars <- c(
-        "wind_10m", "hailcast_diam_max", "mixed_100_cape", "mixed_100_cin", "mixed_100_lifted_index",
+        "hailcast_diam_max", "wind_10m", "mixed_100_cape", "mixed_100_cin", "mixed_100_lifted_index",
         "lapse_rate_700_500", "temp_500", "freezing_level", "melting_level", "shear_magnitude"
     )
 
     t_results <- tibble()
     for (var in vars) {
-        d <- means %>% select("domain", "time", "epoch", v = all_of(var))
+        d <- ings %>% select("domain", "time", "epoch", v = all_of(var))
 
         t_res <- d %>%
             pivot_wider(names_from = epoch, values_from = v) %>%
@@ -692,14 +687,16 @@ ingredients_changes <- function(means) {
         mutate(variable = replace(variable, variable == "shear_magnitude", "S06"))
 
     # Error-bar plot.
-    g <- t_test_res %>% ggplot(aes(x = variable, y = rel_change)) +
-        geom_point(aes(color = domain), position = position_dodge(0.5)) +
-        geom_errorbar(aes(ymax = change_to, ymin = change_from, color = domain),
-            width = 0.5,
-            linewidth = 1, position = position_dodge(0.5)
-        ) +
-        theme_bw()
-    print(g)
+    if(plot) {
+        g <- t_test_res %>% ggplot(aes(x = variable, y = rel_change)) +
+            geom_point(aes(color = domain), position = position_dodge(0.5)) +
+            geom_errorbar(aes(ymax = change_to, ymin = change_from, color = domain),
+                width = 0.5,
+                linewidth = 1, position = position_dodge(0.5)
+            ) +
+            theme_bw()
+        print(g)
+    }
 
     return(t_test_disp)
 }
