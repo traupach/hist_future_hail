@@ -626,7 +626,7 @@ hail_day_changes <- function(dat, out_file, fontsize = default_fontsize, plot_fi
     return(list(seasonal_hail_days = seasonal_hail_days, t_test_disp = t_test_disp))
 }
 
-ingredients_changes <- function(ings, plot=FALSE) {
+ingredients_changes <- function(ings, plot = FALSE) {
     domain <- historical <- ssp245 <- estimate2 <- estimate <- v <- variable <- NULL
     conf.low <- conf.high <- p.value <- NULL # nolint
     epoch <- rel_change <- change_from <- change_to <- sig <- NULL
@@ -687,7 +687,7 @@ ingredients_changes <- function(ings, plot=FALSE) {
         mutate(variable = replace(variable, variable == "shear_magnitude", "S06"))
 
     # Error-bar plot.
-    if(plot) {
+    if (plot) {
         g <- t_test_res %>% ggplot(aes(x = variable, y = rel_change)) +
             geom_point(aes(color = domain), position = position_dodge(0.5)) +
             geom_errorbar(aes(ymax = change_to, ymin = change_from, color = domain),

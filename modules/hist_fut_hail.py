@@ -1214,6 +1214,7 @@ def plot_maxima(
     maxima,
     variable,
     scale_label,
+    cbar_max=None,
     file=None,
     figsize=(12, 7),
     cbar_adjust=0.862,
@@ -1233,6 +1234,7 @@ def plot_maxima(
         maxima: The maxima to plot.
         variable: Variable to plot.
         scale_label: Label for the shared scale bar.
+        cbar_max: Maximum value to plot, None if data max.
         file: Output file for plot.
         figsize: Figure suze. Defaults to (12, 7).
         cbar_adjust: cbar adjustment factor. Defaults to 0.862.
@@ -1284,7 +1286,7 @@ def plot_maxima(
             y='lat',
             cmap='Spectral_r',
             vmin=zmin,
-            vmax=zmax,
+            vmax=cbar_max if cbar_max is not None else zmax,
             rasterized=True,
         )
 
@@ -1328,7 +1330,8 @@ def plot_maxima(
     cbar_ax = fig.add_axes([cbar_adjust + cbar_pad, 0.23, 0.02, 0.55])
     fmt = mticker.ScalarFormatter(useOffset=False, useMathText=True)
     fmt.set_powerlimits((-4, 6))
-    _ = fig.colorbar(im, ax=axs.flat[0], cax=cbar_ax, ticks=None, label=scale_label, format=fmt)
+    _ = fig.colorbar(im, ax=axs.flat[0], cax=cbar_ax, ticks=None, label=scale_label, format=fmt,
+                     extend='max' if cbar_max is not None and cbar_max < zmax else 'neither')
 
     for i in [0, 3]:
         assert str(maxima.epoch[0].values) == 'historical', str(maxima.epoch[0].values)
