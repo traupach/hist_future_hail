@@ -175,12 +175,12 @@ plot_densities <- function(gev_fits, variable, label,
 
             res_mod <- tibble(
                 epoch = epoch, variable = variable, domain = domain,
-                x = x, density = mod, Data = "Modelled"
+                x = x, density = mod, Data = "GEV model"
             )
 
             res_emp <- tibble(
                 epoch = epoch, variable = variable, domain = domain,
-                x = x, density = emp, Data = "Empirical"
+                x = x, density = emp, Data = "WRF simulations"
             )
 
             densities <- rbind(densities, res_mod, res_emp)
@@ -236,8 +236,8 @@ plot_quantiles <- function(gev_fits, var, unit, labels = default_labels_ml, font
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(
-            x = parse(text = paste("Model~quantile~group('[',", unit, ",']')", sep = "")),
-            y = parse(text = paste("Empirical~quantile~group('[',", unit, ",']')", sep = ""))
+            x = parse(text = paste("GEV~model~quantile~group('[',", unit, ",']')", sep = "")),
+            y = parse(text = paste("WRF~simulations~quantile~group('[',", unit, ",']')", sep = ""))
         ) +
         geom_abline(slope = 1, intercept = 0) +
         coord_fixed(xlim = c(mins, maxs), ylim = c(mins, maxs))
@@ -510,7 +510,7 @@ fit_gevs <- function(all_dat,
                 for (i in seq(1, ks_iterations)) {
                     ks <- append(ks, ks.test(dat, rextRemes(gev, 1000))$p.value)
                 }
-                ks <- tibble(pval = ks, domain = d, scenario = paste(e, "model vs empirical"), variable = v)
+                ks <- tibble(pval = ks, domain = d, scenario = paste(e, "GEV model vs WRF simulations"), variable = v)
                 ks_fits <- append(ks_fits, list(ks))
             }
         }
@@ -535,13 +535,13 @@ fit_gevs <- function(all_dat,
     hail_probs$diam <- factor(hail_probs$diam, levels = prob_diams)
     ks_fits$scenario <- factor(ks_fits$scenario,
         levels = c(
-            "historical model vs empirical",
-            "ssp245 model vs empirical",
-            "historical model vs ssp245 model"
+            "historical GEV model vs WRF simulations",
+            "ssp245 GEV model vs WRF simulations",
+            "historical GEV model vs ssp245 GEV model"
         ),
-        labels = c("Model vs empirical: historical",
-            "ssp245 model vs empirical" = "Model vs empirical: future",
-            "historical model vs ssp245 model" = "Historical model vs future model"
+        labels = c("historical GEV model vs WRF simulations" = "GEV model vs WRF simulations: historical",
+            "ssp245 GEV model vs WRF simulations" = "GEV model vs WRF simulatinos: future",
+            "historical GEV model vs ssp245 GEV model" = "Historical GEV model vs future GEV model"
         )
     )
 
