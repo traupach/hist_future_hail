@@ -229,15 +229,14 @@ plot_quantiles <- function(gev_fits, var, unit, labels = default_labels_ml, font
     mins <- min(min(vals$model), min(vals$empirical))
     maxs <- max(max(vals$model), max(vals$empirical))
 
-    g <- ggplot(gev_fits$quantiles %>% filter(variable == var), aes(x = model, y = empirical)) +
-        # facet_wrap(epoch ~ domain, nrow = 2, labeller = labels) +
+    g <- ggplot(gev_fits$quantiles %>% filter(variable == var), aes(x = empirical, y = model)) +
         facet_grid(epoch ~ domain, labeller = labels) +
         geom_point(shape = 1) +
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(
-            x = parse(text = paste("GEV~model~quantile~group('[',", unit, ",']')", sep = "")),
-            y = parse(text = paste("WRF~simulations~quantile~group('[',", unit, ",']')", sep = ""))
+            x = parse(text = paste("WRF~simulations~quantile~group('[',", unit, ",']')", sep = "")),
+            y = parse(text = paste("GEV~model~quantile~group('[',", unit, ",']')", sep = ""))
         ) +
         geom_abline(slope = 1, intercept = 0) +
         coord_fixed(xlim = c(mins, maxs), ylim = c(mins, maxs))
