@@ -349,7 +349,7 @@ ks_tests <- function(gevs, domains, variables, ks_iterations) {
                     rextRemes(gevs[[d]][[v]][["ssp245"]], 1000)
                 )$p.value)
             }
-            ks <- tibble(pval = ks, domain = d, scenario = "historical model vs ssp245 model", variable = v)
+            ks <- tibble(pval = ks, domain = d, scenario = "historical GEV vs ssp245 GEV", variable = v)
             ks_change <- append(ks_change, list(ks))
         }
     }
@@ -510,7 +510,7 @@ fit_gevs <- function(all_dat,
                 for (i in seq(1, ks_iterations)) {
                     ks <- append(ks, ks.test(dat, rextRemes(gev, 1000))$p.value)
                 }
-                ks <- tibble(pval = ks, domain = d, scenario = paste(e, "GEV model vs WRF simulations"), variable = v)
+                ks <- tibble(pval = ks, domain = d, scenario = paste(e, "GEV vs WRF"), variable = v)
                 ks_fits <- append(ks_fits, list(ks))
             }
         }
@@ -535,13 +535,13 @@ fit_gevs <- function(all_dat,
     hail_probs$diam <- factor(hail_probs$diam, levels = prob_diams)
     ks_fits$scenario <- factor(ks_fits$scenario,
         levels = c(
-            "historical GEV model vs WRF simulations",
-            "ssp245 GEV model vs WRF simulations",
-            "historical GEV model vs ssp245 GEV model"
+            "historical GEV vs WRF",
+            "ssp245 GEV vs WRF",
+            "historical GEV vs ssp245 GEV"
         ),
-        labels = c("historical GEV model vs WRF simulations" = "GEV model vs WRF simulations: historical",
-            "ssp245 GEV model vs WRF simulations" = "GEV model vs WRF simulatinos: future",
-            "historical GEV model vs ssp245 GEV model" = "Historical GEV model vs future GEV model"
+        labels = c("historical GEV vs WRF" = "GEV vs WRF: historical",
+            "ssp245 GEV vs WRF" = "GEV vs WRF: future",
+            "historical GEV vs ssp245 GEV" = "Historical GEV vs future GEV"
         )
     )
 
