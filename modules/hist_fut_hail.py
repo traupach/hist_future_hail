@@ -1214,6 +1214,7 @@ def plot_maxima(
     maxima,
     variable,
     scale_label,
+    factor=1,
     cbar_max=None,
     cbar_min=None,
     file=None,
@@ -1235,6 +1236,7 @@ def plot_maxima(
         maxima: The maxima to plot.
         variable: Variable to plot.
         scale_label: Label for the shared scale bar.
+        factor: Factor by which to multiply values (for unit conversion).
         cbar_max: Maximum value to plot, None if data max.
         cbar_min: Minimum value to plot, None if data min.
         file: Output file for plot.
@@ -1247,6 +1249,9 @@ def plot_maxima(
         title_ys: y position for inset title, to override default per domain.
         city_polygons_file: File containin urban regions polygons to include.
     """
+
+    maxima = maxima.copy(deep=True)
+    maxima[variable] = maxima[variable] * factor
 
     if city_polygons_file is not None:
         cities = geopandas.read_file(city_polygons_file)
