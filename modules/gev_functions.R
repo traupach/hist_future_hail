@@ -846,8 +846,7 @@ periods_for_thresholds <- function(var, thresh) {
             group_by(domain, epoch) %>%
             filter(est == min(est)) %>%
             mutate(threshold = t, period = round(period, 0)) %>%
-            select(threshold, variable, domain, epoch, period) %>%
-            pivot_wider(names_from = "epoch", values_from = "period"))
+            select(threshold, variable, domain, epoch, period))
     }
 
     return(res)
