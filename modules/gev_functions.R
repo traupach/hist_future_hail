@@ -837,3 +837,18 @@ domain_correlation_plot <- function(means, fontsize = default_fontsize, plot_fil
     }
     grid.arrange(grobs = grobs, nrow = 2, heights = c(1, 1.285))
 }
+
+periods_for_thresholds <- function(var, thresh) {
+    res <- tibble()
+    for (t in thresh) {
+        res <- rbind(res, gev_fits$return_levels %>%
+            filter(est > t, variable == var) %>%
+            group_by(domain, epoch) %>%
+            filter(est == min(est)) %>%
+            mutate(threshold = t, period = round(period, 0)) %>%
+            select(threshold, variable, domain, epoch, period) %>%
+            pivot_wider(names_from = "epoch", values_from = "period"))
+    }
+
+    return(res)
+}
