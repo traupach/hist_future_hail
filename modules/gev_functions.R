@@ -44,7 +44,7 @@ default_labels_units <- labeller(
     epoch = c(historical = "Historical", ssp245 = "Future"),
     variable = c(
         hailcast_diam_max = "Max.~hail~size~group('[',mm,']')",
-        wind_10m = "Max.~wind~group('[',m~s^{-1},']')"
+        wind_10m = "Max.~wind~group('[',km~h^{-1},']')"
     ),
     domain = c(
         "Adelaide" = "Adelaide",
@@ -298,10 +298,10 @@ plot_probs <- function(gev_fits, file = NA, width = 12, height = 6,
             )),
         gev_fits$wind_probs %>%
             rename(thresh = windspeed) %>%
-            mutate(variable = "wind_10m", thresh = factor(paste(thresh, "m/s wind"),
+            mutate(variable = "wind_10m", thresh = factor(paste(thresh, "km/h wind"),
                 levels = c(
-                    "22.22 m/s wind",
-                    "27.78 m/s wind"
+                    "80 km/h wind",
+                    "100 km/h wind"
                 ),
                 labels = c(
                     "80 km/h wind",
@@ -432,7 +432,7 @@ fit_gevs <- function(all_dat,
                      seasonal_hail_days,
                      epochs = c("historical", "ssp245"),
                      prob_diams = c(20, 50, 100),
-                     prob_windspeeds = c(22.22, 27.78), # 80 km/h, 100 km/h
+                     prob_windspeeds = c(80, 100), # km/h
                      p = seq(1, 99) / 100,
                      return_periods = seq(1, 15, by = 0.2),
                      ks_iterations = 100,
