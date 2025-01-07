@@ -153,9 +153,10 @@ plot_params <- function(gev_fits, fontsize = default_fontsize, dodge = 0.3, labe
     }
 }
 
-plot_densities <- function(gev_fits, variable, label,
+plot_densities <- function(gev_fits, variable, label, ev_types, gp_thresholds,
                            epochs = c("historical", "ssp245"),
-                           x = seq(0, 100), fontsize = default_fontsize, labels = default_labels_ml,
+                           x = seq(0, 150), fontsize = default_fontsize, 
+                           labels = default_labels_ml,
                            file = NA, width = 12, height = 5) {
     datagrabber <- Data <- NULL # nolint
 
@@ -165,22 +166,38 @@ plot_densities <- function(gev_fits, variable, label,
     for (domain in domains) {
         for (epoch in epochs) {
             d <- gev_fits$gev[[domain]][[variable]][[epoch]]
-            mod <- devd(
-                x = x,
-                loc = d$results$par[["location"]],
-                scale = d$results$par[["scale"]],
-                shape = d$results$par[["shape"]]
-            )
-            emp <- density(datagrabber(d), n = length(x), from = min(x), to = max(x))$y
+
+
+            exceedances = datagrabber(d)
+            if (ev_types[[variable]] == "GEV") {
+                threshold = 0
+                mod <- devd(
+                    x = x,
+                    scale = d$results$par[["scale"]],
+                    shape = d$results$par[["shape"]],
+                    loc = d$results$par[["location"]],
+                    type = "GEV"
+                )
+            } else if (ev_types[[variable]] == "GP") {
+                threshold = gp_thresholds[[variable]]
+                exceedances = exceedances[exceedances > threshold]
+                mod <- devd(
+                    x = x,
+                    scale = d$results$par[["scale"]],
+                    shape = d$results$par[["shape"]],
+                    type = "GP"
+                )
+            }
 
             res_mod <- tibble(
                 epoch = epoch, variable = variable, domain = domain,
-                x = x, density = mod, Data = "GEV model"
+                x = x + threshold, density = mod, Data = "EVD model"
             )
 
+            emp <- density(exceedances)
             res_emp <- tibble(
                 epoch = epoch, variable = variable, domain = domain,
-                x = x, density = emp, Data = "WRF simulations"
+                x = emp$x, density = emp$y, Data = "WRF simulations"
             )
 
             densities <- rbind(densities, res_mod, res_emp)
@@ -193,7 +210,8 @@ plot_densities <- function(gev_fits, variable, label,
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(x = parse(text = label), y = "Density") +
-        scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future"))
+        scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
+        scale_x_continuous()
     print(g)
 
     if (!is.na(file)) {
@@ -236,7 +254,7 @@ plot_quantiles <- function(gev_fits, var, unit, labels = default_labels_ml, font
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(
             x = parse(text = paste("WRF~simulations~quantile~group('[',", unit, ",']')", sep = "")),
-            y = parse(text = paste("GEV~model~quantile~group('[',", unit, ",']')", sep = ""))
+            y = parse(text = paste("GP~model~quantile~group('[',", unit, ",']')", sep = ""))
         ) +
         geom_abline(slope = 1, intercept = 0) +
         coord_fixed(xlim = c(mins, maxs), ylim = c(mins, maxs))
@@ -348,7 +366,7 @@ ks_tests <- function(gevs, domains, variables, ks_iterations) {
                     rextRemes(gevs[[d]][[v]][["ssp245"]], 1000)
                 )$p.value)
             }
-            ks <- tibble(pval = ks, domain = d, scenario = "historical GEV vs ssp245 GEV", variable = v)
+            ks <- tibble(pval = ks, domain = d, scenario = "historical EVD vs ssp245 EVD", variable = v)
             ks_change <- append(ks_change, list(ks))
         }
     }
@@ -414,7 +432,6 @@ probabilities_table <- function(gev_fits, out_file,
 #
 # Arguments:
 #   all_dat: The data to fit to.
-#   seasonal_hail_days: Number of hail days on average each season, per domain and epoch. For return period analysis.
 #   epochs: Epochs to calculate for.
 #   prob_diams: Hail sizes to find probabilities for.
 #   p: Quantiles to use in qqplots.
@@ -429,12 +446,15 @@ probabilities_table <- function(gev_fits, out_file,
 #   ks_fits: KS test results,
 #   quantiles: Quantiles of empirical vs modeled amounts.
 fit_gevs <- function(all_dat,
-                     seasonal_hail_days,
+                     gp_thresholds,
+                     ev_types,
+                     span = 20,
+                     expected_per_year = 151,
                      epochs = c("historical", "ssp245"),
                      prob_diams = c(20, 50, 100),
                      prob_windspeeds = c(80, 100), # km/h
                      p = seq(1, 99) / 100,
-                     return_periods = seq(1, 15, by = 0.2),
+                     return_periods = seq(2, 20, by = 1),
                      ks_iterations = 100,
                      variables = c("hailcast_diam_max", "wind_10m")) {
     # Set tidyverse components to NULL to avoid lintr complaints.
@@ -457,16 +477,46 @@ fit_gevs <- function(all_dat,
                 print(paste("Fitting for", v, "in", d, "for", e))
 
                 dat <- filter(all_dat, domain == d, epoch == e)[[v]]
-                gev <- fevd(dat, type = "GEV", time.units = "days")
+                stopifnot(length(dat) / span == expected_per_year)
+
+                type = ev_types[[v]]
+                thresh = NA
+
+                if (type == "GP") {
+                    # If using GP distribution, subset data to those above threshold; no location parameter.
+                    thresh = gp_thresholds[[v]]
+                    loc = NA
+                    gev <- fevd(dat, type = "GP", threshold = thresh, span = span)
+                    dat = dat[dat > thresh]
+                    count_per_year = 1
+                } else if (type == "GEV") {
+                    # If using GEV distribution, no threshold, subset to non-zero values; no span.
+                    dat = dat[dat != 0]
+                    gev <- fevd(dat, type = "GEV")
+                    thresh = NA
+                    count_per_year = tibble(v = dat > 0) %>%
+                        mutate(year = (row_number() - 1) %/% 151) %>%
+                        group_by(year) %>%
+                        summarise(n = sum(v)) %>%
+                        ungroup() %>%
+                        summarize(n = mean(n))
+                    count_per_year = count_per_year$n
+                }
                 gevs[[d]][[v]][[e]] <- gev
+
+                if (type == "GEV") {
+                    loc = gev$results$par[["location"]]
+                }
 
                 # Calculate model and empirical quantiles for a qqplot.
                 qs <- tibble(p = p)
                 qs["model"] <- qevd(
                     p = p,
-                    loc = gev$results$par[["location"]],
+                    threshold = thresh,
+                    type = type,
                     scale = gev$results$par[["scale"]],
-                    shape = gev$results$par[["shape"]]
+                    shape = gev$results$par[["shape"]],
+                    loc = loc
                 )
                 qs["empirical"] <- quantile(p = p, dat)
                 qs["domain"] <- d
@@ -474,13 +524,17 @@ fit_gevs <- function(all_dat,
                 qs["variable"] <- v
                 quantiles <- append(quantiles, list(qs))
 
+                # Calculate KS tests for model fits.
+                ks <- vector()
+                for (i in seq(1, ks_iterations)) {
+                    ks <- append(ks, ks.test(dat, rextRemes(gev, 1000))$p.value)
+                }
+                ks <- tibble(pval = ks, domain = d, scenario = paste(e, "EVD vs WRF"), variable = v)
+                ks_fits <- append(ks_fits, list(ks))
+
                 # Calculate return levels for given periods.
-                hail_days <- seasonal_hail_days %>%
-                    filter(domain == d, epoch == e) %>%
-                    select(frequency) %>%
-                    deframe()
                 ret_level <- return.level(gev,
-                    return.period = return_periods * hail_days,
+                    return.period = return_periods * count_per_year,
                     do.ci = TRUE
                 )
                 return_levels <- append(return_levels, list(tibble(
@@ -503,14 +557,6 @@ fit_gevs <- function(all_dat,
                         p = pextRemes(gev, q = prob_windspeeds, lower.tail = FALSE) * 100
                     )))
                 }
-
-                # Calculate KS tests for model fits.
-                ks <- vector()
-                for (i in seq(1, ks_iterations)) {
-                    ks <- append(ks, ks.test(dat, rextRemes(gev, 1000))$p.value)
-                }
-                ks <- tibble(pval = ks, domain = d, scenario = paste(e, "GEV vs WRF"), variable = v)
-                ks_fits <- append(ks_fits, list(ks))
             }
         }
     }
@@ -534,13 +580,14 @@ fit_gevs <- function(all_dat,
     hail_probs$diam <- factor(hail_probs$diam, levels = prob_diams)
     ks_fits$scenario <- factor(ks_fits$scenario,
         levels = c(
-            "historical GEV vs WRF",
-            "ssp245 GEV vs WRF",
-            "historical GEV vs ssp245 GEV"
+            "historical EVD vs WRF",
+            "ssp245 EVD vs WRF",
+            "historical EVD vs ssp245 EVD"
         ),
-        labels = c("historical GEV vs WRF" = "GEV vs WRF: historical",
-            "ssp245 GEV vs WRF" = "GEV vs WRF: future",
-            "historical GEV vs ssp245 GEV" = "Historical GEV vs future GEV"
+        labels = c(
+            "historical EVD vs WRF" = "EVD vs WRF: historical",
+            "ssp245 EVD vs WRF" = "EVD vs WRF: future",
+            "historical EVD vs ssp245 EVD" = "Historical EVD vs future EVD"
         )
     )
 

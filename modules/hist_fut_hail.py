@@ -193,7 +193,6 @@ def plot_wrf_domains(
     pts=None,
     figsize=(10, 8),
     proj=ccrs.PlateCarree(),
-    fontsize=14,
     labels=None,
     file=None,
 ):
