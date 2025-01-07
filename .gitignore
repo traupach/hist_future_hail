@@ -19,6 +19,9 @@ output.png
 *.log
 future_hail_australia.pdf
 future_hail_australia.tex
+agujournal2019.cls
+trackchanges.sty
+agutexSI2019.cls
 
 # C extensions
 *.so
