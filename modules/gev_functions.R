@@ -309,7 +309,6 @@ plot_probs <- function(gev_fits, file = NA, width = 12, height = 6,
             rename(thresh = diam) %>%
             mutate(variable = "hailcast_diam_max", thresh = factor(paste(thresh, "mm hail"),
                 levels = c(
-                    "20 mm hail",
                     "50 mm hail",
                     "100 mm hail"
                 )
@@ -451,7 +450,7 @@ fit_gevs <- function(all_dat,
                      span = 20,
                      expected_per_year = 151,
                      epochs = c("historical", "ssp245"),
-                     prob_diams = c(20, 50, 100),
+                     prob_diams = c(50, 100), # mm
                      prob_windspeeds = c(80, 100), # km/h
                      p = seq(1, 99) / 100,
                      return_periods = seq(2, 20, by = 1),
