@@ -1,10 +1,9 @@
 \documentclass[]{agujournal2019}
 
 \usepackage{url} %this package should fix any errors with URLs in refs.
-\usepackage{lineno}
 \usepackage[inline]{trackchanges} %for better track changes. finalnew option will compile document with changes incorporated.
 \usepackage{soul}
-\linenumbers
+%\linenumbers
 
 <<libraries, echo=FALSE, include=FALSE>>=
 require(readr, quietly=TRUE)
@@ -17,7 +16,6 @@ require(dplyr, quietly=TRUE)
 
 \usepackage{color}
 \newcommand*{\todo}[1]{\textbf{\textcolor{red}{(#1)}}}
-\newcommand*{\mref}{\todo{ref}}
 
 \usepackage{xr}
 \externaldocument[SM-]{../supporting info/supp_info_hail}
@@ -26,7 +24,14 @@ require(dplyr, quietly=TRUE)
 \justifying 
 
 % Maximum 12 PUs where 1 PU = 500 words or 1 display element (figure or table).
-% E.g. 
+
+% Word count includes abstract, acknowledgements, text (and in-text citations),
+% figure captions, table captions, and appendices. Equations count as one word
+% no matter the size. Equations are not copyedited.
+
+% Word count excludes title, author list and affiliations, key words, key
+% points, plain language summary, table text, open research section, references,
+% and supporting information. Supporting information is not copyedited.
 
 % To mark revisions:
 %
@@ -41,7 +46,7 @@ require(dplyr, quietly=TRUE)
 
 \begin{document}
 
-\title{Changes in damaging hail in major Australian cities with global warming}
+\title{Changes in hail damage potential in major Australian cities with global warming}
 
 \authors{Timothy H. Raupach\affil{1,2,3}, Joanna Aldridge\affil{4,5}}
 
@@ -60,35 +65,35 @@ require(dplyr, quietly=TRUE)
 
 \begin{keypoints}
 \item Hail causes more damage when hailstones are larger or coincident winds are
-stronger, yet there is high uncertainty in the changes in these factors with
+stronger, yet there is high uncertainty around changes to these factors with
 global warming.
 \item Convection-permitting downscaled simulations for a climate scenario with
-$\sim$2.8 warming over pre-industrial global mean temperature were used to
+$\sim$2.8 K warming over pre-industrial temperatures were used to
 investigate possible future changes in hail size and coincident wind strength
 over major Australian cities and the remote Western Australian Goldfields
 region.
 \item The simulations project increases in some regions, with increases in hail
-frequency in the Sydney/Canberra and Brisbane regions and robust increases in
+frequency in the Sydney/Canberra and Brisbane regions, and robust increases in
 maximum hail size and coincident wind strength in the Melbourne and
 Sydney/Canberra regions.
 \end{keypoints}
 
 \begin{abstract} %% 150 words
       In Australia, hailstorms are a leading cause of insured losses, with
-      damage exacerbated if hailstones are larger or there are coincident strong
-      winds. Despite the high damage potential of such storms, changes to their
-      frequency and severity under global warming are not well understood. Here,
-      we use downscaled simulations over major cities and a remote region in
-      Australia to project changes in hail frequency, hailstone size, and
+      damage exacerbated by larger hailstones or coincident strong winds.
+      Despite the damage potential of such storms, changes to their frequency
+      and severity under global warming are not well understood. We used
+      downscaled simulations over major cities and a remote region in Australia
+      to project changes in storm-season hail frequency, hailstone size, and
       coincident wind speeds under a future scenario with
-      $\sim$2.8~$^{\circ{}}$~Celsius warming over pre-industrial global mean
-      temperature. The study regions cover over 60\% of the total Australian
-      population. Generalized extreme value analysis was used to examine changes
-      in daily maximum hail sizes and coincident wind speeds. The projections
-      show higher future hail damage potential in some regions, with increases
-      in hail frequency in the Sydney/Canberra and Brisbane regions, and robust
-      increases in maximum hail size and coincident wind strength in the
-      Melbourne and Sydney/Canberra regions.
+      $\sim$2.8~$^{\circ{}}$C warming over pre-industrial global mean
+      temperatures. The study regions cover 65\% of the Australian population.
+      Generalized extreme value analysis was used to examine changes in daily
+      maximum hail sizes and coincident wind speeds. The projections show higher
+      future hail damage potential in some regions, with increases in hail
+      frequency in the Sydney/Canberra and Brisbane regions, and robust
+      increases in maximum hail size accompanied by reductions in coincident
+      damaging winds in the Melbourne and Sydney/Canberra regions.
 \end{abstract}
 
 \section*{Plain Language Summary}
@@ -99,214 +104,195 @@ larger. They are also more damaging if there is high wind at the same time,
 because the wind can push hailstones sideways into breakable materials such as
 windows or house facades. We expect climate change to affect hailstorms, but
 there have been few studies on how hailstorm frequency and severity may change
-in future in Australia. In this study we used simulations of weather in a
-future, warmer climate scenario to look at possible changes in hailstone size
-and in the strength of winds when hail occurs, over major cities and a remote
-area in Australia. The simulations project an increase in hail severity for the
-heavily populated Melbourne and Sydney/Canberra regions, an increase in hail
-frequency in Sydney/Canberra and Brisbane regions, and no significant changes in
-the other areas we studied.
+in future in Australia. In this study we used simulations of storm-season
+weather in a future, warmer climate scenario to look at possible changes in
+hailstone size and in the strength of winds when hail occurs, over major cities
+and a remote area in Australia. The simulations project an increase in hail size
+for the heavily populated Melbourne and Sydney/Canberra regions accompanied by
+decreases in damaging coincident winds, an increase in hail frequency in
+Sydney/Canberra and Brisbane regions, and no significant changes in the other
+areas we studied.
 
 \section{Introduction}
 
-Hailstorms are most damaging when the hailstones they produce are larger
-\cite{Brimelow_WF_2002, Eccel_IJC_2012}, and when there are coincident strong
-winds that push  hailstones laterally \cite{Changnon_JAMC_1967,
-Towery_JAMC_1976}. While anthropogenic climate change is expected to affect
-severe convective storms \cite{Allen_2018} and their associated hazards of hail
+Hailstorms are most damaging when the hailstones they produce are larger and
+when there are coincident strong winds \cite{Brimelow_2018}. In Australia, hail
+is a leading cause of insured losses, with billion-dollar events recorded;
+high-loss events often involve both large hailstones and high winds
+\cite{ICA_2024}. While anthropogenic climate change is expected to affect severe
+convective storms \cite{Allen_2018} and their associated hazards of hail
 \cite{Raupach_NREE_2021} and extreme winds \cite{Brown_JGRA_2021}, there remains
-high uncertainty and geographical heterogeneity in projections of how these
-changes may manifest \cite{Raupach_NREE_2021, Brown_JGRA_2021}, and changes in
-the coincidence of hail and high winds have been virtually unstudied. Here, we
-use high-resolution downscaled simulations of a future, warmer environment to
-compare changes in hail damage potential over hail-prone areas of Australia.
-\todo{JA: suggest a bit more about the study aims/framework as this is useful
-for the reader to understand upfront – ie one climate scenario, one time frame,
-CMIP6 ensemble}
+high uncertainty and geographical heterogeneity in the details of how changes
+may manifest, and changes in the coincidence of hail and high winds have been
+virtually unstudied. Here, we use high-resolution downscaled simulations of a
+future with $\sim$2.8~$^{\circ{}}$C global warming over pre-industrial
+temperatures to examine changes in hail size and coincident wind strength, and
+thus hail damage potential, over hail-prone areas of Australia.
 
-\todo{What is known of hail and wind changes with global warming}
-\cite{Allen_JC_2014} used an environment-based approach to suggest an increase
-in severe thunderstorm incidence in south-east Australia, although with a wide
-range of uncertainty. \cite{Walsh_CC_2016} review the current and future
-storm-related wind and hail hazard in Australia and found future projections of
-wind hazard increase along the populated east coast of Australia. \todo{More to
-add here. JA: You need to add your own studies.}
+Damaging severe storm hazards include hail over 2 cm diameter or wind gusts over
+90 km h$^{-1}$ \cite{Allen_2018}. Hail and convective winds are usually studied
+separately \cite{Mohamed_WCE_2024}. Convective storm catastrophe models for
+insurance typically simulate separate event instances for hail and strong winds
+\cite{Kunz_2017}. However, high-loss hail events often include damaging winds
+\cite<e.g.>{ICA_2024}, and the coincidence of wind and hail is an important
+driver of loss \cite{Schuster_AR_2006, Mohamed_WCE_2024}. Wind-driven hail,
+owing to its greater force and oblique angle of impact, increases damage to
+crops \cite{Changnon_JAMC_1967, Towery_JAMC_1976}, with up to several times
+greater damage potential than hail without coincident horizontal wind
+\cite{Morgan_JAMC_1976}. Wind-driven hail can also increase damage to the built
+environment \cite{Brown_WCS_2015}, for example to external walls or windows of
+buildings and vehicles \cite{Changnon_2009, Mohamed_WCE_2024}. There have been
+climatological studies on hail and wind co-occurrence in the United States
+\cite{Carletta_2010, Bell_WF_2023}, but not for Australia. In Australia, wind
+loadings are considered in the building code \cite{ABCB_2024}, but hail is
+unaccounted for in building design standards \cite{ACSE_2022}.
 
-\todo{Impacts in Australia} Severe convective storms are responsible for insured
-losses of over \$A40b in Australia from 1967 to 2023 (in 2022 dollars),
-accounting for 25\% of insured catastrophe losses \cite{ICA_2024}. The largest
-insured loss for any catastrophe event in Australian history, at \$A8.845b
-\cite<normalized to 2022 dollars, >{ICA_2024}, was caused by the April 1999
-hailstorm impacting the eastern suburbs of Sydney. Examples of recent
-large-loss-causing hail events in Australia associated with both giant hail and
-strong winds include the January 2020 ``tri-city'' storms which impacted
-Canberra, Melbourne and Sydney over three days, bringing 6 cm hail and a record
-117 km h$^{-1}$ wind gust to Canberra, 5.5 cm hail to Melbourne, and 7 cm hail
-to Sydney \cite{AIDR_2020}, and causing \$A1.68b in insured losses
-\cite{ICA_2024}; the April 2020 Rockhampton hail storm, which delivered up to 12
-cm hail and 100 km h$^{-1}$ wind gusts to the Queensland towns of Rockhampton
-and Yeppoon \cite{ABC_2020} and caused \$A0.5b in insured losses
-\cite{ICA_2024}; and the 31 October 2020 ``hailoween'' hailstorm that impacted
-the southern suburbs of Brisbane with up to 14 cm hail and extensive wind damage
-\cite{AIDR_2021} and caused \$A1.056b in insured losses \cite{ICA_2024}. These
-events are discussed in greater detail in the Supporting Material.
+Hailstorms were responsible for over 20\% of insured losses in Australia from
+1967 to 2023, and the largest normalized insured loss in Australian history, at
+\$A8.845b, was the April 1999 hailstorm in Sydney \cite{ICA_2024}. Examples of
+high-loss Australian events with both giant ($\geq$5 cm) hail and damaging winds
+include the January 2020 ``tri-city'' storms which, over three days, brought 6
+cm hail and a record 117 km h$^{-1}$ wind gust to Canberra, 5.5 cm hail to
+Melbourne, and 7 cm hail to Sydney \cite{AIDR_2020}, the April 2020 Rockhampton
+hail storm with 12 cm hail and 100 km h$^{-1}$ wind gusts \cite{ABC_2020}; and
+the October 2020 hailstorm in Brisbane with up to 14 cm hail and extensive wind
+damage \cite{AIDR_2021}. These events caused \$A1.68b, \$A0.5b, and \$A1.056b in
+insured losses, respectively \cite{ICA_2024} (see Supporting Information).
 
-\todo{Reasons for combining hail and wind} Hail and convective winds are often
-studied separately, with typical severe convective storm catastrophe models
-generating synthetic event sets of hail and wind hazards as separate event
-footprints \mref{}. However, the coincidence of wind and hail is an important
-driver of loss. Wind-driven hail, both due to its greater force and oblique
-angle of impact, has greater potential to injure people, destroy crops
-\cite{Changnon_JAMC_1967, Towery_JAMC_1976} and cause damage to the built
-environment, such as damaging cladding to external walls, breaking windows of
-buildings and motor vehicles and letting rainwater inside to damage internal
-fixtures and contents \mref{}. Examination of recent high-loss hail events in
-Australia shows that wind is often mentioned as a contributing factor \mref{}.
-Common thresholds for damaging conditions include hail over 2 cm in diameter
-\mref{} or wind gusts over 90 km h$^{-1}$ \cite{Allen_2018}. Wind driven hail
-events are defined here as hail exceeding 5 cm in diameter  and wind gusts
-exceeding 100 km/h (27.8 m/s) occurring in the same system within a one-hour
-timeframe \mref{}. Wind driven hail events are most likely to be associated with
-supercells where downbursts occur \mref{}. Observational data in the United
-States of America (USA) identified squall lines, isolated cells, and clusters of
-cells as the most frequent systems associated with wind driven hail
-\cite{Carletta_2010}. \cite{Bell_WF_2023} compiled 1646 hail and wind damage
-swaths for the mid-west of the USA using satellite observations for use in
-future understanding of the frequency of these events. No such studies for
-Australia have been identified.
+Convective storms are expected to be affected by climate change, yet changes are
+highly uncertain \cite{IPCC_2021_WGI_Ch_11}. Broadly, warming increases the
+atmospheric moisture content, which in isolation would lead to increased
+atmospheric instability and more frequent and intense severe storms
+\cite{Brooks_AR_2013, Allen_2018}. However, offsetting effects such as increases
+in convective inhibition \cite{Chen_JC_2020} or decreased vertical wind shear
+\cite{Brooks_AR_2013} are possible. The varying balance of these changes leads
+to high uncertainty \cite{IPCC_2021_WGI_Ch_11}. For hailstorms, the
+thermodynamic expectation is of increasing instability promoting vigorous storms
+that can support larger hailstones, while increased melting reduces small hail
+occurrence at the surface; the end result being fewer hailstorms but larger
+hailstones when they do occur \cite{Raupach_NREE_2021}. However, there is large
+geographical heterogeneity in observed and modelled changes and accordingly high
+uncertainty on changes globally \cite{Raupach_NREE_2021}. Climate change may
+intensify convective (straight-line) winds by enhancing evaporative cooling and
+increasing storm downdraft strengths \cite{Prein_NCC_2023}, but overall
+confidence in changes remains low \cite{IPCC_2021_WGI_Ch_11} with few regional
+studies \cite{Brown_NHESS_2024, Prein_NCC_2023, Brown_JGRA_2021}. Global models
+are typically unable to explicitly resolve convection, so analysis of global
+changes relies on studying storm-prone environments rather than the resulting
+storms or their hazards \cite{Singh_PNAS_2017, Lepore_EF_2021}.
 
-\todo{Australian context re building codes} While wind loadings are currently
-considered in the Australian building code \cite{ABCB_2024} under standard
-AS1170.2 \cite{Standards_2021}, the impact of hail and wind-driven hail is not
-currently considered in Australian building design. The \citeA{ACSE_2022}
-discuss hail loading on roofs and acknowledge that this effect is not accounted
-for under the current design standards. The April 2015 hail event impacting
-western Sydney is discussed including the collapse of warehouse buildings from
-hail loading on roofs. A guide of ultimate limit and service limit state designs
-for various building types is presented, but wind driven hail is not considered.
-Some roofing products are tested for hail impacts against standards, but many
-products are unrated. In the ICC building code \cite{ICC_2008}, hail is
-considered in two hail regions in the USA defined using observational data:
-moderate and severe, depending on the likelihood of at least one day of 1.5--3
-mm \todo{check} hail in a 20-year period. This code requires testing of roofing
-materials such as asphalt, wood and slate shingle, clay or concrete tiles, metal
-roofing panels and shingles in these zones. The changing occurrence of hail over
-time is not considered in that code. In Canada, while hail impact is not
-considered in the current building code,  change is being sought in the
-aftermath of the 2020 Calgary hailstorm which caused \$C1.4b of insured loss.
-Resilience measures may include increasing roof slope, using resistant roofing
-materials and roof underlays \cite{ICLR_2018}. A finding was that a steeper roof
-limits damage from wind-driven hail on the leeward side of a property. The lack
-of research into impact resistant non-roof housing elements, such as windows,
-doors, sidings, fascia and skylights, is noted, and these elements are often
-subject to damage in the most destructive storms.
+Most studies on changes to hail in Australia have focused on small regions in
+the southeast \cite<summarized in>{Raupach_npjCAS_2023}. In a continental
+analysis of reanalyses, proxy-based hail-prone days decreased over 1979--2021
+across most of Australia, but increased by $\sim$40\% in the southeast and
+southwest, with instability changes driving trends \cite{Raupach_npjCAS_2023}.
+Proxy-based studies generally project end-of-century severe storm environment
+frequency increases in Australia's east and north \cite{Allen_JC_2014,
+Singh_PNAS_2017, Lepore_EF_2021}. Studies projecting hailstorm severity show a
+range of outcomes, from no significant changes in losses in Australia's east
+under doubled CO$_2$ \cite{McMaster_NH_2001} and no change in severity at two
+southeastern point locations in 2040--2060 versus 1980--2000
+\cite{Niall_IJC_2005} to increasing severe hail frequency around Sydney in
+2001--2050 compared to 1990--2002 \cite{Leslie_AR_2008}. Global models project
+low-confidence increases in severe convective wind environments for southern and
+eastern Australia, while convection-permitting and regional models show
+potential increases \cite{Dowdy_2021}. For south-eastern Australia in a
+mid-century high-emissions scenario, convective-wind-prone environments with
+high moisture are projected to increase, while those with steep lapse rates are
+projected to decrease \cite{Brown_NHESS_2024}. These changes agree with
+proxy-based results in which the sign of the change depends on the proxy's
+dominant ingredient \cite{Brown_JGRA_2021}. That the sign of the overall change
+depends on the environment type highlights the uncertainty around such
+projections \cite{Brown_NHESS_2024}.
 
-\todo{What we have done here} Here, we seek to understand how the coincidence of
-extreme winds and damaging hail may change in a future climate in Australia. We
-conducted analyses covering the major Australian cities of Perth, Adelaide,
-Melbourne, Canberra, Sydney, and Brisbane, and a remote region around the town
-of Kalgoorlie in the Western Australian Goldfields. The populations of these
-cities covers over 60\% of the total Australian population \mref{}. Proxy-based
-climatologies show these regions to be hail-prone \cite{Raupach_npjCAS_2023}. We
-investigate regional correlations in hail frequency, hail size and convective
-parameters, to better understand the potential for growth in hail hazard in the
-domains surrounding Australia's major population centers. Growing risk in
-multiple locations may present a challenge to community resilience and the
-insurance industry by requiring more robustness and redundancy in both the
-supply chain and capital to repair damage across several states. Understanding
-projected changes in the contributing convective parameters aids our
-understanding of the driving processes behind projected hail changes.
+Here, we show projected changes in hail size and in coincident winds in
+Australia under global warming, using convection-permitting simulations covering
+the major Australian cities of Perth, Adelaide, Melbourne, Canberra, Sydney, and
+Brisbane, and a remote region around Kalgoorlie in the Western Australian
+Goldfields. Over 65\% of the Australian population live in these cities \cite<at
+June 2023,>{ABS_2023_national, ABS_2023_regional}. Sydney and Brisbane are in
+the most hail-prone region of Australia, while Melbourne, Perth, and Canberra
+are all considered hail-prone, Kalgoorlie may be a local hail hotspot, and
+Adelaide has the lowest hail probability of the studied regions
+\cite{Raupach_npjCAS_2023, Brook_MWR_2024}. We examine changes in hail
+frequency, hail size, convective parameters, and regional correlations, to
+understand changes in hail damage potential in Australia's heavily-populated
+hail-prone regions.
 
-\section{Methods}
+\section{Data and methods}
 
 \subsection{Simulations of historical and projected weather}
 
 Historical and future simulations were produced using the Advanced Research
-Weather Research and Forecasting (AR-WRF) weather model version 4.4.1
-\cite{Skamarock_2021} for six nested domains. Two model configurations were
-used, with settings other than the domain configurations the same for both
-(Supporting Information Table \ref{SM-tab:schemes}). In total, we used two
-coarse- ($\sim$27 km grid spacing), four medium- ($\sim$9 km), and six
-fine-resolution ($\sim$3 km) domains with a parent-child scaling ratio of three
-(Supporting Information Figure \ref{SM-fig:domains}). WRF-HAILCAST
-\cite{Adams-Selin_WF_2019} was enabled for the fine-resolution domains, to
-estimate maximum hailstone diameters at the surface. Boundary condition inputs
-were prepared using the \texttt{nc2wrf} code of \citeA{Xu_code_data_2021}. 
+Weather Research and Forecasting (AR-WRF) model version 4.4.1
+\cite{Skamarock_2021} for multiple double-nested domains (Supporting Information
+Figure \ref{SM-fig:domains}) with common settings (Supporting Information Table
+\ref{SM-tab:schemes}). The fine-resolution domains had a convection-permitting
+grid spacing of $\sim$3 km. In these domains, WRF-HAILCAST
+\cite{Adams-Selin_WF_2019} was enabled to estimate hailstone diameters at the
+surface. 
 
-Simulations were run for two epochs of 20 convective seasons each: the
-historical epoch ran from 1989 to 2009, and the future epoch from 2080 to 2100.
-For each convective season, simulations were run from 00Z September 30 to 18Z
-February 28, with hourly output resolution. Outputs were converted to local
-summer time and subset to cover October 1 to February 28 inclusive in each
-season. For each season the 14 to 16 simulated hours on 30 September local time
-were discarded as model spin-up time. Model outputs provide instantaneous hourly
-values for most variables, including wind speed at 10 m above ground level. In
-contrast, for each grid point and each hour, HAILCAST output the maximum hail
-diameter over all model time steps during the previous hour. The time step for
-the coarse domain was set to 100 s, but reduced to 80 s or 60 s for simulation
-days on which Courant-Friedrichs-Lewy (CFL) errors occurred. HAILCAST was run at
-every model time step, so on those days for which the time step was reduced,
-HAILCAST ran more often. However, here we use maximum hail sizes per day, and
-the sample of hail sizes per day is large, so we expect minimal effect of this
-time step variability. Except for the overall maxima shown in Section
-\ref{sec:overall_maxima}, we subset all our analyses to consider only times and
-locations where there was non-zero surface hail recorded in the preceding hour.
-Wind speeds and convective parameters are thus instantaneous values in temporal
-proximity to hail occurrences.
+Simulations were run for historical (1989--2009) and future (2080--2100) epochs,
+each containing 20 convective seasons. For each season, simulations were run
+from 00Z September 30 to 18Z February 28. Hourly outputs were converted to local
+summer time and subset to October 1 to February 28 inclusive in each season,
+with the 14--16 simulated hours on 30 September local time discarded for model
+spin-up. Hourly values were instantaneous for most variables, but HAILCAST
+outputs were maximum hail sizes over each simulated hour. The time step for the
+coarse domain was 100 s, reduced to 80 s or 60 s for days on which
+Courant-Friedrichs-Lewy (CFL) errors occurred. HAILCAST ran every model time
+step, so on days with reduced time step HAILCAST ran more often. Here we used
+daily maximum hail size, giving a large sample of hail sizes, so we expect
+minimal effect of this time step variability. Except for the overall maxima
+shown in Section \ref{sec:overall_maxima}, we subset all our analyses to
+consider only times and locations where surface hail was recorded, thus covering
+hail swathes for each hour. Wind speeds and convective parameters were therefore
+instantaneous values within one hour of hail occurrence.
 
-\subsection{Processing of simulation outputs}
+Boundary conditions for the simulations were bias-corrected data by
+\citeA{Xu_SD_2021}, with a mean climate and interannual variance derived from
+European Centre for Medium-Range Weather Forecasts Reanalysis 5
+\cite<ERA5,>{Hersbach_QJRMS_2020} and a non-linear trend derived from the
+ensemble mean of 18 Coupled Model Intercomparison Project Phase 6
+\cite<CMIP6,>{Eyring_GMD_2016} models. Boundary conditions were prepared using
+the \texttt{nc2wrf} code of \citeA{Xu_code_data_2021}. Future projections used
+the SSP2-4.5 shared socioeconomic pathway \cite<SSP,>{ONeill_GEC_2017}. The
+global mean temperature in the boundary conditions was 0.39 K greater than
+pre-industrial \cite<1850--1990 in the CMIP6 35-model ensemble,>{Gutierrez_2021}
+for the historical epoch and 2.81 K greater for the future epoch, separating the
+epochs by 2.42 K of warming.
 
-Examination of maximum hail size fields showed that HAILCAST occasionally
-produced unreasonably large hail sizes, particularly over water bodies
-(Supporting Information Figure \ref{SM-fig:maxes_with_removed_pts}). Since our
-focus is on hail hazard on land, we subset the data to land areas using the WRF
-land mask with small holes filled and a slight erosion applied so that points
-over the ocean, large bodies of water, or directly over the coastal boundary are
-not considered in this study. Further, we removed from consideration any
-HAILCAST value of surface hail over 180 mm diameter \cite<this value being
-greater than the largest hail ever observed in Australia, at $\sim$16
-cm,>{BOM_2021}. HAILCAST has been updated in more recent versions of WRF than
-used here, and while the updated version reduces the occurrence of
-unrealistically large hail sizes the changes do not affect the majority of
-HAILCAST results, meaning that removing possibly erroneous very large hail
-sizes, as we do here, leaves a reasonable dataset for analysis (pers. comm. B.
-Adams-Selin, 2024). In all, less than 0.006\% of non-zero hail-diameter values
-(not over water) were removed for being too large, per domain. Convective
-parameters were calculated as described in \citeA{Raupach_MWR_2023}.
+HAILCAST occasionally produced unreasonably large hail sizes, particularly over
+water bodies; since our focus was on hail hazard on land, we subset the data to
+land areas (Supporting Information Figure \ref{SM-fig:maxes_with_removed_pts}),
+and removed any HAILCAST value of surface hail over 180 mm diameter \cite<this
+being larger than the Australian hail record of $\sim$16 cm,>{BOM_2021}. Updates
+to HAILCAST since the version used here may address these large hail sizes, but
+the majority of HAILCAST results would not be affected, so our approach of
+removing very large hail sizes is reasonable (pers. comm. B. Adams-Selin, 2024).
+In all, less than 0.006\% of non-zero hail-diameter values over land were
+removed per domain. Convective parameters were calculated as described in
+\citeA{Raupach_MWR_2023}, and wind speeds were 10 m winds. Radar data
+\cite{Soderholm_radar_data} were used to compare historical epoch statistics to
+independent observations.
 
-\subsection{Statistical modelling of extreme values}
+\subsection{Statistical modelling}
 
-Extreme value analysis was completed using the R \cite{R_software} package
+For extreme value analyses we used the R \cite{R_software} package
 \texttt{extRemes} \cite{Gilleland_JSS_2016}. Block maxima were defined as daily
-maximum hailstone sizes and wind speeds at hail locations per domain, under the
-assumption that such time series can be considered independent \cite{Coles_2001}
-because single hail storms do not last more than one day. Generalized extreme
-value (GEV) distributions were fitted to each series of block maxima. We used
-quantile-quantile (QQ) plots \cite{Coles_2001} and the Kolmogorov–Smirnoff (KS)
-test to assess the goodness of fit of the GEV distributions, by examining the
-similarity of the empirical distributions of block maxima and values drawn from
-the fitted GEV distributions. The KS test was also used to examine the
-(dis)similarity of GEV distributions fitted to historical versus future epochs.
-When the KS test was used, we generated a probabilistic view of the similarity
-between distributions by drawing 1000 values from the GEV distribution(s),
-applying the KS test, and repeating this process 100 times to generate 100 KS
-test results.
-
-\section{Data}
-
-Boundary conditions used for the simulations were bias-corrected data for
-downscaling by \citeA{Xu_SD_2021}. These boundary conditions have a mean climate
-and interannual variance derived from European Centre for Medium-Range Weather
-Forecasts Reanalysis 5 \cite<ERA5,>{Hersbach_QJRMS_2020}, with a non-linear
-trend derived from the ensemble mean of 18 Coupled Model Intercomparison Project
-Phase 6 \cite<CMIP6,>{Eyring_GMD_2016} models \cite{Xu_SD_2021}. Future
-projections used the ``middle-of-the-road'' SSP2-4.5 shared socioeconomic
-pathway \cite<SSP,>{ONeill_GEC_2017}. On average the historical period in our
-simulations (1980--1999) had a global mean temperature 0.39 K above
-pre-industrial temperatures \cite<1850--1990, using the CMIP6 35-model
-ensemble,>{Gutierrez_2021} while the future period (2080--2099) had a global
-mean temperature 2.81 K over pre-industrial temperatures. The historical and
-future epochs were thus separated by 2.42 K of warming.
+maxima of hailstone sizes and wind speeds per domain, under the assumption of
+independence \cite{Coles_2001} because single hail storms do not last more than
+one day. Only locations with non-zero hail sizes were considered. Generalized
+extreme value (GEV) distributions were fitted to each block maxima series. We
+used quantile-quantile (QQ) plots \cite{Coles_2001} and the Kolmogorov–Smirnoff
+(KS) test to assess goodness of fit. The KS test was also used to examine the
+(dis)similarity of GEV distributions for historical versus future epochs. When
+applying the KS test we generated a probabilistic view by drawing 1000 values
+from the GEV distribution(s), applying the KS test, and repeating 100 times.
+Return levels were calculated in terms of hail days, with return periods
+converted to years based on the mean annual hail days per epoch and domain.
+Distribution means were compared using Welch's two-sample t-test to provide
+statistical significance and confidence intervals.
 
 \section{Results}
 \label{sec:results}
@@ -314,170 +300,117 @@ future epochs were thus separated by 2.42 K of warming.
 \subsection{Overall maxima}
 \label{sec:overall_maxima}
 
-Before taking a more rigorous statistical approach, it is useful to consider the
-maps of overall maxima for the quantities of interest here: hailstone size, and
-10 m wind speed at hail hours. Figure \ref{fig:max_hail_sizes_by_domain} shows
-overall maximum hail sizes across each domain for each epoch. Hailstorm tracks
-are visible. By eye, an increase in maximum hail sizes is apparent for domains
-other than Perth and Brisbane, with increases in storm coverage or activity in
-the Adelaide, Goldfields (Kalgoorlie), Melbourne and Canberra/Sydney domains.
-Maximum wind speeds at hail hours are more widespread in the future scenarios
-than the historic scenarios, with an eastward expansion in areas experiencing
-maximum wind speeds in the Brisbane and Adelaide domains and a southern shift in
-the Goldfields (Kalgoorlie) region (Supporting Information Figure
+Hailstorm tracks are visible in maps of overall maximum hail size (Figure
+\ref{fig:max_hail_sizes_by_domain}), and an increase in maximum hail sizes is
+apparent for domains other than Perth and Brisbane, with increases in storm
+activity in the Adelaide, Kalgoorlie, Melbourne and Canberra/Sydney domains.
+Maximum wind speeds coincident with hail were more widespread in the future
+scenarios than the historic scenarios, with an eastward expansion in areas
+experiencing maximum wind speeds in the Brisbane and Adelaide domains and a
+southern shift in the Kalgoorlie region (Supporting Information Figure
 \ref{SM-fig:max_wind_by_domain}).
 
 \begin{figure}[!h]
       \includegraphics[width=\textwidth]{figures/max_hail_sizes_by_domain}
       \caption{Maximum hail sizes in historical and future climates, for
       Adelaide (a, b), Brisbane (c, d), Goldfields (Kalgoorlie) (e, f),
-      Melbourne (g, h), Perth (i, j) and Sydney/Canberra (k, l) domains. \todo{JA: – (k,l) can you plot the location of Canberra and
-      Sydney? I feel the reviewers might comment that this domain has a boundary
-      issue coming from the upper left corner. I don’t feel that hail storms
-      typically propagate NW to SW in this region, they typically track from the
-      W or SW? This appears to the only domain where the behaviour of the hail
-      storms changes in the future, if you think that is real, then we should
-      discuss it in the text as its interesting.}}
+      Melbourne (g, h), Perth (i, j) and Sydney/Canberra (k, l) domains. Fuchsia
+      contours surround significant urban areas \cite{ABS_2022}, with Canberra
+      in the southwest of figures k and l. Color bar is truncated for contrast.}
       \label{fig:max_hail_sizes_by_domain}
 \end{figure}
 
-\subsection{Changes in frequency of hail}
-
-Table \ref{tab:frequency} shows changes in the frequency of hail days across the
-six study domains. There are significant increases in hail frequency in the
-Sydney/Canberra and Brisbane domains, with a 29\% increase in seasonal hail days
-in the Sydney/Canberra region. There are small non-significant frequency
-decreases in Adelaide, the Goldfields (Kalgoorlie) and Melbourne domains, and an
-indication of an increase in seasonal hail days in the Perth region, albeit not
-statistically significant. The variability in seasonal hail days is similar
-between epochs.
-
-\begin{table}[!ht]
-      \centering
-      \caption{Mean and standard deviation of seasonal hail days in the historic
-      and future simulations, and relative future changes with 95\% confidence
-      interval according to Welch's two-sample t-test, per domain. Statistical
-      significance of the change calculated by Welch's two-sample t-test is
-      indicated by $\ast{}$ for a 90\% confidence level ($p < 0.1$) and
-      $\ast{}\!\ast{}$ for a 95\% confidence level ($p < 0.05$).}
-      \label{tab:frequency}  
-      \begin{tabular}{lrrr@{}l@{}r}
-            \hline
-            Domain & Historic days & Future days & \multicolumn{3}{r}{Future change} \\ 
-            \hline
-            <<hail_freq_table, echo=FALSE, include=TRUE, results="asis">>=
-            lines = read_lines("tables/hail_freq_table.tex")
-            for (line in lines[5:10]) {
-                  cat(line)
-            }
-            @
-            \hline 
-       \end{tabular}
-\end{table}
-
 \subsection{Extreme value analysis}
 
-\todo{JA: For Sydney and Melbourne domains (or all of them) you need to plot the
- extreme value curves to show how the 3 parameters are changing the shape of the
- curves. I see the curves currently are presented after the change in the
- parameters. Would it be better to start with these curves rather than the
- change in the parameters?}
+\subsubsection{Model fits}
 
-\todo{JA: A reviewer might ask if these results are sensitive to threshold. You
-could also chose to keep the 3rd parameter constant if it is physically
-reasonable that the whole shape of the tail of the curve would not change (we
-force this for cyclone and flood, we do not expect the curve to increase forever
-with increasing RP due to physical constraints).}
-
-\subsubsection{GEV goodness of fit}
-
-GEV models were fitted to time series of daily maximum hail sizes and 10 m wind
-speeds at hail hours (Supporting Information Figures
-\ref{SM-fig:timeseries_hail} and \ref{SM-fig:timeseries_wind}). QQ plots for
-hail size show acceptable agreement with some model overestimation of high
-quantiles (Supporting Information Figure \ref{SM-fig:qq_hail}), while QQ plots
-for wind speed at hail hours show excellent agreement between modelled and
-empirical quantiles (Supporting Information Figure \ref{SM-fig:qq_wind}). In all
-cases where the model was compared to empirical values, either all or the bulk
-of KS test $p$ values were above the 0.05 level, indicating that the null
-hypothesis that the two samples are drawn from the same distribution can not be
-rejected (Supporting Material Figure \ref{SM-fig:ks_pvals}). The QQ plot and KS
-test results show that the GEV models have sufficient goodness of fit for the
-analyses here. 
+GEV models were fitted to block maxima time series (Supporting Information
+Figures \ref{SM-fig:timeseries_hail} and \ref{SM-fig:timeseries_wind}), with
+reasonable resulting fits (Supporting Information Figures
+\ref{SM-fig:densities_hail} and \ref{SM-fig:densities_wind}). QQ plots for hail
+size showed acceptable agreement with some model overestimation of high
+quantiles, while wind speed QQ plots showed excellent agreement (Supporting
+Information Figures \ref{SM-fig:qq_hail} and \ref{SM-fig:qq_wind}). KS tests
+comparing modelled to empirical distributions produced $p$ values largely above
+0.05 (Supporting Material Figure \ref{SM-fig:ks_pvals}). The GEV models had
+sufficient goodness of fit for our analyses.
 
 \subsubsection{Significance of changes}
 
-Having determined that the GEV fits to empirical data are valid, we now consider
-whether the fitted models show any significant difference between the historical
-and future epochs. Figure \ref{fig:gev_parameters} shows the fitted parameters
-and their confidence intervals for all the GEV models used in this study. The
-models fitted for the Melbourne and Sydney/Canberra domains both show
-significant differences between epochs in the location or scale parameters for
-both hail size and wind at hail hours, whereas the models for the other domains
-have parameters with overlapping confidence intervals. These results are further
-supported by the $p$ value distributions from KS tests when historical models
-are compared to future models (Supporting Information Figure
-\ref{SM-fig:ks_pvals}). The null hypothesis that the samples are drawn from the
-same distribution can be rejected for the Melbourne and Sydney/Canberra domains
-for both maximum hail size and maximum wind speed at hail hours, and for the
-Perth domain for wind only. To be conservative, we conclude that the changes in
-maxima between epochs are significant in the Melbourne and Sydney/Canberra
-domains, but not significant in the other domains.
-
-\begin{figure}[!ht]
-      \includegraphics[width=\textwidth]{figures/fit_params}
-      \caption{Location (a, d), scale (b, e), and shape (c, f) parameters for
-      fitted GEV distributions for maximum hail size (a--c) and 10 m wind at
-      hail hours (d--f). Parameter values are shown as a point and whiskers show
-      95\% confidence intervals.}
-      \label{fig:gev_parameters}
-\end{figure}
+Only the models for the Melbourne and Sydney/Canberra domains showed
+non-overlapping parameters confidence intervals between epochs for both hail
+size and coincident wind speed (Supporting Information Figure
+\ref{SM-fig:gev_parameters}). KS test $p$-value distributions for historical
+compared to future models showed that there were significant changes for the
+Perth domain for wind, and for the Melbourne and Sydney/Canberra domains for
+both hail and wind (Supporting Information Figure \ref{SM-fig:ks_pvals}). We
+conclude that the changes in hail and coincident wind maxima between epochs were
+significant only in the Melbourne and Sydney/Canberra domains.
 
 \subsubsection{Return periods}
 
-\todo{JA: should be showing the return period of hail days in years}
-\todo{JA: Extension – can this be expanded into bivariate GEV bt wind and hail?}
+<<readResults_RP, echo=FALSE, include=TRUE>>=
+rps = read_feather("../../results/return_periods.feather")
 
-Figure \ref{fig:return_periods_probs_hail} shows return period curves for
-maximum hail size and maximum wind speed at hail hours. Because our analysis is
-limited to hail days, the return periods are in number of hail days, not overall
-days. It is not uncommon for return period models based on the GEV family to
-produce non-physical extreme values such as the extremely large hail sizes
-predicted for large return periods here \cite[p. 66]{Coles_2001}. We take the
-advice of \citeA{Coles_2001} and interpret the results here based on the shorter
-return periods, thus keeping physical principles in mind. In Melbourne and
-Sydney/Canberra, the two domains with significant changes, there are increases
-in the maximum expected hail size for return periods longer than about three
-hail days, with the largest increase in the Melbourne region where the return
-period for 100 mm hail is reduced from more than 100 hail days to about 30 hail
-days. In both domains with significant changes the return period for lighter
-winds (less than about 18 m s$^{-1}$) is markedly shorter in the future
-scenario, but the return period for very strong winds is longer in the warmer
-scenario. For the other domains, with non-significant differences in GEV
-distributions, the most notable changes are a decrease in strong wind return
-periods for Adelaide and Goldfields (Kalgoorlie) regions and light wind return
-periods in the Perth region.
+ints = c('one', 'two', 'three', 'four', 'five', 
+         'six', 'seven', 'eight', 'nine', 'ten')
+
+rph = function(d, t, e) {
+      n = filter(rps, domain==d, threshold==t, 
+      variable=="hailcast_diam_max", epoch==e)$period
+      if (n < 10) {
+            n = ints[n]
+      }
+      return(n)
+}
+
+rpw = function(d, t, e) {
+      n = filter(rps, domain==d, threshold==t, 
+      variable=="wind_10m", epoch==e)$period
+      if (n < 10) {
+            n = ints[n]
+      }
+      return(n)
+}
+
+# Check claim.
+if (rpw("Melbourne", 80, "historical") != 
+      rpw("Sydney/Canberra", 80, "historical")) {
+      print("Melb/Syd historic wind return periods are not equal.")
+}
+@
+
+Figure \ref{fig:return_periods_probs_hail} shows return periods for hail size
+and coincident wind speed. Since GEV models can produce non-physical extreme
+values for long return periods, we interpret the results here based on shorter
+return periods \cite{Coles_2001}. In Melbourne and Sydney/Canberra, the domains
+with significant changes, there were increases in maximum hail size for all
+return periods, with the return period for 100 mm hail reducing between epochs
+from about \Sexpr{rph("Melbourne", 100, "historical")} to
+\Sexpr{rph("Melbourne", 100, "ssp245")} years, and about
+\Sexpr{rph("Sydney/Canberra", 100, "historical")} to
+\Sexpr{rph("Sydney/Canberra", 100, "ssp245")} years, respectively. In both
+domains the return period for lighter winds (less than $\sim$20 m s$^{-1}$) was
+shorter in the future scenario, but damaging winds occurred less often in the
+projections, roughly doubling in return period from \Sexpr{rpw("Melbourne", 80, "historical")} years to \Sexpr{rpw("Sydney/Canberra", 80, "ssp245")}--\Sexpr{rpw("Melbourne", 80, "ssp245")} years. For the other domains, the most notable changes were decreases in
+damaging wind return periods for the Adelaide and Kalgoorlie regions, and in
+light wind return periods around Perth.
 
 \begin{figure}[!ht]
       \includegraphics[width=\textwidth]{figures/return_periods}
-      \caption{Return period plots for maximum hail size (a--f) and maximum wind
-      at hail hours (g--l) for the domains of Adelaide (a, g), Brisbane (b, h),
+      \caption{Return periods for maximum hail size (a--f) and maximum wind
+      coincident with hail (g--l) for Adelaide (a, g), Brisbane (b, h),
       Goldfields (Kalgoorlie) (c, i), Melbourne (d, j), Perth (e, k), and
-      Sydney/Canberra (f, l). \todo{JA: I find the x-axis RP unit expressed as
-      hail days to be unusual – we want to measure if the number of days with
-      giant hail is increasing so I think the unit has to be years Since you
-      have extracted hail days in the season, then the measure of time is the
-      full season.}}
+      Sydney/Canberra (f, l) domains.}
       \label{fig:return_periods_probs_hail}
 \end{figure}
 
 \subsubsection{Probability of exceeding damaging thresholds}
 
-\todo{JA: is hail threshold 2 cm or 5 cm? I suggest to keep repeating the threshold.}
-
 <<readResults, echo=FALSE, include=TRUE>>=
 hail_probs = read_feather("../../results/hail_probs.feather")
 wind_probs = read_feather("../../results/wind_probs.feather")
+ing_changes = read_feather("../../results/ingredient_changes.feather")
 
 prob = function(d, di, e) {
       return(round(filter(hail_probs, domain==d, diam==di, epoch==e)$p, 0))
@@ -488,104 +421,132 @@ probw = function(d, s, e) {
 }
 @
 
-Figure \ref{fig:thresholds} shows the probability of a hail day producing
-various damaging hail and wind thresholds at hail hours (numerical results are
-shown in Supporting Information Table \ref{SM-tab:exceedence_probs}), comparing
-historical to future epochs. For hail, we examine the probability of a hail day
-producing severe (20 mm), giant (50 mm), and 100 mm hail, while for wind we
-examine 80 and 100 km h$^{-1}$ as damaging thresholds. In the Melbourne domain
-for any given hail day, the probability of severe hail jumps from
+Figure \ref{fig:thresholds} shows the probability of a hail day exceeding
+damaging hail and wind thresholds (numerical results in Supporting Information
+Table \ref{SM-tab:exceedence_probs}). Around Melbourne, the probability of a
+hail day producing severe (20 mm) hail increased from
 $\sim$\Sexpr{prob("Melbourne", 20, "historical")}\% in the historical epoch to
 $\sim$\Sexpr{prob("Melbourne", 20, "ssp245")}\% in the future scenario, while
-giant hail probability roughly triples (from $\sim$\Sexpr{prob("Melbourne", 50,
-"historical")}\% to $\sim$\Sexpr{prob("Melbourne", 50, "ssp245")}\%), and 100 mm
-hail is more than 5 times more likely (from $\sim$\Sexpr{prob("Melbourne", 100,
-"historical")}\% to $\sim$\Sexpr{prob("Melbourne", 100, "ssp245")}\%) in the
-future epoch. In the Sydney/Canberra domain, any given hail day has a
-probability of severe hail of $\sim$\Sexpr{prob("Sydney/Canberra", 20,
-"historical")}\% in the historical epoch which increases to
-$\sim$\Sexpr{prob("Sydney/Canberra", 20, "ssp245")}\% in the future scenario,
-while giant hail probability ($\sim$\Sexpr{prob("Sydney/Canberra", 50,
-"historical")}\% to $\sim$\Sexpr{prob("Sydney/Canberra", 50, "ssp245")}\%) and
-100 mm hail probability ($\sim$\Sexpr{prob("Sydney/Canberra", 100,
-"historical")}\% to $\sim$\Sexpr{prob("Sydney/Canberra", 100, "ssp245")}\%) both
-come close to doubling in the future epoch. Other non-significant increases in
-severe hail probability are shown for Brisbane, Perth, and Goldfields
-(Kalgoorlie) areas, with non-significant decreases in the Adelaide region, and
-the Goldfields region shows a non-significant increase also for giant hail
-probability. In Melbourne and Sydney/Canberra, the domains with significant
-differences, the probability of damaging winds at hail hours on a hail day
-decreases by about half for 80 km h$^{-1}$ wind speed at hail hours.
-Non-significant changes include an increase in the probability of 80 km h$^{-1}$
-wind speed at hail hours in the Goldfields (Kalgoorlie) region (from
-$\sim$\Sexpr{probw("Kalgoorlie", 22.22, "historical")}\% to
-$\sim$\Sexpr{probw("Kalgoorlie", 22.22, "ssp245")}\%) and Adelaide domain (from
-$\sim$\Sexpr{probw("Adelaide", 22.22, "historical")}\% to
-$\sim$\Sexpr{probw("Adelaide", 22.22, "ssp245")}\%), and for 100 km h$^{-1}$
-winds at hail hours for the Adelaide region (from $\sim$\Sexpr{probw("Adelaide",
-27.78, "historical")}\% to $\sim$\Sexpr{probw("Adelaide", 27.78, "ssp245")}\%).
-Other than for Adelaide, the probability of hail days producing 100 km h$^{-1}$
-wind speed at hail hours is close to zero in all domains across both epochs. 
+giant (50 mm) hail probability roughly tripled to $\sim$\Sexpr{prob("Melbourne",
+50, "ssp245")}\%, and 100 mm hail was more than five times more likely in future
+at $\sim$\Sexpr{prob("Melbourne", 100, "ssp245")}\%. Around Sydney/Canberra, the
+severe hail probability increased from $\sim$\Sexpr{prob("Sydney/Canberra", 20,
+"historical")}\% to $\sim$\Sexpr{prob("Sydney/Canberra", 20, "ssp245")}\%, while
+giant and 100 mm hail probabilities both nearly doubled to
+$\sim$\Sexpr{prob("Sydney/Canberra", 50, "ssp245")}\% and
+$\sim$\Sexpr{prob("Sydney/Canberra", 100, "ssp245")}\%, respectively.
+Non-significant changes included increases in severe hail probability around
+Brisbane, Perth, and Kalgoorlie but decreases around Adelaide, and an increase
+in giant hail probability in the Kalgoorlie region. Around Melbourne and
+Sydney/Canberra the low probability of an 80 km h$^{-1}$ wind coincident with
+hail in the historical epoch decreased by about half in the future epoch.
+Non-significant coincident wind changes include an increase in the probability
+of 80 km h$^{-1}$ winds around Kalgoorlie (from $\sim$\Sexpr{probw("Kalgoorlie",
+80, "historical")}\% to $\sim$\Sexpr{probw("Kalgoorlie", 80, "ssp245")}\%) and
+Adelaide (from $\sim$\Sexpr{probw("Adelaide", 80, "historical")}\% to
+$\sim$\Sexpr{probw("Adelaide", 80, "ssp245")}\%). The probability of hail days
+producing 100 km h$^{-1}$ coincident wind is close to zero in all domains across
+both epochs, except for Adelaide with $\sim$\Sexpr{probw("Adelaide", 100,
+"ssp245")}\% in future.
 
 \begin{figure}[!ht]
       \includegraphics[width=\textwidth]{figures/threshold_probs}
       \caption{Changes in the probability of exceeding thresholds on hail size
-      (a--f), and 10 m wind speed at hail hours (g--l), on any given hail day,
-      for the domains of Adelaide (a, g), Brisbane (b, h), Goldfields
-      (Kalgoorlie) (c, i), Melbourne (d, j), Perth (e, k), and Sydney/Canberra
-      (f, l). \todo{JA: can the significant results have filled in circles?}}
+      (a--f), and 10 m wind coincident with hail (g--l), on a hail day, for the
+      Adelaide (a, g), Brisbane (b, h), Goldfields (Kalgoorlie) (c, i),
+      Melbourne (d, j), Perth (e, k), and Sydney/Canberra (f, l) domains.}
       \label{fig:thresholds}
 \end{figure}
 
-\subsection{Changes in relevant atmospheric properties}
+\subsection{Changes in hail frequency and atmospheric properties}
 
-Table \ref{tab:ing_changes} shows projected changes in daily mean hail size,
-wind speed, and storm-relevant atmospheric properties, at hail times, in the
-future compared to historical simulations. Unlike in the extreme  value analysis
-above, here we used mean values for each season and test for differences between
-epochs using Welch's t-test. Mean hail size shows statistically significant
-increases \todo{JA: quantify increase here} in Melbourne and Sydney/Canberra,
-aligning with the extreme value analysis results for maximum hail size, but here
-there is also a significant increase in the Brisbane domain. Changes in mean
-wind are generally small, with the only significant changes being increases in
-the Perth and Sydney/Canberra domains. Changes in wind shear are varied, with a
-small significant increase in Kalgoorlie and a small significant decrease in
-Brisbane. Increases of $\sim$1\% in temperature at 500 hPa, and 8-10\% in
-freezing-level and melting-level heights are significant in every domain.
-Atmospheric instability increases in all domains, with significant increases in
-convective available potential energy (CAPE) at hail times in Adelaide,
-Brisbane, Melbourne, and Sydney/Canberra regions, while the results for lifted
-index (LI) are more mixed with fewer significant changes. Convective inhibition
-(CIN) also became stronger in all domains with significant decreases in
-Adelaide, Brisbane, the Goldfields (Kalgoorlie), Melbourne, and Sydney/Canberra.
-Lapse rate changes are generally small, although significant increases are shown
-in Brisbane and Sydney/Canberra. The extreme value analysis results for the
-domains where they showed significant changes, Melbourne and Sydney/Canberra,
-are supported by the large increases in convective instability and convective
-inhibition and freezing level height, that would support storm development,
-strong updrafts, and survival of large hailstones to the surface. Wind shear
-changes are not significant, indicating that these changes in damage are driven
-more by changes in instability than shear. In the Brisbane domain there is more
-of a balance between modest yet significant increases in instability and
-decreases in wind shear, indicating that in this domain there may be more
-offsetting of these two environmental factors leading to no significant change
-in damage potential in the GEV analyses.
+<<change_functions, echo=FALSE, include=TRUE>>=
+ing_change <- function(d, v) {
+      return(round(filter(ing_changes, domain==d, variable==v)[["abs_change"]], 1))
+}
+
+if (!(ing_change("Melbourne", "Mean hail") == 
+      ing_change("Sydney/Canberra", "Mean hail"))) {
+      print("Melbourne and Canberra/Sydney do not match.")
+}
+if (!(ing_change("Melbourne", "Mean hail") == 
+      ing_change("Brisbane", "Mean hail"))) {
+      print("Melbourne and Brisbane do not match.")
+}
+
+t500_change = unique(round(filter(ing_changes, 
+                  variable == "T500")[["abs_change"]], 0))
+
+if (t500_change != 2) {
+      print("T500 change is not 2 on all domains.")
+}
+
+change_range = function(v, dp = 0) {
+    r = range(round(filter(ing_changes, variable == v)[["abs_change"]], dp))
+    return(paste(r[1], "to", r[2]))
+}
+
+if (ing_change("Melbourne", "Mean hail") != ing_change("Sydney/Canberra", "Mean hail") || ing_change("Brisbane", "Mean hail") != ing_change("Melbourne", "Mean hail")) {
+      print("Mean hail size change is not 0.5 mm.")
+}
+
+if (ing_change("Sydney/Canberra", "LR") != ing_change("Brisbane", "LR")) {
+      print("LR does not match change between Canberra/Syd and Bris.")
+}
+@
+
+Table \ref{tab:ing_changes} shows projected changes in mean seasonal hail days,
+and means of daily average hail size, wind speed, and storm-relevant atmospheric
+properties, at hail times, in the future compared to historical simulations.
+Here we discuss only the statistically significant changes. Between epochs,
+there were increases in seasonal hail days of 29\% in the Sydney/Canberra
+region, and 15\% in the Brisbane area. The variability in seasonal hail days was
+similar between epochs (Supporting Information Table \ref{SM-tab:frequency}).
+Mean hail size increased by \Sexpr{ing_change("Melbourne", "Mean hail")} mm
+around Melbourne, Sydney/Canberra, and Brisbane, while maximum hail size
+increased by \Sexpr{ing_change("Melbourne", "Max hail")} mm around Melbourne and
+\Sexpr{ing_change("Sydney/Canberra", "Max hail")} mm around Sydney/Canberra.
+Mean wind changes were generally small, with increases of
+\Sexpr{ing_change("Perth", "Mean wind")} km h$^{-1}$ around Perth and
+\Sexpr{ing_change("Sydney/Canberra", "Mean wind")} km h$^{-1}$ around
+Sydney/Canberra. Maximum winds increased slightly in Brisbane and
+Sydney/Canberra, and by \Sexpr{ing_change("Melbourne", "Max wind")} km h$^{-1}$
+around Melbourne. Changes in wind shear were varied, with a small increase
+(\Sexpr{ing_change("Kalgoorlie", "S06")} m s$^{-1}$) in Kalgoorlie and a small
+decrease (\Sexpr{ing_change("Brisbane", "S06")} m s$^{-1}$) in Brisbane. In
+every domain there were increases in temperature at 500 hPa, freezing-level and
+melting-level heights. Convective available potential energy (CAPE) increased
+around Adelaide, Brisbane, Melbourne, and Sydney/Canberra, while changes in
+lifted index (LI) are more mixed. Convective inhibition (CIN) strengthened in
+all domains except Perth, and the lapse rate slightly increased in Brisbane and
+Sydney/Canberra. Wind shear decreased by \Sexpr{ing_change("Brisbane", "S06")} m
+s$^{-1}$ in Brisbane and increased by \Sexpr{ing_change("Kalgoorlie", "S06")} m
+s$^{-1}$ in Kalgoorlie, with these small changes indicating that the projections
+for hail damage potential are driven more by changes in instability than shear.
+The extreme value analysis results for Melbourne and Sydney/Canberra are
+supported by increasing convective instability, convective inhibition and
+freezing level height, indicating increased updraft strength combined with
+increased melting and survival of large hailstones to the surface. In the
+Brisbane domain there was more of a balance between modest increases in
+instability and decreases in wind shear, indicating that there may be offsetting
+of changes, leading to no significant change in damage potential in the GEV
+analyses.
 
 \begin{table}[h!]
-      \caption{Projected relative changes in mean hail size, 10 m wind (Wind),
-      bulk vertical wind shear from 0-6 km (S06), convective available potential
-      energy (CAPE), convective inhibition (CIN), lifted index (LI), temperature
-      at 500 hPa (T500), lapse rate from 700 to 500 hPa (LR), freezing-level
-      height (FLH), and melting-level height (MLH), for hail times by domain.
-      Statistical significance of the difference between historical and future
-      seasonal mean values, calculated using Welch's two-sample t-test, is shown
-      by $\ast{}$ for the 90\% confidence level, $\ast{}\!\ast{}$ for the 95\%
-      confidence level, and $\ast{}\!\ast{}\!\!\ast{}$ for the 99\% confidence
-      level. Bracketed ranges show the 95\% confidence interval on the changes.
-      Means are daily means of variables at hail times and locations. \todo{JA:
-      need to emphasise these stats are over the domain. Is there a threshold
-      hail size here? In Fig 1, Melbourne seems to have more extensive 8cm +
-      hail but this is not coming out in trends.}}
+      \caption{Projected relative changes in seasonal hail days, as well as
+      daily mean and maximum hail size, daily mean and maximum 10 m wind, and
+      daily mean bulk vertical wind shear from 0-6 km (S06), convective
+      available potential energy (CAPE), convective inhibition (CIN), lifted
+      index (LI), temperature at 500 hPa (T500), lapse rate from 700 to 500 hPa
+      (LR), freezing-level height (FLH), and melting-level height (MLH), for
+      hail times across each domain. Statistical significance is indicated by
+      $\ast{}$ for a 90\% ($p < 0.1$), $\ast{}\!\ast{}$ for a 95\% ($p < 0.05$),
+      and $\ast{}\!\ast{}\!\!\ast{}$ for a 99\% confidence level. Bracketed
+      ranges show 95\% confidence intervals for changes. Values for the
+      historical epoch are shown in Supporting Information Table
+      \ref{SM-tab:hist_means} and show a reasonable match to radar observations
+      of seasonal hail days (Supporting Information Table
+      \ref{SM-tab:radar_stats}).}
       \label{tab:ing_changes}
       \centering
       \begin{tabular}{lr@{}l@{}rr@{}l@{}rr@{}l@{}r}
@@ -594,7 +555,7 @@ in damage potential in the GEV analyses.
       \hline
       <<ing_changes_table1, echo=FALSE, include=TRUE, results="asis">>=
       lines = read_lines("tables/ingredients_1.tex")
-      for (line in lines[c(8,14,12,5,9,6,10,13,7,11)]) {
+      for (line in lines[c(8,14,12,15,13,16,5,9,6,10,17,7,11)]) {
             cat(line)
       }
       @
@@ -603,7 +564,7 @@ in damage potential in the GEV analyses.
       \hline
       <<ing_changes_table2, echo=FALSE, include=TRUE, results="asis">>=
       lines = read_lines("tables/ingredients_2.tex")
-      for (line in lines[c(8,14,12,5,9,6,10,13,7,11)]) {
+      for (line in lines[c(8,14,12,15,13,16,5,9,6,10,17,7,11)]) {
             cat(line)
       }
       @
@@ -613,123 +574,112 @@ in damage potential in the GEV analyses.
 
 \subsection{Correlations between regions}
 
-Correlations between seasonal values of hail relevant properties are shown in
-Figure \ref{fig:correlations}. There is co-fluctuation in hail days between the
-east-coast cities of Melbourne, Sydney/Canberra and Brisbane in both historical
-and future epochs, with Adelaide significantly correlated with Melbourne and
-Sydney/Canberra in the future projections. Correlations in hail diameter between
-the domains around Kalgoorlie, Perth, Melbourne, and Sydney/Canberra are
-considerably stronger in the future projections that in the historical epoch,
-while wind correlations between the Perth region and other south-western domains
-of Adelaide and Kalgoorlie are evident in the historical epoch but disappear in
-the future projections. Instability is correlated between Melbourne and
-Sydney/Canberra domains in both epochs. Temperature-related parameters show
-strong correlations between nearby domains, such as the western domains of the
-Goldfields (Kalgoorlie) and Perth, which increase in strength in the
-projections, and the eastern domains of Brisbane and Sydney/Canberra.
-
-\begin{figure}[!ht]
-      \includegraphics[width=\textwidth]{figures/correlations}
-      \caption{Correlations of seasonal values of hail-relevant properties
-      between domains, by epoch. Seasonal means were calculated from daily means
-      at hail locations and hours. Variables considered are seasonal hail days
-      (a, g), and mean hail diameter (b, h), 10 m wind at hail hours (c, i),
-      bulk vertical wind shear (d, j), CAPE (e, k), lifted index (f, l), CIN (m,
-      r), 700-500 hPa lapse rate (n, s), temperature at 500 hPa (o, t), freezing
-      level height (p, u) and melting level height (q, v), for historical (a-f,
-      m-q) and future (g-l, r-v) epochs. Statistically significant correlations
-      are shown by an $\ast{}$ for 90\% confidence level ($p <$ 0.1),
-      $\ast{}\!\ast{}$ for 95\% confidence level ($p <$ 0.05), and
-      $\ast{}\!\ast{}\!\!\ast{}$ for the 99\% confidence level ($p <$ 0.01).}
-      \label{fig:correlations}
-\end{figure}
+Seasonal values of hail-relevant properties showed co-fluctuation in hail days
+between the east-coast domains of Melbourne, Sydney/Canberra and Brisbane in
+both historical and future epochs, with Adelaide significantly correlated with
+Melbourne and Sydney/Canberra in the future projections (Supporting Material
+Figure \ref{SM-fig:correlations}). Correlations in hail diameter between the
+Kalgoorlie, Perth, Melbourne, and Sydney/Canberra domains were considerably
+stronger in the future projections than in the historical epoch, while wind
+correlations between the Perth region and other south-western domains of
+Adelaide and Kalgoorlie were evident in the historical epoch but disappeared in
+the future projections. Instability was correlated between Melbourne and
+Sydney/Canberra domains in both epochs. Temperature-related parameters showed
+strong correlations between nearby domains, such as Kalgoorlie and Perth in the
+west, which increased in strength in the projections, and Brisbane and
+Sydney/Canberra in the east.
 
 \section{Conclusions}
 
-In this study we used downscaled regional analyses to project changes in hail
-diameter and coincident wind speeds in warmer conditions, over hail-prone
-regions of Australia. The climate scenario considered was for SSP2-4.5 for the
-period 2080--2099 compared to a 1980--1999 baseline, using 18 CMIP ensemble
-members. The domains covered more than 60\% of Australia's population, including
+We show downscaled regional climate projections of hail size and coincident wind
+speed over hail-prone regions of Australia, for SSP2-4.5 in 2080--2099 compared
+to a 1989--2009 baseline, with boundary conditions derived from 18 CMIP ensemble
+members. The domains covered more than 65\% of Australia's population, including
 the major cities of Perth, Adelaide, Melbourne, Canberra, Sydney, and Brisbane.
-The results show projected increases in hail frequency around Sydney/Canberra
-and Brisbane, projected increases in hail size around Sydney/Canberra and
-Melbourne, and indications of increased wind at hail hours in Adelaide and the
-remote Goldfields region but decreased probability of damaging wind at hail
-hours in Melbourne, Perth, and Sydney/Canberra. An analysis of the changes in
-mean atmospheric conditions at hail hours shows projected increases in
-atmospheric instability and freezing level height, and little change in bulk
-vertical wind shear in the warmer scenario. Correlations in seasonal average
-hail size between regions are stronger in the future than present scenario.
-\todo{JA: Conclusion – add quantification}
+Unlike proxy-based studies, our analysis used convection-permitting modelling
+that could explicitly simulate storms, and unlike in pseudo-global warming
+studies, we used boundary conditions from global models that include projected
+changes in both atmospheric thermodynamics and large-scale circulations.
 
-\todo{Relate changes to similar studies, eg for wind.}
+Between historical and future epochs, overall hail frequency was projected to
+increase by 29\% in Sydney/Canberra and 15\% in Brisbane, without significant
+changes elsewhere. Average maximum hail size was projected to increase around
+Sydney/Canberra, Brisbane, and Melbourne, and mean coincident wind was projected
+to increase around Perth and Sydney. Changes in extreme value distributions were
+considered statistically significant in only the Sydney/Canberra and Melbourne
+domains, where maximum hail sizes were projected to increase while the
+probability of damaging coincident winds was projected to decrease. There were
+non-significant indications of increased maximum coincident wind speeds around
+Adelaide and the Goldfields.  The significant maximum hail size increases were
+driven by increases in atmospheric instability and freezing level height, and
+there was generally little projected change in bulk vertical wind shear except a
+decrease around Brisbane. Interregional correlations in seasonal average hail
+size are projected to strengthen, which may challenge community resilience and
+increase resource requirements for repair after major hail events \todo{note how
+correlation results make sense since southerly fronts bring hail conditions. Why
+increase in future correlation?}.
 
-Several caveats apply to the results shown here. The most notable is that
-maximum hail sizes reported at each hour are maximums over the last hour, while
-wind speeds are instantaneous values within the temporal vicinity of hail
-occurrence. Maximum wind gusts over the previous hour would generally be
-significantly stronger than these instantaneous values. We also caution that
-these results are one realization of possible future projections, based on the
-boundary conditions and modelling framework used, and more ensemble members
-using different setups are required to build a more complete picture of possible
-future hazards.
+Our projections of increased hail frequency for Sydney/Canberra and indications
+of decreases in the other studied domains (other than Brisbane) align with past
+trends in hail-prone environments in reanalyses (1979-2021), but the summer
+increase in hail frequency we project around Brisbane contradicts with these
+past trends \cite{Raupach_npjCAS_2023}. This contradiction and possible
+offsetting of instability and wind shear changes increase the uncertainty on
+projections around Brisbane. Our projections of decreasing hail-coincident
+damaging winds around Sydney/Canberra and Melbourne aligns with other
+convection-permitting projections for all convective winds in a similar region
+\cite{Brown_NHESS_2024}. Our results align with projections from primarily
+lapse-rate-based wind proxies, but contradict with primarily CAPE-based proxies
+\cite{Brown_JGRA_2021}. For the broader category of all extreme storms, earlier
+reanalysis data (1979-2016) also show an increasing trend in thunderstorm
+environments in Australia's southeast \cite{Dowdy_CD_2020}. Severe storm
+environment frequencies in global reanalysis show non-significant increases in
+Australia's southwest and along the southeast coastal fringe, and decreases
+around Adelaide, agreeing with our hail frequency results, but have opposite
+sign to our projections for hail frequency in the Canberra and Goldfields
+regions \cite{Taszarek_npjCAS_2021}. Global proxy-based projections for severe
+storm environments, made without convection-permitting models, show increases
+across Australia on average, with more model and proxy agreement in Australia's
+southeast and northwest \cite{Lepore_EF_2021}. 
 
-\todo{JA: Note on storm season – 2 of our top 20 hail events occurred in Autumn
-- Rockhampton hail storm April 2020 and Gosford hail May 2023 (and the 1999
-Sydney hail storm occurred in April too)}
-
-\todo{JA: future work, applicability to insurance industry and building code,
-impact of correlation bt regions on insurance and building recovery. See
-paragraph at end of this document. }
-
-\todo{JA's text:} This study shows that the frequency and severity of damaging
-hail events may increase in major population centres of Australia in a warming
-climate. This poses an increasing risk to communities in terms of personal
-safety and through building damage, solar panel damage, water ingress and damage
-to interiors, contents and cars and loss of use of commercial, civil and
-residential buildings for extended periods. The damage from giant hail events
-can be extreme causing extensive structural damage and complete loss of amenity
-of a building and widespread community disruption as seen in the 2020 Halloween
-hailstorm in southeastern Queensland. The increasing correlation of hail events
-in multiple cities poses a challenge to community resilience for the increased
-resources required for rebuilding efforts. For insurers, storm losses account
-for a quarter of all Australian natural catastrophe losses (Insurance Council of
-Australia, 2024) and this is likely to increase in the future as giant hail
-events increase in key centres, which may result in higher insurance premiums
-and reinsurance costs.
-
-These projections could be incorporated into the Australian building code, which
-as mentioned in the Introduction does not consider hail loading, to strengthen
-the resilience of buildings in the face of a changing climate. 
-
-Future work in this area may include consideration of the win-driven hail
-processes and how they may change with climate change at higher resolution,
-extension to other countries such as New Zealand and extension to a wider range
-of climate scenarios and timeframes.
+Several caveats apply to our results. We used instantaneous hourly wind values
+which were likely underestimates of maximum gusts. Similarly, our simulations
+used $\sim$3 km grid spacing, allowing for well-simulated cold pool properties
+\cite{Prein_PTRS_2021} but limiting representation of individual downdrafts
+\cite{Wang_JGRA_2020} and possibly underestimating convective wind strengths
+\cite{ElRafei_WCE_2023}. We considered only the peak convective season of
+October to February, yet significant hail events do occur outside these months
+\cite{ICA_2024} and seasonal shifts in hail-prone conditions have been observed
+\cite{Raupach_npjCAS_2023}. While our simulation results for the historical
+period show a reasonable match to radar-derived seasonal hail days, differences
+in radar-observed and simulated occurrences of larger hail (Supporting Info
+Table \ref{SM-tab:radar_stats}) mean our results should be taken as relative,
+not absolute, projections. Our results are also based on a single realization of
+possible future projections, and an ensemble is needed to build a consensus
+hazard projection. Future work could address these caveats, consider bivariate
+analyses of hail and wind, extend the study to other regions and scenarios,
+consider possible changes in exposure and vulnerability, and further progress
+process-based understanding of wind-driven hail and its changes in a warming
+world.
 
 \section*{Open Research Section}
 
 Boundary condition data are available at \citeA{Xu_code_data_2021}. Complete
 analysis code and WRF configuration files are available in a \todo{Zenodo
 repository}. Convective parameters were calculated using \texttt{xarray\_parcel}
-(DOI: 10.5281/zenodo.8088497).
-
-% This section MUST contain a statement that describes where the data supporting
-% the conclusions can be obtained. Data cannot be listed as ''Available from
-% authors'' or stored solely in supporting information. Citations to archived
-% data should be included in your reference list. Wiley will publish it as a
-% separate section on the paper’s page. Examples and complete information are
-% here: https://www.agu.org/Publish with AGU/Publish/Author Resources/Data for
-% Authors
+(DOI: 10.5281/zenodo.8088497). Shapefiles for urban area boundaries are sourced
+from the Australian Bureau of Statistics under CC-BY-4.0
+(\url{https://www.abs.gov.au/statistics/standards/australian-statistical-geography-standard-asgs-edition-3/jul2021-jun2026/access-and-downloads/digital-boundary-files}).
+Radar data are available at the National Computational Infrastructure (NCI) data
+catalogue (DOI:10.25914/JJWZ-0F13). 
 
 \acknowledgments
 
-Since March 2024, THR's position at UNSW Sydney has been supported by QBE
-Insurance. This research was undertaken with the assistance of resources from
-the National Computational Infrastructure (NCI Australia), an NCRIS enabled
-capability supported by the Australian Government. We thank Simon Tett for
-useful discussions on extreme value techniques.
+THR's position at UNSW Sydney is financially supported by QBE Insurance. This
+research was undertaken with the assistance of resources from the National
+Computational Infrastructure (NCI Australia), an NCRIS enabled capability
+supported by the Australian Government. We thank Simon Tett for useful
+discussions on extreme value statistics.
 
 %% Include references from supporting information.
 <<bibliographySupp, echo=FALSE, include=TRUE, results="asis">>=
