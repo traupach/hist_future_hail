@@ -254,7 +254,7 @@ plot_quantiles <- function(gev_fits, var, unit, labels = default_labels_ml, font
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(
             x = parse(text = paste("WRF~simulations~quantile~group('[',", unit, ",']')", sep = "")),
-            y = parse(text = paste("GP~model~quantile~group('[',", unit, ",']')", sep = ""))
+            y = parse(text = paste("EVD~model~quantile~group('[',", unit, ",']')", sep = ""))
         ) +
         geom_abline(slope = 1, intercept = 0) +
         coord_fixed(xlim = c(mins, maxs), ylim = c(mins, maxs))
