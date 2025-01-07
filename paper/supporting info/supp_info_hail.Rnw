@@ -173,43 +173,34 @@ size of hail and the tropical latitude of this event made it highly unusual.
 
 \begin{figure}[!ht]
     \includegraphics[width=\textwidth]{figures/gev_dists_hail}
-    \caption{Densities maximum daily hail size per domain and epoch derived from WRF simulations and the fitted GEV models.}
+    \caption{Densities of maximum daily hail size per domain and epoch derived from WRF simulations and the fitted EVD (Generalized Pareto with 20 mm threshold) models.}
     \label{fig:densities_hail}
 \end{figure}
 
 \begin{figure}[!ht]
     \includegraphics[width=\textwidth]{figures/gev_dists_wind}
-    \caption{As for Figure \ref{fig:densities_hail}, but for daily maximum 10 m wind collocated with hail.}
+    \caption{As for Figure \ref{fig:densities_hail}, but for daily maximum 10 m wind collocated with hail fitted with Generalized Extreme Value models.}
     \label{fig:densities_wind}
 \end{figure}
 
 \begin{figure}[!ht]
     \includegraphics[width=\textwidth]{figures/qq_hail}
-    \caption{Quantile-quantile plots for GEV models fitted to daily maximum hail sizes, per domain and epoch.}
+    \caption{Quantile-quantile plots for EVD models fitted to daily maximum hail sizes, per domain and epoch.}
     \label{fig:qq_hail}
 \end{figure}
 
 \begin{figure}[!ht]
     \includegraphics[width=\textwidth]{figures/qq_wind}
-    \caption{Quantile-quantile plots for GEV models fitted to daily maximum 10 m wind collocated with hail.}
+    \caption{Quantile-quantile plots for EVD models fitted to daily maximum 10 m wind collocated with hail.}
     \label{fig:qq_wind}
 \end{figure}
 
 \begin{figure}[!ht]
-    \includegraphics[width=\textwidth]{figures/fit_params}
-    \caption{Location (a, d), scale (b, e), and shape (c, f) parameters for
-    fitted GEV distributions for maximum hail size (a--c) and 10 m wind at
-    hail hours (d--f). Parameter values are shown as a point and whiskers show
-    95\% confidence intervals.}
-    \label{fig:gev_parameters}
-\end{figure}
-
-\begin{figure}[!ht]
     \includegraphics[width=\textwidth]{figures/fit_pvals}
-    \caption{Distributions of $p$ values from KS tests, comparing empirical
-     values GEV models, and historical GEVs to future GEVs, per variable and
+    \caption{Distributions of $p$ values from KS tests, comparing WRF
+     values to EVD models, and historical EVDs to future EVDs, per variable and
      domain. For each test, the KS test was applied 100 times with 1000 random
-     values drawn from the relevant GEV distribution(s) each time, to obtain a
+     values drawn from the relevant EVD(s) each time, to obtain a
      distribution of $p$ values. Bars show medians, box hinges show the
      interquartile ranges (IQRs), whiskers show the largest (smallest) values no
      more than 1.5 $\times$ IQR from the upper (lower) hinge, and points show
@@ -217,6 +208,15 @@ size of hail and the tropical latitude of this event made it highly unusual.
      = 0.05$; when $p$ values are below this line the null hypothesis that the
      two samples come from the same distribution can be rejected.}
     \label{fig:ks_pvals}
+\end{figure}
+
+\begin{figure}[!ht]
+    \includegraphics[width=\textwidth]{figures/fit_params}
+    \caption{Location (a, d), scale (b, e), and shape (c, f) parameters for
+    fitted EVD distributions for maximum hail size (a--c) and 10 m wind at
+    hail hours (d--f). Parameter values are shown as a point and whiskers show
+    95\% confidence intervals.}
+    \label{fig:evd_parameters}
 \end{figure}
 
 \begin{figure}[!ht]
@@ -234,6 +234,25 @@ size of hail and the tropical latitude of this event made it highly unusual.
     $\ast{}\!\ast{}\!\!\ast{}$ for the 99\% confidence level ($p <$ 0.01).}
     \label{fig:correlations}
 \end{figure}
+
+\begin{table}
+    \centering
+    \caption{Probability of a hail day exceeding hail sizes of 20, 50, or 100 mm, and of coincident wind exceeding 80 and 100 km h$^{-1}$, per domain and epoch.}
+    \label{tab:exceedence_probs}
+    \begin{tabular}{llcccc}
+    \hline
+    & & \multicolumn{2}{c}{Hail probability [\%]} & \multicolumn{2}{c}{Wind probability [\%]} \\ 
+    Domain & Epoch & 50 mm & 100 mm & 80 km h$^{-1}$ & \multicolumn{1}{c}{100 km h$^{-1}$} \\ 
+    \hline
+    <<probabilities_table, echo=FALSE, include=TRUE, results="asis">>=
+    lines = read_lines("tables/probabilities_table.tex")
+    for (line in lines[6:17]) {
+          cat(line)
+    }
+    @
+    \hline 
+    \end{tabular}
+\end{table}
 
 \begin{table}[!ht]
     \caption{Parameterization schemes used in the WRF simulations.}
@@ -273,36 +292,16 @@ size of hail and the tropical latitude of this event made it highly unusual.
      \end{tabular}
 \end{table}
 
-\begin{table}
-    \centering
-    \caption{Probability of a hail day exceeding hail sizes of 20, 50, or 100 mm, and of coincident wind exceeding 80 and 100 km h$^{-1}$, per domain and epoch.}
-    \label{tab:exceedence_probs}
-    \begin{tabular}{llccccc}
-    \hline
-    & & \multicolumn{3}{c}{Hail probability [\%]} & \multicolumn{2}{c}{Wind probability [\%]} \\ 
-    Domain & Epoch & 20 mm & 50 mm & 100 mm & 80 km h$^{-1}$ & \multicolumn{1}{c}{100 km h$^{-1}$} \\ 
-    \hline
-    <<probabilities_table, echo=FALSE, include=TRUE, results="asis">>=
-    lines = read_lines("tables/probabilities_table.tex")
-    for (line in lines[6:17]) {
-          cat(line)
-    }
-    @
-    \hline 
-    \end{tabular}
-\end{table}
-
 \begin{table} 
     \centering
     \caption{Mean values in the historical epoch, at hail times, by domain.
-    Averages are on daily values except for hail days which are seasonal
-    \todo{check in code}. Variables are convective available potential energy
-    (CAPE, in J kg$^{-1}$), convective inhibition (CIN, in J kg$^{-1}$),
-    freezing level height (FLH, in m), hail size (in mm), lifted index (LI, in
-    K), lapse rate between 700 hPa and 500 hPa (LR, in K km$^{-1}$), melting
-    level height (MLH, in m), bulk vertical wind shear between 0 and 6 km (S06,
-    in m s$^{-1}$), temperature at 500 hPa (T500, in K), and 10 m wind (Wind, in
-    m s$^{-1}$).}
+    Averages are on daily values except for hail days which are seasonal.
+    Variables are convective available potential energy (CAPE, in J kg$^{-1}$),
+    convective inhibition (CIN, in J kg$^{-1}$), freezing level height (FLH, in
+    m), hail size (in mm), lifted index (LI, in K), lapse rate between 700 hPa
+    and 500 hPa (LR, in K km$^{-1}$), melting level height (MLH, in m), bulk
+    vertical wind shear between 0 and 6 km (S06, in m s$^{-1}$), temperature at
+    500 hPa (T500, in K), and 10 m wind (Wind, in m s$^{-1}$).}
     \label{tab:hist_means}
     \begin{tabular}{lcccccc}
         \hline
@@ -332,7 +331,7 @@ size of hail and the tropical latitude of this event made it highly unusual.
     \citeA{Raupach_npjCAS_2023} and aggregated to maximum MESH value per
     0.25\deg{} x 0.25\deg{} grid cell. We note that radars have different
     sampling periods per site, radar instruments have changed over time
-    \cite<e.g.>{Warren_QJRMS_2020}, and that MESH data are subject to
+    \cite<e.g.>{Warren_QJRMS_2020}, and that MESH values are subject to
     uncertainty \cite<e.g.>{Greco_WF_2024}.}
     \label{tab:radar_stats}
     \begin{tabular}{lrrrrrr}
@@ -341,7 +340,7 @@ size of hail and the tropical latitude of this event made it highly unusual.
         <<radar_stats_table, echo=FALSE, include=TRUE, results="asis">>=
         lines = read_lines("tables/radar_stats.tex")
         for (line in lines[5:10]) {
-               cat(line)
+               cat(gsub("NaN", "--", line))
         }
         @
     \end{tabular}
