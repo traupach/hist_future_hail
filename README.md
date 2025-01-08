@@ -1,4 +1,4 @@
-# Changes in hail damage potential in major Australian cities with global warming
+# Software for "Changes in hail damage potential in major Australian cities with global warming"
 
 This repository contains the complete code used for the research study titled "Changes in hail damage potential in major Australian cities with global warming" by T. H. Raupach and J. Aldridge.
 
