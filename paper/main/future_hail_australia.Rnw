@@ -284,7 +284,7 @@ independence \cite{Coles_2001} because single hail storms do not last more than
 one day. Only locations with non-zero hail sizes were considered. Two types of
 extreme value distributions (EVDs) were used. For hailstone size, Generalized
 Pareto distributions with a threshold of 20 mm were fitted to each series of
-daily maxima, to obtain a good fit to distribution tails. For wind speeds which
+daily maxima, to obtain a good fit toYe distribution tails. For wind speeds which
 were more normally distributed, Generalized extreme value distributions were
 fitted to each series of daily maxima. We used quantile-quantile (QQ) plots
 \cite{Coles_2001} and the Kolmogorov–Smirnoff (KS) test to assess goodness of
@@ -669,8 +669,7 @@ hail and its changes in a warming world.
 \section*{Open Research Section}
 
 Boundary condition data are available at \citeA{Xu_code_data_2021}. Complete
-analysis code and WRF configuration files are available Zenodo repository (DOI:
-10.5281/zenodo.14607614). Convective parameters were calculated using
+analysis code and WRF configuration files are available Zenodo repository (DOI: 10.5281/zenodo.14613514). Convective parameters were calculated using
 \texttt{xarray\_parcel} (DOI: 10.5281/zenodo.8088497). Shapefiles for urban area
 boundaries are sourced from the Australian Bureau of Statistics under CC-BY-4.0
 (\url{https://www.abs.gov.au/statistics/standards/australian-statistical-geography-standard-asgs-edition-3/jul2021-jun2026/access-and-downloads/digital-boundary-files}).
