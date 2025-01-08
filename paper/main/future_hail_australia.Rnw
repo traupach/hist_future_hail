@@ -1,4 +1,4 @@
-\documentclass[]{agujournal2019}
+\documentclass[draft]{agujournal2019}
 
 \usepackage{url} %this package should fix any errors with URLs in refs.
 \usepackage[inline]{trackchanges} %for better track changes. finalnew option will compile document with changes incorporated.
@@ -41,7 +41,6 @@ require(dplyr, quietly=TRUE)
 %  \remove[editor]{Text to remove}
 %  \change[editor]{Text to remove}{Text to add}
 
-\draftfalse
 \journalname{Geophysical Research Letters}
 
 \begin{document}
@@ -563,7 +562,7 @@ significant change in damage potential in the EVD analyses.
       \hline
       <<ing_changes_table2, echo=FALSE, include=TRUE, results="asis">>=
       lines = read_lines("tables/ingredients_2.tex")
-      for (line in lines[c(8,14,12,15,13,16,5,9,6,10,17,7,11)]) {
+      for (line in lines[c(8,14,12,15,13,11,16,5,9,6,10,17,7)]) {
             cat(line)
       }
       @
@@ -660,12 +659,14 @@ hail and its changes in a warming world.
 \section*{Open Research Section}
 
 Boundary condition data are available at \citeA{Xu_code_data_2021}. Complete
-analysis code and WRF configuration files are available Zenodo repository (DOI: 10.5281/zenodo.14613571). Convective parameters were calculated using
-\texttt{xarray\_parcel} (DOI: 10.5281/zenodo.8088497). Shapefiles for urban area
-boundaries are sourced from the Australian Bureau of Statistics under CC-BY-4.0
-(\url{https://www.abs.gov.au/statistics/standards/australian-statistical-geography-standard-asgs-edition-3/jul2021-jun2026/access-and-downloads/digital-boundary-files}).
-Radar data are available at the National Computational Infrastructure (NCI) data
-catalogue (DOI:10.25914/JJWZ-0F13). 
+analysis code and WRF configuration files are available at
+\citeA{Raupach_software_2025} and the version used for this manuscript is
+archived at Zenodo \cite{Raupach_zenodo_2025}. Convective parameters were
+calculated using \texttt{xarray\_parcel} \cite{Raupach_xarray_zenodo}.
+Shapefiles for urban area boundaries are sourced from the Australian Bureau of
+Statistics under CC-BY-4.0 \cite{ABS_boundaries_2021}. Radar data are available
+at the National Computational Infrastructure (NCI) data catalogue
+\cite{Soderholm_radar_data}.
 
 \acknowledgments
 
