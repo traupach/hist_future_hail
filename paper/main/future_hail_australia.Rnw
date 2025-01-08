@@ -64,18 +64,9 @@ require(dplyr, quietly=TRUE)
 \correspondingauthor{Timothy H. Raupach}{timothy.h.raupach@gmail.com}
 
 \begin{keypoints}
-\item Hail causes more damage when hailstones are larger or coincident winds are
-stronger, yet there is high uncertainty around changes to these factors with
-global warming.
-\item Convection-permitting downscaled simulations for a climate scenario with
-$\sim$2.8 K warming over pre-industrial temperatures were used to
-investigate possible future changes in hail size and coincident wind strength
-over major Australian cities and the remote Western Australian Goldfields
-region.
-\item The simulations project increases in hail frequency in the Sydney/Canberra
-and Brisbane regions, as well as increases in maximum hail size around
-Melbourne, Sydney/Canberra, the Goldfields, and Perth and reductions in
-hail-coincident wind strength around Melbourne, Sydney/Canberra, and Perth.
+\item Hail damage increases with larger hailstones or stronger coincident winds, yet climate change effects on these factors remain uncertain.
+\item Convection-permitting downscaled simulations projected changes in hail size and coincident wind strength over major Australian cities.
+\item Projections include increased hail size but decreased coincident wind strength around Melbourne, Sydney/Canberra, and Perth.
 \end{keypoints}
 
 \begin{abstract} %% 150 words
@@ -669,7 +660,7 @@ hail and its changes in a warming world.
 \section*{Open Research Section}
 
 Boundary condition data are available at \citeA{Xu_code_data_2021}. Complete
-analysis code and WRF configuration files are available Zenodo repository (DOI: 10.5281/zenodo.14613514). Convective parameters were calculated using
+analysis code and WRF configuration files are available Zenodo repository (DOI: 10.5281/zenodo.14613571). Convective parameters were calculated using
 \texttt{xarray\_parcel} (DOI: 10.5281/zenodo.8088497). Shapefiles for urban area
 boundaries are sourced from the Australian Bureau of Statistics under CC-BY-4.0
 (\url{https://www.abs.gov.au/statistics/standards/australian-statistical-geography-standard-asgs-edition-3/jul2021-jun2026/access-and-downloads/digital-boundary-files}).
