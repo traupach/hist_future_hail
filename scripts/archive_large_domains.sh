@@ -17,5 +17,3 @@ module load parallel
 # Run from e.g. /g/data/up6/tr2908/hist_future_hail/WRF_v4.4/simulations/remote/
 # And remember to increase ncpus for parallel archiving.
 parallel tar cvf /scratch/up6/tr2908/{= s/\\//_/g =}.tar {}/wrfout_d0[1,2,4]* --remove-files ::: */*/WRF
-
-# mdss -P up6 get -r 'tr2908/hist_future_hail/WRF_v4.4/simulations/hist*'

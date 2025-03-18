@@ -1,22 +1,23 @@
 """Module providing support functions for historic vs future hail comparisons."""
 
-import os
 import glob
-import xarray
-import geopandas
 import itertools
+import os
+
+import cartopy.crs as ccrs
+import geopandas
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
 import numpy as np
 import pandas as pd
-import cartopy.crs as ccrs
-from matplotlib import colors
-from skimage import morphology
-import matplotlib.pyplot as plt
+import xarray
 from cartopy.io import shapereader
-import matplotlib.ticker as mticker
-from shapely.geometry import Polygon
+from matplotlib import colors
 from matplotlib.patches import Rectangle
-from shapely.geometry.polygon import LinearRing
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+from shapely.geometry import Polygon
+from shapely.geometry.polygon import LinearRing
+from skimage import morphology
 
 # Coordinates for cities of interest.
 cities = {
@@ -61,16 +62,15 @@ letters = [
 
 
 def gen_download_script(years, out_file, fut_ssp='ssp245', link_list='data/xu_file_list.csv'):
-    """
-    Write a script to wget all the boundary condition files required for a run over given years.
+    """Write a script to wget all the boundary condition files required for a run over given years.
 
     Arguments:
         years: Years to run over. For year x data will be downloaded for Sep x to Feb x+1.
-        out_files: The script file to write.
+        out_file: The script file to write.
         fut_ssp: Which SSP to target.
         link_list: A file containing links to all archive files possible to download.
-    """
 
+    """
     # Open the list of all download links, to subset from.
     files = pd.read_csv(link_list, header=None, names=['file'])
     files['name'] = files.file.str[97:None]
@@ -80,18 +80,13 @@ def gen_download_script(years, out_file, fut_ssp='ssp245', link_list='data/xu_fi
         season_from = season
         season_to = season + 1
         season_string = f'{season_from}-{season_to}'
-        files.loc[files.file.str.contains(f'atm_hist_{season_from}_(09|10|11|12)'), 'season'] = (
-            season_string
-        )
-        files.loc[files.file.str.contains(f'atm_hist_{season_to}_(01|02)'), 'season'] = (
-            season_string
-        )
+        files.loc[files.file.str.contains(f'atm_hist_{season_from}_(09|10|11|12)'), 'season'] = season_string
+        files.loc[files.file.str.contains(f'atm_hist_{season_to}_(01|02)'), 'season'] = season_string
         files.loc[
-            files.file.str.contains(f'atm_{fut_ssp}_{season_from}_(09|10|11|12)'), 'season'
+            files.file.str.contains(f'atm_{fut_ssp}_{season_from}_(09|10|11|12)'),
+            'season',
         ] = season_string
-        files.loc[files.file.str.contains(f'atm_{fut_ssp}_{season_to}_(01|02)'), 'season'] = (
-            season_string
-        )
+        files.loc[files.file.str.contains(f'atm_{fut_ssp}_{season_to}_(01|02)'), 'season'] = season_string
     files = files.dropna()
 
     # Future files are listed twice with different download links, but link to the same files. Remove duplicates.
@@ -116,9 +111,9 @@ def gen_download_script(years, out_file, fut_ssp='ssp245', link_list='data/xu_fi
 
 
 def set_up_WRF(year, template_dir, namelist_dir, sims_dir, exp):
-    """
-    Set up directories ready for WPS and WRF runs for a given season, including
-    updating namelist files.
+    """Set up directories ready for WPS and WRF runs for a given season.
+
+    Including updating namelist files.
 
     Arguments:
         year: Event year (includes Sep year to Feb year+1).
@@ -126,14 +121,14 @@ def set_up_WRF(year, template_dir, namelist_dir, sims_dir, exp):
         namelist_dir: Directory from which to source WPS and WRF namelists.
         sims_dir: Directory in which simulations will be run.
         exp: Experiment to run (hist or ssp245).
-    """
 
-    sim_dir = f'{sims_dir}/{year}-{year+1}/'
+    """
+    sim_dir = f'{sims_dir}/{year}-{year + 1}/'
     if not os.path.exists(sim_dir):
         os.mkdir(sim_dir)
 
     start_time = f'{year}-09-30_00:00:00'
-    end_time = f'{year+1}-02-28_23:00:00'
+    end_time = f'{year + 1}-02-28_23:00:00'
     comma_q = "', '"
     comma = ', '
 
@@ -147,10 +142,10 @@ def set_up_WRF(year, template_dir, namelist_dir, sims_dir, exp):
         os.system(f'sed -i s/year=.*$/"year={year}"/g {sim_dir}/WPS/mk.inputlist.sh')
         os.system(f'sed -i s/exp=.*$/"exp={exp}"/g {sim_dir}/WPS/mk.inputlist.sh')
         os.system(
-            f'sed -i s/start_date.*$/"start_date = \'{comma_q.join(np.repeat(start_time, 7))}\',"/g {sim_dir}/WPS/namelist.wps'
+            f'sed -i s/start_date.*$/"start_date = \'{comma_q.join(np.repeat(start_time, 7))}\',"/g {sim_dir}/WPS/namelist.wps',
         )
         os.system(
-            f'sed -i s/end_date.*$/"end_date = \'{comma_q.join(np.repeat(end_time, 7))}\',"/g {sim_dir}/WPS/namelist.wps'
+            f'sed -i s/end_date.*$/"end_date = \'{comma_q.join(np.repeat(end_time, 7))}\',"/g {sim_dir}/WPS/namelist.wps',
         )
     else:
         print('Skipping existing WPS...')
@@ -161,28 +156,28 @@ def set_up_WRF(year, template_dir, namelist_dir, sims_dir, exp):
         os.system(f'ln -s {template_dir}/WRF/* {sim_dir}/WRF/')
         os.system(f'cp -f {namelist_dir}/namelist.input {sim_dir}/WRF/')
         os.system(
-            f'sed -i s/start_year.*$/"start_year = {comma.join(np.repeat(start_time[0:4], 7))},"/g {sim_dir}/WRF/namelist.input'
+            f'sed -i s/start_year.*$/"start_year = {comma.join(np.repeat(start_time[0:4], 7))},"/g {sim_dir}/WRF/namelist.input',
         )
         os.system(
-            f'sed -i s/start_month.*$/"start_month = {comma.join(np.repeat(start_time[5:7], 7))},"/g {sim_dir}/WRF/namelist.input'
+            f'sed -i s/start_month.*$/"start_month = {comma.join(np.repeat(start_time[5:7], 7))},"/g {sim_dir}/WRF/namelist.input',
         )
         os.system(
-            f'sed -i s/start_day.*$/"start_day = {comma.join(np.repeat(start_time[8:10], 7))},"/g {sim_dir}/WRF/namelist.input'
+            f'sed -i s/start_day.*$/"start_day = {comma.join(np.repeat(start_time[8:10], 7))},"/g {sim_dir}/WRF/namelist.input',
         )
         os.system(
-            f'sed -i s/start_hour.*$/"start_hour = {comma.join(np.repeat(start_time[11:13], 7))},"/g {sim_dir}/WRF/namelist.input'
+            f'sed -i s/start_hour.*$/"start_hour = {comma.join(np.repeat(start_time[11:13], 7))},"/g {sim_dir}/WRF/namelist.input',
         )
         os.system(
-            f'sed -i s/end_year.*$/"end_year = {comma.join(np.repeat(end_time[0:4], 7))},"/g {sim_dir}/WRF/namelist.input'
+            f'sed -i s/end_year.*$/"end_year = {comma.join(np.repeat(end_time[0:4], 7))},"/g {sim_dir}/WRF/namelist.input',
         )
         os.system(
-            f'sed -i s/end_month.*$/"end_month = {comma.join(np.repeat(end_time[5:7], 7))},"/g {sim_dir}/WRF/namelist.input'
+            f'sed -i s/end_month.*$/"end_month = {comma.join(np.repeat(end_time[5:7], 7))},"/g {sim_dir}/WRF/namelist.input',
         )
         os.system(
-            f'sed -i s/end_day.*$/"end_day = {comma.join(np.repeat(end_time[8:10], 7))},"/g {sim_dir}/WRF/namelist.input'
+            f'sed -i s/end_day.*$/"end_day = {comma.join(np.repeat(end_time[8:10], 7))},"/g {sim_dir}/WRF/namelist.input',
         )
         os.system(
-            f'sed -i s/end_hour.*$/"end_hour = {comma.join(np.repeat(end_time[11:13], 7))},"/g {sim_dir}/WRF/namelist.input'
+            f'sed -i s/end_hour.*$/"end_hour = {comma.join(np.repeat(end_time[11:13], 7))},"/g {sim_dir}/WRF/namelist.input',
         )
     else:
         print('Skipping existing WRF...')
@@ -196,8 +191,7 @@ def plot_wrf_domains(
     labels=None,
     file=None,
 ):
-    """
-    Plot WRF domains for a WPS setup. Requires geogrid to have been run first.
+    """Plot WRF domains for a WPS setup. Requires geogrid to have been run first.
 
     Arguments:
         wps_files: A dictionary of WPS files and the (linestyle, colour) they should be plotted as.
@@ -206,17 +200,17 @@ def plot_wrf_domains(
         proj: Projection to display map in.
         labels: Point name: (label, offset) for each point to display, with offset in map coordinates.
         file: Output file for figure.
-    """
 
+    """
     dom_files = list(wps_files.keys())
     doms = [xarray.open_dataset(x) for x in dom_files]
 
     max_map_fac = np.array([np.max(np.abs(x.MAPFAC_M.values - 1) / 1 * 100) for x in doms])
-    if np.any(max_map_fac > 5):
+    if np.any(max_map_fac > 5):  # noqa: PLR2004
         print('WARNING: Map factor is large or small (below 0.95 or over 1.05).')
         facts = [np.max(x.MAPFAC_M.values) for x in doms]
-        print(f'Max factor is {np.max(facts):.3} in domain {np.argmax(facts)+1}.')
-        print(f'Min factor is {np.min(facts):.3} in domain {np.argmin(facts)+1}.')
+        print(f'Max factor is {np.max(facts):.3} in domain {np.argmax(facts) + 1}.')
+        print(f'Min factor is {np.min(facts):.3} in domain {np.argmin(facts) + 1}.')
 
     # Custom functions for WRF domain plotting.
     def add_box(x, y, ax, colour='white', linestyle='solid'):
@@ -225,8 +219,8 @@ def plot_wrf_domains(
                 zip(
                     list(x.isel(south_north=-1).values) + list(x.isel(south_north=0).values)[::-1],
                     list(y.isel(south_north=-1).values) + list(y.isel(south_north=0).values)[::-1],
-                )
-            )
+                ),
+            ),
         )
         ax.add_geometries(
             [geom],
@@ -254,10 +248,10 @@ def plot_wrf_domains(
         add_doms([doms[i]], ax=ax, colour=col, linestyle=ls)
         x = doms[i].isel(Time=0).XLONG_M.values
         y = doms[i].isel(Time=0).XLAT_M.values
-        min_x = np.min(x) if np.min(x) < min_x else min_x
-        max_x = np.max(x) if np.max(x) > max_x else max_x
-        min_y = np.min(y) if np.min(y) < min_y else min_y
-        max_y = np.max(y) if np.max(y) > max_y else max_y
+        min_x = min(min_x, np.min(x))
+        max_x = max(max_x, np.max(x))
+        min_y = min(min_y, np.min(y))
+        max_y = max(max_y, np.max(y))
 
     ax.set_xlim(min_x - 2, max_x + 2)
     ax.set_ylim(min_y - 2, max_y + 2)
@@ -266,7 +260,7 @@ def plot_wrf_domains(
     gl.top_labels = gl.right_labels = False
 
     # Add optional points.
-    for i in pts.keys():
+    for i in pts:
         ax.scatter(pts[i][0], pts[i][1], color='red', transform=ccrs.PlateCarree())
 
         if labels is not None and i in labels:
@@ -278,7 +272,7 @@ def plot_wrf_domains(
                 ha='center',
                 color='black',
                 fontweight='bold',
-                fontsize=plt.rcParams['font.size']+1,
+                fontsize=plt.rcParams['font.size'] + 1,
             )
 
     if file is not None:
@@ -301,15 +295,27 @@ def plot_wrf_domain_def(
     scale_factor,
     pts=None,
 ):
-    """
-    Plot a WRF domain definition, assuming the projection is 'lat-lon' (ie rotated cylindrical equidistant) in WRF.
+    """Plot a WRF domain definition.
+
+    Assuming the projection is 'lat-lon' (ie rotated cylindrical equidistant) in WRF.
 
     Arguments:
         parent_id, i_parent_start, j_parent_start, ref_lon,
         ref_lat, e_we, e_sn, dx, dy, num_doms, scale_factor: WRF parameters from namelist.wps.
         pts: Points to plot as dots on the map.
-    """
+        dx: X resolution.
+        dy: Y resolution.
+        e_sn: Pixels in S-N direction.
+        e_we: Pixels in W-E direction.
+        i_parent_start: Starting pixel inside parent domain (i).
+        j_parent_start: Starting pixel inside parent domain (j).
+        num_doms: Number of domains.
+        parent_id: ID of each parent domain.
+        ref_lat: Reference (centre) lat.
+        ref_lon: Reference (centre) lon.
+        scale_factor: Scale factor(s) between parent and child domains.
 
+    """
     fig, ax = plt.subplots(figsize=(10, 8), subplot_kw={'projection': ccrs.PlateCarree()})
 
     # Define the WRF projection.
@@ -324,12 +330,14 @@ def plot_wrf_domain_def(
 
     # Reproject the reference lat/long to the WRF projection (should be 0,0 really).
     (ref_lon, ref_lat) = proj.transform_point(
-        x=ref_lon_orig, y=ref_lat_orig, src_crs=ccrs.Geodetic()
+        x=ref_lon_orig,
+        y=ref_lat_orig,
+        src_crs=ccrs.Geodetic(),
     )
 
     # Add optional points.
     if pts is not None:
-        for i in pts.keys():
+        for i in pts:
             ax.scatter(pts[i][0], pts[i][1], color='red', transform=ccrs.PlateCarree())
 
     domains = {1: [ref_lon + e_we[0] * dx / 2, ref_lat + e_sn[0] * dy / 2, dx, dy]}
@@ -376,20 +384,23 @@ def plot_wrf_domain_def(
 
 
 def mean_temp_per_year(
-    infiles={
-        'SSP2-4.5': '/scratch/w42/tr2908/xu_data/lnd.ssp245.*.nc',
-        'SSP5-8.5': '/scratch/w42/tr2908/xu_data/lnd.ssp585.*.nc',
-    },
+    infiles=None,
     outfile='/g/data/up6/tr2908/hist_future_hail/xu_data/ssp245/mean_temperature_by_year.nc',
 ):
-    """
-    Calculate mean near-surface temperatue from Xu et al lnd* files, and write a timeseries per year to a netcdf file.
+    """Calculate mean near-surface temperatue from Xu et al lnd* files.
+
+    Write a timeseries per year to a netcdf file.
 
     Arguments:
         infiles: Dictionary with name: path_string for the lnd* files to use.
         outfile: The output file to write.
-    """
 
+    """
+    if infiles is None:
+        infiles = {
+            'SSP2-4.5': '/scratch/w42/tr2908/xu_data/lnd.ssp245.*.nc',
+            'SSP5-8.5': '/scratch/w42/tr2908/xu_data/lnd.ssp585.*.nc',
+        }
     if not os.path.exists(outfile):
         mean_temps = []
         for sim, path in infiles.items():
@@ -402,11 +413,10 @@ def mean_temp_per_year(
             d['weighted_temp'] = d.tas * d.area_weight
 
             # Calculate means and write to disk.
-            mean_temp = d.weighted_temp.groupby(d.year).sum(
-                ['lat', 'lon', 'time']
-            ) / d.area_weight.groupby(d.year).sum(['lat', 'lon', 'time'])
+            mean_temp = d.weighted_temp.groupby(d.year).sum(['lat', 'lon', 'time']) / d.area_weight.groupby(d.year).sum(['lat', 'lon', 'time'])
             mean_temp.attrs['description'] = (
-                f"Average near-surface temperature calculated using d.tas.groupby(d.year).mean(['lat', 'lon', 'time']) where d is all Xu et al. {sim} data."
+                ("Average near-surface temperature calculated using d.tas.groupby(d.year).mean(['lat', 'lon', 'time'])",
+                 f'where d is all Xu et al. {sim} data.'),
             )
             mean_temp.name = 'tas'
             mean_temp = mean_temp.expand_dims({'simulation': [sim]})
@@ -462,56 +472,58 @@ def plot_map_to_ax(
     pts=None,
     left_title=None,
 ):
-    """
-    Plot data on a map to a specified plot axis object.
+    """Plot data on a map to a specified plot axis object.
 
     Arguments:
-
-        - dat: DataSet to plot or list of datasets to plot.
-        - ax: GeoAxes object to plot to.
-        - dat_proj, dist_proj: Data and display projections.
-        - figsize: Figure size width x height.
-        - coastlines: Show coastlines?
-        - grid: Show grid?
-        - ncol/nrows: Number of columns/rows to plot.
-        - title: Title for the plot.
-        - colour_scale: None for default, or a tuple of min/max values for the scale.
-        - cmap: The matplotlib colour map to use.
-        - norm: A norm object for colours (e.g. colors.BoundaryNorm).
-        - cbar_ticks: Colour bar ticks.
-        - tick_labels: Colour bar tick labels.
-        - contour: Plot using xarray's contourf function?
-        - stippling: True where trippling should appear.
-        - stipple_size: Size for stippling points.
-        - colourbar: Include a colourbar?
-        - ticks_left: Include ticks on left of plot?
-        - ticks_bottom: Include ticks on bottom of plot?
-        - cbar_aspect: colorbar aspect ratio?
-        - cbar_fraction: fraction argument for colorbar().
-        - cbar_shrink: shrink argument for colorbar().
-        - cbar_pad: pad argument for colorbar().
-        - cbar_label: Overwrite label?
-        - cbar_orientation: orientation argument for colorbar().
-        - coastlines_colour: Colour for coastlines.
-        - xlims, ylims: x and y plot limits.
-        - num_ticks: Number of ticks for x and y axes (None for auto).
-        - divergent: Is the colour scale divergent? If so make zero central.
-        - cbar_inset: Inset the colorbar in lower left?
-        - title_inset: Inset the title in the upper left?
-        - discrete: Make the colour bar discrete?
-        - log_scale: Make the colour scale log-scaled?
-        - nan_colour: Colour for missing values.
-        - axis_off: Turn off all axes.
-        - country: Plot coastlines only for a specific country.
-        - annotations: Add annotations to the map - dictionary of {'Text': [x, y, xadj, yadj, ha]} where
-                       x, y are position of text, xadj, yadj give offsets to the label, ha is 'left' or
-                       'right' for horizontal anchor.
-        - polygons: If specified, draw each polygon onto the plot.
-        - polygon_colour: Colour for polygons.
-        - hatch: Hatching to use for stippling ('.' for scatterplot, '//' etc for contour hatching).
+        dat: DataSet to plot or list of datasets to plot.
+        ax: GeoAxes object to plot to.
+        dat_proj, dist_proj: Data and display projections.
+        figsize: Figure size width x height.
+        coastlines: Show coastlines?
+        grid: Show grid?
+        ncol/nrows: Number of columns/rows to plot.
+        title: Title for the plot.
+        colour_scale: None for default, or a tuple of min/max values for the scale.
+        cmap: The matplotlib colour map to use.
+        norm: A norm object for colours (e.g. colors.BoundaryNorm).
+        cbar_ticks: Colour bar ticks.
+        tick_labels: Colour bar tick labels.
+        contour: Plot using xarray's contourf function?
+        stippling: True where trippling should appear.
+        stipple_size: Size for stippling points.
+        colourbar: Include a colourbar?
+        ticks_left: Include ticks on left of plot?
+        ticks_bottom: Include ticks on bottom of plot?
+        cbar_aspect: colorbar aspect ratio?
+        cbar_fraction: fraction argument for colorbar().
+        cbar_shrink: shrink argument for colorbar().
+        cbar_pad: pad argument for colorbar().
+        cbar_label: Overwrite label?
+        cbar_orientation: orientation argument for colorbar().
+        coastlines_colour: Colour for coastlines.
+        xlims: x plot limit.
+        ylims: y plot limits.
+        num_ticks: Number of ticks for x and y axes (None for auto).
+        divergent: Is the colour scale divergent? If so make zero central.
+        cbar_inset: Inset the colorbar in lower left?
+        title_inset: Inset the title in the upper left?
+        discrete: Make the colour bar discrete?
+        log_scale: Make the colour scale log-scaled?
+        nan_colour: Colour for missing values.
+        axis_off: Turn off all axes.
+        country: Plot coastlines only for a specific country.
+        annotations: Add annotations to the map - dictionary of {'Text': [x, y, xadj, yadj, ha]} where
+                     x, y are position of text, xadj, yadj give offsets to the label, ha is 'left' or
+                     'right' for horizontal anchor.
+        polygons: If specified, draw each polygon onto the plot.
+        polygon_colour: Colour for polygons.
+        hatch: Hatching to use for stippling ('.' for scatterplot, '//' etc for contour hatching).
+        dat_proj: The data projection.
+        disp_proj: Projection to plot in.
+        left_title: Put titles to left instead of centre?
+        pts: Extra points to plot.
 
     """
-
     col_min = None
     col_max = None
 
@@ -535,7 +547,7 @@ def plot_map_to_ax(
     if discrete:
         assert cbar_ticks is not None, 'Discrete colorbar requires cbar_ticks'
         assert cbar_ticks == sorted(cbar_ticks), 'cbar_ticks must be sorted for discrete plot.'
-        cbar_ticks = np.array(cbar_ticks + [np.max(cbar_ticks) + 1])
+        cbar_ticks = np.array([*cbar_ticks, np.max(cbar_ticks) + 1])
         norm = colors.BoundaryNorm(cbar_ticks, ncolors=len(cbar_ticks) - 1)
         cbar_ticks = (cbar_ticks[0:-1] + cbar_ticks[1:]) / 2
         cbar_spacing = 'uniform'
@@ -601,7 +613,7 @@ def plot_map_to_ax(
         )
 
     if stippling is not None:
-        ax.autoscale(False)
+        ax.autoscale(False)  # noqa: FBT003
         if hatch == '.':
             pts = stippling.where(stippling).to_dataframe().dropna().reset_index()
             ax.scatter(
@@ -613,9 +625,7 @@ def plot_map_to_ax(
                 s=stipple_size,
             )
         else:
-            stippling.plot.contourf(
-                hatches=['', hatch], levels=[0, 0.5, 1], colors='none', ax=ax, add_colorbar=False
-            )
+            stippling.plot.contourf(hatches=['', hatch], levels=[0, 0.5, 1], colors='none', ax=ax, add_colorbar=False)
 
     if xlims is not None:
         ax.set_xlim(xlims)
@@ -642,14 +652,10 @@ def plot_map_to_ax(
             ax.set_title(title, fontsize=plt.rcParams['font.size'])
     if polygons is not None:
         poly = geopandas.GeoSeries(polygons).unary_union
-        ax.add_geometries(
-            poly, crs=ccrs.PlateCarree(), facecolor='none', edgecolor=polygon_colour, linewidth=1.75
-        )
+        ax.add_geometries(poly, crs=ccrs.PlateCarree(), facecolor='none', edgecolor=polygon_colour, linewidth=1.75)
     if coastlines:
         if country is not None:
-            shpfilename = shapereader.natural_earth(
-                resolution='10m', category='cultural', name='admin_0_countries'
-            )
+            shpfilename = shapereader.natural_earth(resolution='10m', category='cultural', name='admin_0_countries')
             df = geopandas.read_file(shpfilename)
             poly = df.loc[df['ADMIN'] == country]['geometry'].values[0]
             ax.add_geometries(
@@ -673,24 +679,20 @@ def plot_map_to_ax(
         ax.axis('off')
 
     if pts is not None:
-        for i in pts.keys():
+        for i in pts:
             ax.scatter(pts[i][0], pts[i][1], color='black')
 
     if annotations is not None:
         for text, [x, y, xadj, yadj, ha] in annotations.items():
             if np.abs(xadj) >= 1 or np.abs(yadj) >= 1:
-                if ha == 'right' or ha == 'left':
-                    ax.plot(
-                        [x, x + xadj - (0.2 * np.sign(xadj))], [y, y + yadj + 0.2], color='black'
-                    )
+                if ha in ('right', 'left'):
+                    ax.plot([x, x + xadj - (0.2 * np.sign(xadj))], [y, y + yadj + 0.2], color='black')
                 elif ha == 'center':
-                    ax.plot(
-                        [x, x + xadj - (0.2 * np.sign(xadj))], [y, y + yadj - 0.2], color='black'
-                    )
+                    ax.plot([x, x + xadj - (0.2 * np.sign(xadj))], [y, y + yadj - 0.2], color='black')
                     if yadj < 0:
                         print('Warning: ha=center and negative y adjustment are not supported.')
                 else:
-                    assert 1 == 0, 'Invalid value of ha.'
+                    assert 1 == 0, 'Invalid value of ha.'  # noqa: PLR0133
             ax.annotate(xy=(x + xadj, y + yadj), text=text, ha=ha)
 
     return res
@@ -729,42 +731,51 @@ def plot_map(
     letter_labels=False,
     **kwargs,
 ):
-    """
-    Plot data on a map.
+    """Plot data on a map.
 
     Arguments:
-
-        - dat: DataSet to plot or list of datasets to plot.
-        - dat_proj, dist_proj: Data and display projections.
-        - figsize: Figure size width x height.
-        - grid: Show grid?
-        - ncols/nrows: Number of columns/rows to plot.
-        - title: Title(s) for the plot(s).
-        - share_scale: Make the range of values in each plot the same?
-        - colour_scale: Tuple with min/max values to use on scale. Overwritten by share_scale.
-        - cbar_ticks: Ticks for the colourbar.
-        - tick_labels: Colour bar tick labels.
-        - file: If specified save to 'file' instead of showing onscreen.
-        - scale_label: The label for a shared scale.
-        - share_axes: Share left/bottom axes?
-        - ticks_left, ticks_bottom: Display ticks on the left/bottom of plots?
-        - wspace, hspace: gridspec wspace and hspace arguments.
-        - stippling: Stippling per axis.
-        - cbar_adjust: Amount to shrink plots by to add cbar for shared scale.
-        - cbar_pad: Padding between figure and colour bar.
-        - col_labels/row_labels: Labels for each column/row; overwrites individial plot titles.
-        - xlims, ylims: x and y limits.
-        - show: Show the map?
-        - shared_scale_quantiles: Quantiles for a shared scale.
-        - polygon: If specified, polygons to put on each map.
-        - letter_labels: Use a letter to label each subplot?
-        - kwargs: Extra arguments to plot_map_to_ax.
+        dat: DataSet to plot or list of datasets to plot.
+        dat_proj, dist_proj: Data and display projections.
+        figsize: Figure size width x height.
+        grid: Show grid?
+        ncols/nrows: Number of columns/rows to plot.
+        title: Title(s) for the plot(s).
+        share_scale: Make the range of values in each plot the same?
+        colour_scale: Tuple with min/max values to use on scale. Overwritten by share_scale.
+        cbar_ticks: Ticks for the colourbar.
+        tick_labels: Colour bar tick labels.
+        file: If specified save to 'file' instead of showing onscreen.
+        scale_label: The label for a shared scale.
+        share_axes: Share left/bottom axes?
+        ticks_left, ticks_bottom: Display ticks on the left/bottom of plots?
+        wspace, hspace: gridspec wspace and hspace arguments.
+        stippling: Stippling per axis.
+        cbar_adjust: Amount to shrink plots by to add cbar for shared scale.
+        cbar_pad: Padding between figure and colour bar.
+        col_labels/row_labels: Labels for each column/row; overwrites individial plot titles.
+        xlims: x limits.
+        ylims: y limits.
+        show: Show the map?
+        shared_scale_quantiles: Quantiles for a shared scale.
+        polygon: If specified, polygons to put on each map.
+        letter_labels: Use a letter to label each subplot?
+        kwargs: Extra arguments to plot_map_to_ax.
+        col_labels: Labels for each column.
+        dat_proj: Data projection.
+        disp_proj: Display projection.
+        hspace: Height spacing.
+        wspace: Width spacing.
+        ncols: Number of columns to use.
+        nrows: Number of rows.
+        polygons: Polygons to overplot.
+        row_labels: Labels for each row.
+        ticks_bottom: Include bottom ticks?
+        ticks_left: Include left ticks?
 
     Return:
         - The axis plotted to.
 
     """
-
     fig, ax = plt.subplots(
         figsize=figsize,
         ncols=ncols,
@@ -807,9 +818,7 @@ def plot_map(
                 np.nanquantile(all_vals, shared_scale_quantiles[0]),
                 np.nanquantile(all_vals, shared_scale_quantiles[1]),
             )
-            assert not (
-                np.isnan(colour_scale[0]) or np.isnan(colour_scale[1])
-            ), 'share_scale cannot be used with subplots missing data.'
+            assert not (np.isnan(colour_scale[0]) or np.isnan(colour_scale[1])), 'share_scale cannot be used with subplots missing data.'
 
         for i, d in enumerate(dat):
             ax_title = None
@@ -868,9 +877,7 @@ def plot_map(
             cbar_ax = fig.add_axes([cbar_adjust + cbar_pad, 0.23, 0.02, 0.55])
             fmt = mticker.ScalarFormatter(useOffset=False, useMathText=True)
             fmt.set_powerlimits((-4, 6))
-            _ = fig.colorbar(
-                im, ax=ax, cax=cbar_ax, ticks=cbar_ticks, label=scale_label, format=fmt
-            )
+            _ = fig.colorbar(im, ax=ax, cax=cbar_ax, ticks=cbar_ticks, label=scale_label, format=fmt)
 
         if col_labels is not None or row_labels is not None:
             for a in ax.flat:
@@ -888,9 +895,7 @@ def plot_map(
 
                 for i, lab in enumerate(row_labels):
                     p = 0.03 + (i / len(row_labels)) * 1.33
-                    lab_ax.annotate(
-                        lab, xy=(0.5, 1 - p), rotation=90, xycoords='axes fraction', ha='center'
-                    )
+                    lab_ax.annotate(lab, xy=(0.5, 1 - p), rotation=90, xycoords='axes fraction', ha='center')
 
     if file is not None:
         plt.savefig(fname=file, dpi=300, bbox_inches='tight')
@@ -898,9 +903,8 @@ def plot_map(
         if show:
             plt.show()
         plt.close()
-    else:
-        if show:
-            plt.show()
+    elif show:
+        plt.show()
 
     return ax
 
@@ -914,9 +918,7 @@ def plot_maxes(
     lab='Max hail diam [mm]',
     file_dir=None,
 ):
-    """
-    Plot maximum values by location for historical and future
-    epochs both nonmasked and masked.
+    """Plot maximum values by location for historical and future epochs both nonmasked and masked.
 
     Arguments:
         all_maxes: Maximums per location per epoch.
@@ -926,8 +928,8 @@ def plot_maxes(
         variable: Variable to plot.
         lab: Label for the variable.
         file_dir: Optional directory to save plot to.
-    """
 
+    """
     x = all_maxes.longitude.values
     y = all_maxes.latitude.values
 
@@ -995,11 +997,10 @@ def process_maxima_set(
     epoch,
     domain,
     time_adjust_mins=0,
-    drop_months=[9, 3],
+    drop_months=None,
     max_hailsize=180,
 ):
-    """
-    Process block (daily) maxima for a dataset.
+    """Process block (daily) maxima for a dataset.
 
     Args:
         dat: The raw data.
@@ -1011,22 +1012,18 @@ def process_maxima_set(
         drop_months: Months to ignore. Defaults to [9, 3].
         max_hailsize: Maximum hail size to allow [mm].
 
-    Returns:
     """
+    if drop_months is None:
+        drop_months = [9, 3]
+
     dat = dat.chunk({'time': 3000, 'south_north': -1, 'west_east': -1})
 
     # Adjust to local time.
-    dat = dat.assign_coords(
-        {
-            'time': dat.time
-            + np.timedelta64(time_adjust, 'h')
-            + np.timedelta64(time_adjust_mins, 'm')
-        }
-    )
+    dat = dat.assign_coords({'time': dat.time + np.timedelta64(time_adjust, 'h') + np.timedelta64(time_adjust_mins, 'm')})
 
     # Remove spin up time and trim so all timeseries are the same length.
-    # Note adjustment to local time can create leap year days (Feb 29s) which 
-    # are not removed here, so must be removed later before analysis is done. 
+    # Note adjustment to local time can create leap year days (Feb 29s) which
+    # are not removed here, so must be removed later before analysis is done.
     # In R code these are removed.
     for m in drop_months:
         dat = dat.where(dat.time.dt.month != m, drop=True)
@@ -1056,16 +1053,14 @@ def process_maxima_set(
 
     # Save percentage of hail that is too large and removed.
     maxes_land['perc_large_hail'] = perc_large_hail
-    maxes_land.perc_large_hail.attrs['description'] = (
-        f'Percentage of hail removed because it is over {max_hailsize} mm.'
-    )
+    maxes_land.perc_large_hail.attrs['description'] = f'Percentage of hail removed because it is over {max_hailsize} mm.'
 
     maxes_land = maxes_land.expand_dims({'epoch': [epoch]})
     for i in [maxes_all, maxes_land]:
         i['latitude'] = (('south_north', 'west_east'), lats.values)
         i['longitude'] = (('south_north', 'west_east'), lons.values)
 
-    # Persist for speed.    
+    # Persist for speed.
     dat_land = dat_land.chunk({'time': -1, 'south_north': 10, 'west_east': 10}).persist()
 
     # Calculate daily maxima for land points only.
@@ -1077,24 +1072,23 @@ def process_maxima_set(
     means = dat_land.resample(time='1D').mean(dim=['time', 'south_north', 'west_east'])
     means = means.expand_dims({'domain': [domain.replace('_', ' + ')], 'epoch': [epoch]})
     means = means.to_dataframe().dropna(how='all')
-    
+
     return maxima, means, maxes_all, maxes_land
 
 
 def process_maxima(
     sim_dir,
-    domains={'Perth': 3, 'Melbourne': 5, 'Brisbane': 6, 'Sydney_Canberra': 7},
-    time_adjust={'Perth': 8, 'Melbourne': 11, 'Brisbane': 10, 'Sydney_Canberra': 11},
-    time_adjust_mins={'Perth': 0, 'Melbourne': 0, 'Brisbane': 0, 'Sydney_Canberra': 0},
+    domains=None,
+    time_adjust=None,
+    time_adjust_mins=None,
     results_dir='/g/data/up6/tr2908/hist_future_hail/results/',
-    variables=['hailcast_diam_max', 'wind_10m'],
+    variables=None,
     file_dir='paper/supporting info/figures/',
-    drop_vars_basic = ['pressure', 'temperature', 'u', 'v', 'z', 'z_agl', 'mixing_ratio', 'specific_humidity', 'bottom_top'],
-    drop_vars_conv = ['shear_u', 'shear_v' ,'positive_shear'],
+    drop_vars_basic=None,
+    drop_vars_conv=None,
     **kwargs,
 ):
-    """
-    Process maxima of hail and wind values.
+    """Process maxima of hail and wind values.
 
     Args:
         sim_dir: Directory where simulations are stored. Defaults to '/g/data/up6/tr2908/hist_future_hail/WRF_v4.4/simulations/cities/'.
@@ -1105,8 +1099,22 @@ def process_maxima(
         file_dir: Figure directory. Defaults to 'paper/figures/'.
         drop_vars_basic: Basic variables to not include.
         drop_vars_conv: Conv variables to not include.
+        time_adjust_mins: Adjust time if required, per domain.
         kwargs: Extra arguments to process_maxima_set().
+
     """
+    if domains is None:
+        domains = {'Perth': 3, 'Melbourne': 5, 'Brisbane': 6, 'Sydney_Canberra': 7}
+    if time_adjust is None:
+        time_adjust = {'Perth': 8, 'Melbourne': 11, 'Brisbane': 10, 'Sydney_Canberra': 11}
+    if time_adjust_mins is None:
+        time_adjust_mins = {'Perth': 0, 'Melbourne': 0, 'Brisbane': 0, 'Sydney_Canberra': 0}
+    if variables is None:
+        variables = ['hailcast_diam_max', 'wind_10m']
+    if drop_vars_basic is None:
+        drop_vars_basic = ['pressure', 'temperature', 'u', 'v', 'z', 'z_agl', 'mixing_ratio', 'specific_humidity', 'bottom_top']
+    if drop_vars_conv is None:
+        drop_vars_conv = ['shear_u', 'shear_v', 'positive_shear']
 
     maxima = []
 
@@ -1146,7 +1154,7 @@ def process_maxima(
             futu_basic = open_set(pattern=f'{sim_dir}/ssp245/*/WRF/basic*d0{d}*.nc', drop_vars=drop_vars_basic)
             hist_conv = open_set(pattern=f'{sim_dir}/hist/*/WRF/conv*d0{d}*.nc', drop_vars=drop_vars_conv)
             futu_conv = open_set(pattern=f'{sim_dir}/ssp245/*/WRF/conv*d0{d}*.nc', drop_vars=drop_vars_conv)
-            
+
             hist = xarray.merge([hist_basic, hist_conv])
             futu = xarray.merge([futu_basic, futu_conv])
 
@@ -1209,6 +1217,7 @@ def process_maxima(
 
     return xarray.merge(maxima)
 
+
 def plot_maxima(
     maxima,
     variable,
@@ -1222,14 +1231,15 @@ def plot_maxima(
     cbar_pad=0.015,
     nrows=3,
     ncols=4,
-    locator_base={'Sydney/Canberra': 1.5, 'Brisbane': 1.5},
-    title_xs={'Kalgoorlie': 0.02, 'Adelaide': 0.05},
-    title_ys={'Kalgoorlie': 0.9, 'Melbourne': 0.9},
-    city_polygons_file = 'data/SUA_2021_AUST_GDA2020_SHP.zip',
-    polygons_colour='fuchsia'
+    locator_base=None,
+    title_xs=None,
+    title_ys=None,
+    city_polygons_file='data/SUA_2021_AUST_GDA2020_SHP.zip',
+    polygons_colour='fuchsia',
+    start_letter=0,
+    titles=True,
 ):
-    """
-    Plot maxima for each epoch.
+    """Plot maxima for each epoch.
 
     Args:
         maxima: The maxima to plot.
@@ -1242,12 +1252,23 @@ def plot_maxima(
         figsize: Figure suze. Defaults to (12, 7).
         cbar_adjust: cbar adjustment factor. Defaults to 0.862.
         cbar_pad: cbar padding factor. Defaults to 0.015.
-        nrows, ncols: Number of rows and columns.
+        nrows: Number of rows.
+        ncols: Number of columns.
         locator_base: 'base' argument for locator, per domain, to override default of 2.
         title_xs: x position for inset title, to override default per domain.
         title_ys: y position for inset title, to override default per domain.
         city_polygons_file: File containin urban regions polygons to include.
+        polygons_colour: The colour to use to plot polygons.
+        start_letter: Letter to start from (numeric, 1=a).
+        titles: Include column titles?
+
     """
+    if locator_base is None:
+        locator_base = {'Sydney/Canberra': 1.5, 'Brisbane': 1.5}
+    if title_xs is None:
+        title_xs = {'Kalgoorlie': 0.02, 'Adelaide': 0.05}
+    if title_ys is None:
+        title_ys = {'Kalgoorlie': 0.9, 'Melbourne': 0.9}
 
     maxima = maxima.copy(deep=True)
     maxima[variable] = maxima[variable] * factor
@@ -1267,7 +1288,7 @@ def plot_maxima(
     zmin = maxima[variable].min()
     zmax = maxima[variable].max()
 
-    plot_letters = letters.copy()[::-1]
+    plot_letters = letters.copy()[start_letter:][::-1]
     pnum = 0
     for i, (d, e) in enumerate(itertools.product(maxima.domain, maxima.epoch)):
         x = maxima.sel(epoch=e, domain=d).longitude
@@ -1299,18 +1320,14 @@ def plot_maxima(
         axs.flat[pnum].coastlines()
 
         if city_polygons_file is not None:
-                    bbox = Polygon([(np.min(x), np.min(y)),
-                                    (np.min(x), np.max(y)),
-                                    (np.max(x), np.max(y)),
-                                    (np.max(x), np.min(y))])
-                    city_polygons = cities.clip(bbox).geometry
-                    city_polygons = geopandas.GeoSeries(city_polygons).unary_union
+            bbox = Polygon([(np.min(x), np.min(y)), (np.min(x), np.max(y)), (np.max(x), np.max(y)), (np.max(x), np.min(y))])
+            city_polygons = cities.clip(bbox).geometry
+            city_polygons = geopandas.GeoSeries(city_polygons).unary_union
 
-                    axs.flat[pnum].add_geometries(city_polygons, crs=ccrs.PlateCarree(), facecolor='none', 
-                                                edgecolor=polygons_colour, linewidth=0.75)
+            axs.flat[pnum].add_geometries(city_polygons, crs=ccrs.PlateCarree(), facecolor='none', edgecolor=polygons_colour, linewidth=0.75)
 
-        title_x = title_xs[str(d.values)] if str(d.values) in title_xs else 0.9
-        title_y = title_ys[str(d.values)] if str(d.values) in title_ys else 0.05
+        title_x = title_xs.get(str(d.values), 0.9)
+        title_y = title_ys.get(str(d.values), 0.05)
         axs.flat[pnum].annotate(
             text=f'{plot_letters.pop()}',
             xy=(title_x, title_y),
@@ -1318,18 +1335,16 @@ def plot_maxima(
             fontweight='bold',
             fontsize=plt.rcParams['font.size'],
         )
-        base = locator_base[str(d.values)] if str(d.values) in locator_base else 2
+        base = locator_base.get(str(d.values), 2)
         locator = mticker.MultipleLocator(base=base)
-        gl = axs.flat[pnum].gridlines(
-            crs=ccrs.PlateCarree(), draw_labels=True, alpha=0.5, xlocs=locator, ylocs=locator
-        )
+        gl = axs.flat[pnum].gridlines(crs=ccrs.PlateCarree(), draw_labels=True, alpha=0.5, xlocs=locator, ylocs=locator)
         gl.top_labels = gl.right_labels = False
         if (i + 1) % int(ncols / 2) == 0:
             gl.left_labels = False
             if (i + 1) % int(ncols) != 0:
                 pnum = pnum + 1
                 axs.flat[pnum].set_visible(False)
-            
+
         pnum = pnum + 1
 
     fig.subplots_adjust(right=cbar_adjust)
@@ -1343,29 +1358,29 @@ def plot_maxima(
     if cbar_min is not None and cbar_min > zmin:
         extend = 'min'
 
-    _ = fig.colorbar(im, ax=axs.flat[0], cax=cbar_ax, ticks=None, label=scale_label, 
-                     format=fmt, extend=extend)
+    _ = fig.colorbar(im, ax=axs.flat[0], cax=cbar_ax, ticks=None, label=scale_label, format=fmt, extend=extend)
 
-    for i in [0, 3]:
-        assert str(maxima.epoch[0].values) == 'historical', str(maxima.epoch[0].values)
-        axs[0, i].set_title('Historical')
-    for i in [1, 4]:
-        assert str(maxima.epoch[1].values) == 'ssp245', str(maxima.epoch[1].values)
-        axs[0, i].set_title('Future')
+    if titles:
+        for i in [0, 3]:
+            assert str(maxima.epoch[0].values) == 'historical', str(maxima.epoch[0].values)
+            axs[0, i].set_title('Historical')
+        for i in [1, 4]:
+            assert str(maxima.epoch[1].values) == 'ssp245', str(maxima.epoch[1].values)
+            axs[0, i].set_title('Future')
 
     if file is not None:
         plt.savefig(fname=file, dpi=300, bbox_inches='tight')
 
+
 def open_set(pattern, expected_n=3040, drop_vars=None):
-    """
-    Open a dataset.
+    """Open a dataset.
 
     Args:
         pattern: The pattern to match files for.
         expected_n: Check there are n files being opened. Defaults to 3040.
         drop_vars: Optionally drop variables.
-    """
 
+    """
     files = sorted(glob.glob(pattern))
     assert len(files) == expected_n, f'Missing files for {pattern}'
     dat = xarray.open_mfdataset(files, parallel=True, combine='nested', concat_dim='time')
