@@ -237,7 +237,7 @@ size of hail and the tropical latitude of this event made it highly unusual.
 
 \begin{table}
     \centering
-    \caption{Probability of a hail day exceeding hail sizes of 20, 50, or 100 mm, and of coincident wind exceeding 80 and 100 km h$^{-1}$, per domain and epoch.}
+    \caption{Probability of a hail day exceeding hail sizes of 50 or 100 mm, and of coincident wind exceeding 80 and 100 km h$^{-1}$, per domain and epoch.}
     \label{tab:exceedence_probs}
     \begin{tabular}{llcccc}
     \hline

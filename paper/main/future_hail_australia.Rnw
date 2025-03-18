@@ -1,4 +1,4 @@
-\documentclass[]{agujournal2019}
+\documentclass[draft]{agujournal2019}
 
 \usepackage{url} %this package should fix any errors with URLs in refs.
 \usepackage[inline]{trackchanges} %for better track changes. finalnew option will compile document with changes incorporated.
@@ -41,7 +41,6 @@ require(dplyr, quietly=TRUE)
 %  \remove[editor]{Text to remove}
 %  \change[editor]{Text to remove}{Text to add}
 
-\draftfalse
 \journalname{Geophysical Research Letters}
 
 \begin{document}
@@ -64,18 +63,9 @@ require(dplyr, quietly=TRUE)
 \correspondingauthor{Timothy H. Raupach}{timothy.h.raupach@gmail.com}
 
 \begin{keypoints}
-\item Hail causes more damage when hailstones are larger or coincident winds are
-stronger, yet there is high uncertainty around changes to these factors with
-global warming.
-\item Convection-permitting downscaled simulations for a climate scenario with
-$\sim$2.8 K warming over pre-industrial temperatures were used to
-investigate possible future changes in hail size and coincident wind strength
-over major Australian cities and the remote Western Australian Goldfields
-region.
-\item The simulations project increases in hail frequency in the Sydney/Canberra
-and Brisbane regions, as well as increases in maximum hail size around
-Melbourne, Sydney/Canberra, the Goldfields, and Perth and reductions in
-hail-coincident wind strength around Melbourne, Sydney/Canberra, and Perth.
+\item Hail damage increases with larger hailstones or stronger coincident winds, yet climate change effects on these factors remain uncertain.
+\item Convection-permitting downscaled simulations projected changes in hail size and coincident wind strength over major Australian cities.
+\item Projections include increased hail size but decreased coincident wind strength around Melbourne, Sydney/Canberra, and Perth.
 \end{keypoints}
 
 \begin{abstract} %% 150 words
@@ -284,7 +274,7 @@ independence \cite{Coles_2001} because single hail storms do not last more than
 one day. Only locations with non-zero hail sizes were considered. Two types of
 extreme value distributions (EVDs) were used. For hailstone size, Generalized
 Pareto distributions with a threshold of 20 mm were fitted to each series of
-daily maxima, to obtain a good fit to distribution tails. For wind speeds which
+daily maxima, to obtain a good fit toYe distribution tails. For wind speeds which
 were more normally distributed, Generalized extreme value distributions were
 fitted to each series of daily maxima. We used quantile-quantile (QQ) plots
 \cite{Coles_2001} and the Kolmogorov–Smirnoff (KS) test to assess goodness of
@@ -572,7 +562,7 @@ significant change in damage potential in the EVD analyses.
       \hline
       <<ing_changes_table2, echo=FALSE, include=TRUE, results="asis">>=
       lines = read_lines("tables/ingredients_2.tex")
-      for (line in lines[c(8,14,12,15,13,16,5,9,6,10,17,7,11)]) {
+      for (line in lines[c(8,14,12,15,13,11,16,5,9,6,10,17,7)]) {
             cat(line)
       }
       @
@@ -669,13 +659,14 @@ hail and its changes in a warming world.
 \section*{Open Research Section}
 
 Boundary condition data are available at \citeA{Xu_code_data_2021}. Complete
-analysis code and WRF configuration files are available Zenodo repository (DOI:
-10.5281/zenodo.14607614). Convective parameters were calculated using
-\texttt{xarray\_parcel} (DOI: 10.5281/zenodo.8088497). Shapefiles for urban area
-boundaries are sourced from the Australian Bureau of Statistics under CC-BY-4.0
-(\url{https://www.abs.gov.au/statistics/standards/australian-statistical-geography-standard-asgs-edition-3/jul2021-jun2026/access-and-downloads/digital-boundary-files}).
-Radar data are available at the National Computational Infrastructure (NCI) data
-catalogue (DOI:10.25914/JJWZ-0F13). 
+analysis code and WRF configuration files are available at
+\citeA{Raupach_software_2025}; the version used for this manuscript (v1.0.0) is
+archived at Zenodo \cite{Raupach_zenodo_2025}. Convective parameters were
+calculated using \texttt{xarray\_parcel} \cite{Raupach_xarray_zenodo}.
+Shapefiles for urban area boundaries are sourced from the Australian Bureau of
+Statistics under CC-BY-4.0 \cite{ABS_boundaries_2021}. Radar data are available
+at the National Computational Infrastructure (NCI) data catalogue
+\cite{Soderholm_radar_data}.
 
 \acknowledgments
 
