@@ -1083,7 +1083,7 @@ def process_maxima(
     time_adjust_mins=None,
     results_dir='/g/data/up6/tr2908/hist_future_hail/results/',
     variables=None,
-    file_dir='paper/supporting info/figures/',
+    file_dir=None,
     drop_vars_basic=None,
     drop_vars_conv=None,
     **kwargs,
