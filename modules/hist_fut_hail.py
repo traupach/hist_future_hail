@@ -1226,7 +1226,7 @@ def plot_maxima(
     cbar_max=None,
     cbar_min=None,
     file=None,
-    figsize=(12, 7),
+    figsize=(12, 8.2),
     cbar_adjust=0.862,
     cbar_pad=0.015,
     nrows=3,
@@ -1237,7 +1237,6 @@ def plot_maxima(
     city_polygons_file='data/SUA_2021_AUST_GDA2020_SHP.zip',
     polygons_colour='fuchsia',
     start_letter=0,
-    titles=True,
 ):
     """Plot maxima for each epoch.
 
@@ -1249,7 +1248,7 @@ def plot_maxima(
         cbar_max: Maximum value to plot, None if data max.
         cbar_min: Minimum value to plot, None if data min.
         file: Output file for plot.
-        figsize: Figure suze. Defaults to (12, 7).
+        figsize: Figure suze. 
         cbar_adjust: cbar adjustment factor. Defaults to 0.862.
         cbar_pad: cbar padding factor. Defaults to 0.015.
         nrows: Number of rows.
@@ -1260,7 +1259,6 @@ def plot_maxima(
         city_polygons_file: File containin urban regions polygons to include.
         polygons_colour: The colour to use to plot polygons.
         start_letter: Letter to start from (numeric, 1=a).
-        titles: Include column titles?
 
     """
     if locator_base is None:
@@ -1282,7 +1280,7 @@ def plot_maxima(
         ncols=ncols + 1,
         figsize=figsize,
         subplot_kw={'projection': ccrs.PlateCarree()},
-        gridspec_kw={'wspace': 0.1, 'width_ratios': [1, 1, 0.22, 1, 1]},
+        gridspec_kw={'wspace': 0.1, 'hspace': 0.3, 'width_ratios': [1, 1, 0.22, 1, 1]},
     )
 
     zmin = maxima[variable].min()
@@ -1318,6 +1316,10 @@ def plot_maxima(
         )
 
         axs.flat[pnum].coastlines()
+        dom = d.values
+        if dom == "Sydney/Canberra":
+            dom = "Syd./Canb."
+        axs.flat[pnum].set_title(f'{dom} ({"H" if e.values == "historical" else "F"})')
 
         if city_polygons_file is not None:
             bbox = Polygon([(np.min(x), np.min(y)), (np.min(x), np.max(y)), (np.max(x), np.max(y)), (np.max(x), np.min(y))])
@@ -1359,14 +1361,6 @@ def plot_maxima(
         extend = 'min'
 
     _ = fig.colorbar(im, ax=axs.flat[0], cax=cbar_ax, ticks=None, label=scale_label, format=fmt, extend=extend)
-
-    if titles:
-        for i in [0, 3]:
-            assert str(maxima.epoch[0].values) == 'historical', str(maxima.epoch[0].values)
-            axs[0, i].set_title('Historical')
-        for i in [1, 4]:
-            assert str(maxima.epoch[1].values) == 'ssp245', str(maxima.epoch[1].values)
-            axs[0, i].set_title('Future')
 
     if file is not None:
         plt.savefig(fname=file, dpi=300, bbox_inches='tight')
