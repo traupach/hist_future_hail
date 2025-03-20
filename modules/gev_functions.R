@@ -144,7 +144,7 @@ plot_params <- function(gev_fits, fontsize = default_fontsize, dodge = 0.3, labe
         geom_point(aes(x = domain, y = est, colour = epoch), position = position_dodge(dodge), size = 3) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(x = "Domain", y = "Parameter value") +
-        scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
+        scale_colour_manual(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future"), values = rev(hue_pal()(2))) +
         theme(axis.text.x = element_text(angle = 25, vjust = 1, hjust = 1))
     print(g)
 
@@ -155,7 +155,7 @@ plot_params <- function(gev_fits, fontsize = default_fontsize, dodge = 0.3, labe
 
 plot_densities <- function(gev_fits, variable, label, ev_types, gp_thresholds,
                            epochs = c("historical", "ssp245"),
-                           x = seq(0, 150), fontsize = default_fontsize, 
+                           x = seq(0, 150), fontsize = default_fontsize,
                            labels = default_labels_ml,
                            file = NA, width = 12, height = 5) {
     datagrabber <- Data <- NULL # nolint
@@ -168,9 +168,9 @@ plot_densities <- function(gev_fits, variable, label, ev_types, gp_thresholds,
             d <- gev_fits$gev[[domain]][[variable]][[epoch]]
 
 
-            exceedances = datagrabber(d)
+            exceedances <- datagrabber(d)
             if (ev_types[[variable]] == "GEV") {
-                threshold = 0
+                threshold <- 0
                 mod <- devd(
                     x = x,
                     scale = d$results$par[["scale"]],
@@ -179,8 +179,8 @@ plot_densities <- function(gev_fits, variable, label, ev_types, gp_thresholds,
                     type = "GEV"
                 )
             } else if (ev_types[[variable]] == "GP") {
-                threshold = gp_thresholds[[variable]]
-                exceedances = exceedances[exceedances > threshold]
+                threshold <- gp_thresholds[[variable]]
+                exceedances <- exceedances[exceedances > threshold]
                 mod <- devd(
                     x = x,
                     scale = d$results$par[["scale"]],
@@ -210,7 +210,10 @@ plot_densities <- function(gev_fits, variable, label, ev_types, gp_thresholds,
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(x = parse(text = label), y = "Density") +
-        scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
+        scale_colour_manual(
+            name = "Epoch", breaks = c("historical", "ssp245"),
+            labels = c("Historical", "Future"), values = rev(hue_pal()(2))
+        ) +
         scale_x_continuous()
     print(g)
 
@@ -285,8 +288,14 @@ plot_return_levels <- function(gev_fits, var, file = NA, width = 12, height = 6.
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
         labs(y = "Extreme value", x = "Return period [years]") +
-        scale_fill_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
-        scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
+        scale_fill_manual(
+            name = "Epoch", breaks = c("historical", "ssp245"),
+            labels = c("Historical", "Future"), values = rev(hue_pal()(2))
+        ) +
+        scale_colour_manual(
+            name = "Epoch", breaks = c("historical", "ssp245"),
+            labels = c("Historical", "Future"), values = rev(hue_pal()(2))
+        ) +
         geom_label(aes(x = Inf, y = -Inf, label = label),
             data = letter_labels, hjust = "right", vjust = "bottom",
             label.size = 0, size = 5.5, parse = TRUE
@@ -339,7 +348,8 @@ plot_probs <- function(gev_fits, file = NA, width = 12, height = 6,
         facet_grid(variable ~ domain, labeller = labels, scales = "free") +
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
-        scale_colour_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
+        scale_colour_manual(name = "Epoch", breaks = c("historical", "ssp245"), 
+                            labels = c("Historical", "Future"), values = rev(hue_pal()(2))) +
         labs(x = "Damage threshold", y = "Probability [%]") +
         theme(axis.text.x = element_text(angle = 38, vjust = 1, hjust = 1)) +
         geom_label(aes(x = -Inf, y = -Inf, label = label),
@@ -478,33 +488,33 @@ fit_gevs <- function(all_dat,
                 dat <- filter(all_dat, domain == d, epoch == e)[[v]]
                 stopifnot(length(dat) / span == expected_per_year)
 
-                type = ev_types[[v]]
-                thresh = NA
+                type <- ev_types[[v]]
+                thresh <- NA
 
                 if (type == "GP") {
                     # If using GP distribution, subset data to those above threshold; no location parameter.
-                    thresh = gp_thresholds[[v]]
-                    loc = NA
+                    thresh <- gp_thresholds[[v]]
+                    loc <- NA
                     gev <- fevd(dat, type = "GP", threshold = thresh, span = span)
-                    dat = dat[dat > thresh]
-                    count_per_year = 1
+                    dat <- dat[dat > thresh]
+                    count_per_year <- 1
                 } else if (type == "GEV") {
                     # If using GEV distribution, no threshold, subset to non-zero values; no span.
-                    dat = dat[dat != 0]
+                    dat <- dat[dat != 0]
                     gev <- fevd(dat, type = "GEV")
-                    thresh = NA
-                    count_per_year = tibble(v = dat > 0) %>%
+                    thresh <- NA
+                    count_per_year <- tibble(v = dat > 0) %>%
                         mutate(year = (row_number() - 1) %/% 151) %>%
                         group_by(year) %>%
                         summarise(n = sum(v)) %>%
                         ungroup() %>%
                         summarize(n = mean(n))
-                    count_per_year = count_per_year$n
+                    count_per_year <- count_per_year$n
                 }
                 gevs[[d]][[v]][[e]] <- gev
 
                 if (type == "GEV") {
-                    loc = gev$results$par[["location"]]
+                    loc <- gev$results$par[["location"]]
                 }
 
                 # Calculate model and empirical quantiles for a qqplot.
@@ -653,7 +663,10 @@ hail_day_changes <- function(dat, out_file, fontsize = default_fontsize, plot_fi
     p <- ggplot(hail_days, aes(x = domain, y = n)) +
         geom_boxplot(aes(fill = epoch), width = 0.75, alpha = 0.75) +
         theme_bw(fontsize) +
-        scale_fill_discrete(name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future")) +
+        scale_fill_manual(
+            name = "Epoch", breaks = c("historical", "ssp245"), labels = c("Historical", "Future"),
+            values = rev(hue_pal()(2))
+        ) +
         labs(x = "Domain", y = "Seasonal hail days")
     print(p)
 
@@ -884,7 +897,9 @@ domain_correlation_plot <- function(means, fontsize = default_fontsize, plot_fil
     grid.arrange(grobs = grobs, nrow = 2, heights = c(1, 1.285))
 }
 
-periods_for_thresholds <- function(var, thresh) {
+periods_for_thresholds <- function(gev_fits, var, thresh) {
+    variable <- est <- domain <- epoch <- threshold <- NULL
+
     res <- tibble()
     for (t in thresh) {
         res <- rbind(res, gev_fits$return_levels %>%
