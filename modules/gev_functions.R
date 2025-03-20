@@ -317,11 +317,11 @@ plot_probs <- function(gev_fits, file = NA, width = 12, height = 6,
             rename(thresh = windspeed) %>%
             mutate(variable = "wind_10m", thresh = factor(paste(thresh, "km/h wind"),
                 levels = c(
-                    "50 km/h wind",
+                    "70 km/h wind",
                     "90 km/h wind"
                 ),
                 labels = c(
-                    "50 km/h wind",
+                    "70 km/h wind",
                     "90 km/h wind"
                 )
             ))
@@ -451,7 +451,7 @@ fit_gevs <- function(all_dat,
                      expected_per_year = 151,
                      epochs = c("historical", "ssp245"),
                      prob_diams = c(50, 100), # mm
-                     prob_windspeeds = c(50, 90), # km/h
+                     prob_windspeeds = c(70, 90), # km/h
                      p = seq(1, 99) / 100,
                      return_periods = seq(2, 20, by = 1),
                      ks_iterations = 100,
