@@ -47,11 +47,11 @@ default_labels_units <- labeller(
         wind_10m = "Max.~wind~group('[',km~h^{-1},']')"
     ),
     domain = c(
-        "Adelaide" = "Adelaide",
-        "Melbourne" = "Melbourne",
-        "Brisbane" = "Brisbane",
-        "Kalgoorlie" = "Kalgoorlie",
-        "Perth" = "Perth",
+        "Adelaide" = "'\nAdelaide'",
+        "Melbourne" = "'\nMelbourne'",
+        "Brisbane" = "'\nBrisbane'",
+        "Kalgoorlie" = "'\nKalgoorlie'",
+        "Perth" = "'\nPerth'",
         "Sydney/Canberra" = "'Sydney/\nCanberra'"
     ),
     .default = label_parsed
@@ -69,6 +69,11 @@ default_labels_ml <- labeller(
         scale = "Scale"
     ),
     domain = c(
+        "Adelaide" = "\nAdelaide",
+        "Melbourne" = "\nMelbourne",
+        "Brisbane" = "\nBrisbane",
+        "Kalgoorlie" = "\nKalgoorlie",
+        "Perth" = "\nPerth",
         "Sydney/Canberra" = "Sydney/\nCanberra"
     ),
     .multi_line = TRUE
