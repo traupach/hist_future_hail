@@ -217,8 +217,8 @@ def plot_wrf_domains(
         geom = LinearRing(
             list(
                 zip(
-                    list(x.isel(south_north=-1).values) + list(x.isel(south_north=0).values)[::-1],
-                    list(y.isel(south_north=-1).values) + list(y.isel(south_north=0).values)[::-1],
+                    list(x.isel(south_north_stag=-1).values) + list(x.isel(south_north_stag=0).values)[::-1],
+                    list(y.isel(south_north_stag=-1).values) + list(y.isel(south_north_stag=0).values)[::-1],
                 ),
             ),
         )
@@ -233,8 +233,8 @@ def plot_wrf_domains(
 
     def add_doms(dom_list, ax, colour='white', linestyle='solid'):
         for dom in dom_list:
-            x = dom.XLONG_M.isel(Time=0)
-            y = dom.XLAT_M.isel(Time=0)
+            x = dom.XLONG_C.isel(Time=0)
+            y = dom.XLAT_C.isel(Time=0)
             add_box(x, y, ax, colour=colour, linestyle=linestyle)
 
     # Do the plotting.
@@ -246,8 +246,8 @@ def plot_wrf_domains(
 
     for i, (ls, col) in enumerate([wps_files[x] for x in wps_files]):
         add_doms([doms[i]], ax=ax, colour=col, linestyle=ls)
-        x = doms[i].isel(Time=0).XLONG_M.values
-        y = doms[i].isel(Time=0).XLAT_M.values
+        x = doms[i].isel(Time=0).XLONG_C.values
+        y = doms[i].isel(Time=0).XLAT_C.values
         min_x = min(min_x, np.min(x))
         max_x = max(max_x, np.max(x))
         min_y = min(min_y, np.min(y))
