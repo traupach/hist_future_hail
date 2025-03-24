@@ -1081,7 +1081,7 @@ def process_maxima(
     domains=None,
     time_adjust=None,
     time_adjust_mins=None,
-    results_dir='/g/data/up6/tr2908/hist_future_hail/results/',
+    results_dir='results/',
     variables=None,
     file_dir=None,
     drop_vars_basic=None,
@@ -1094,7 +1094,7 @@ def process_maxima(
         sim_dir: Directory where simulations are stored. Defaults to '/g/data/up6/tr2908/hist_future_hail/WRF_v4.4/simulations/cities/'.
         domains: Domain IDs in sims. Defaults to {'Perth': 3, 'Melbourne': 5, 'Brisbane': 6, 'Sydney_Canberra': 7}.
         time_adjust: Time adjustments to get to local time. Defaults to {'Perth': 8, 'Melbourne': 11, 'Brisbane': 10, 'Sydney_Canberra': 11}.
-        results_dir: Where to write results. Defaults to '/g/data/up6/tr2908/hist_future_hail/results/'.
+        results_dir: Where to write results.
         variables: Variables to process. Defaults to ['hailcast_diam_max', 'wind_10m'].
         file_dir: Figure directory. Defaults to 'paper/figures/'.
         drop_vars_basic: Basic variables to not include.

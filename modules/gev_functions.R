@@ -19,6 +19,7 @@ suppressMessages(library(tidyr))
 suppressMessages(library(psych))
 suppressMessages(library(tibble))
 suppressMessages(library(gridExtra))
+suppressMessages(library(scales))
 
 letters <- c(
     "a", "b", "c", "d", "e", " f", "g", "h", "i", "j", "k", "l", "m",
@@ -353,7 +354,7 @@ plot_probs <- function(gev_fits, file = NA, width = 12, height = 6,
         facet_grid(variable ~ domain, labeller = labels, scales = "free") +
         theme_bw(fontsize) +
         theme(strip.background = element_blank(), strip.text = element_text(size = fontsize)) +
-        scale_colour_manual(name = "Epoch", breaks = c("historical", "ssp245"), 
+        scale_colour_manual(name = "Epoch", breaks = c("historical", "ssp245"),
                             labels = c("Historical", "Future"), values = rev(hue_pal()(2))) +
         labs(x = "Damage threshold", y = "Probability [%]") +
         theme(axis.text.x = element_text(angle = 38, vjust = 1, hjust = 1)) +
