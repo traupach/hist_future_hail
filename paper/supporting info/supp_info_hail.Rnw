@@ -204,22 +204,6 @@ size of hail and the tropical latitude of this event made it highly unusual.
     \label{fig:evd_parameters}
 \end{figure}
 
-\begin{figure}[!ht]
-    \includegraphics[width=\textwidth]{figures/correlations}
-    \caption{Correlations of seasonal values of hail-relevant properties
-    between domains, by epoch. Seasonal means were calculated from daily means
-    at hail locations and hours. Variables considered are seasonal hail days
-    (a, g), and mean hail diameter (b, h), 10 m wind at hail hours (c, i),
-    bulk vertical wind shear (d, j), CAPE (e, k), lifted index (f, l), CIN (m,
-    r), 700-500 hPa lapse rate (n, s), temperature at 500 hPa (o, t), freezing
-    level height (p, u) and melting level height (q, v), for historical (a-f,
-    m-q) and future (g-l, r-v) epochs. Statistically significant correlations
-    are shown by an $\ast{}$ for 90\% confidence level ($p <$ 0.1),
-    $\ast{}\!\ast{}$ for 95\% confidence level ($p <$ 0.05), and
-    $\ast{}\!\ast{}\!\!\ast{}$ for the 99\% confidence level ($p <$ 0.01).}
-    \label{fig:correlations}
-\end{figure}
-
 \begin{table}
      \centering
      \caption{Return periods for hail sizes of 50 or 100 mm, and of
