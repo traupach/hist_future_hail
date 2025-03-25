@@ -664,7 +664,7 @@ warming world.
 
 Processed simulation data, complete analysis code, and WRF configuration files
 are available at \citeA{Raupach_software_2025} and archived at Zenodo
-\cite{Raupach_zenodo_2025}. The version used for this manuscrupt was v1.0.2 at
+\cite{Raupach_zenodo_2025}. The version used for this manuscrupt was v1.0.3 at
 \cite{Raupach_zenodo_2025}. Simulation boundary condition data are available at
 \citeA{Xu_code_data_2021}. Convective parameters were calculated using
 \texttt{xarray\_parcel} \cite{Raupach_xarray_zenodo}. Shapefiles for urban area

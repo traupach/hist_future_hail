@@ -49,8 +49,8 @@ Australia
 \noindent\textbf{Contents of this file}
 \begin{enumerate}
     \item Description of recent high-loss hail events in Australia.
-    \item Figures S1 to S10.
-    \item Tables S1 to S5.
+    \item Figures S1 to S9.
+    \item Tables S1 to S6.
 \end{enumerate}
 
 \clearpage
@@ -204,6 +204,22 @@ size of hail and the tropical latitude of this event made it highly unusual.
     \label{fig:evd_parameters}
 \end{figure}
 
+\begin{table}[!ht]
+    \caption{Parameterization schemes used in the WRF simulations.}
+    \label{tab:schemes}
+    \centering
+    \begin{tabular}{lr}
+          \hline
+          Microphysics & P3-3moment \cite{Milbrandt_JAS_2021} \\
+          Cumulus (medium and coarse nests only) & New Tiedtke \cite{Zhang_JC_2017} \\
+          Long wave and shortwave radiation & RRTMG \cite{Iacono_JGRA_2008} \\
+          Planetary boundary layer & YSU \cite{Hong_MWR_2006} \\
+          Surface layer & Revised MM5 \cite{Jimenez_MWR_2012} \\
+          Land surface & Noah-MP \cite{Niu_JGRA_2011} \\
+          \hline
+    \end{tabular}
+\end{table}
+
 \begin{table}
      \centering
      \caption{Return periods for hail sizes of 50 or 100 mm, and of
@@ -241,22 +257,6 @@ size of hail and the tropical latitude of this event made it highly unusual.
     }
     @
     \hline 
-    \end{tabular}
-\end{table}
-
-\begin{table}[!ht]
-    \caption{Parameterization schemes used in the WRF simulations.}
-    \label{tab:schemes}
-    \centering
-    \begin{tabular}{lr}
-          \hline
-          Microphysics & P3-3moment \cite{Milbrandt_JAS_2021} \\
-          Cumulus (medium and coarse nests only) & New Tiedtke \cite{Zhang_JC_2017} \\
-          Long wave and shortwave radiation & RRTMG \cite{Iacono_JGRA_2008} \\
-          Planetary boundary layer & YSU \cite{Hong_MWR_2006} \\
-          Surface layer & Revised MM5 \cite{Jimenez_MWR_2012} \\
-          Land surface & Noah-MP \cite{Niu_JGRA_2011} \\
-          \hline
     \end{tabular}
 \end{table}
 
