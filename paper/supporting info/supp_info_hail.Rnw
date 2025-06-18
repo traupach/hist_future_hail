@@ -231,67 +231,6 @@ size of hail and the tropical latitude of this event made it highly unusual.
     \end{tabular}
 \end{table}
 
-\begin{table}
-     \centering
-     \caption{Return periods for hail sizes of 50 or 100 mm, and of
-     hail-proximal wind exceeding 70 and 90 km h$^{-1}$, per domain and epoch.}
-     \label{tab:return_periods}
-     \begin{tabular}{llcccc}
-     \hline
-     & & \multicolumn{2}{c}{Hail RP [years]} & \multicolumn{2}{c}{Wind RP [years]} \\ 
-     Domain & Epoch & 50 mm & 100 mm & 70 km h$^{-1}$ & \multicolumn{1}{c}{90 km h$^{-1}$} \\ 
-     \hline
-     <<rps_table, echo=FALSE, include=TRUE, results="asis">>=
-     lines = read_lines("tables/return_periods_table.tex")
-     for (line in lines[8:19]) {
-        cat(gsub("NA", ">20", line))
-     }
-     @
-     \hline 
-     \end{tabular}
-\end{table}
-
-\begin{table}
-    \centering
-    \caption{Probability of a hail day exceeding hail sizes of 50 or 100 mm, and
-    of coincident wind exceeding 70 and 90 km h$^{-1}$, per domain and epoch.}
-    \label{tab:exceedence_probs}
-    \begin{tabular}{llcccc}
-    \hline
-    & & \multicolumn{2}{c}{Hail probability [\%]} & \multicolumn{2}{c}{Wind probability [\%]} \\ 
-    Domain & Epoch & 50 mm & 100 mm & 70 km h$^{-1}$ & \multicolumn{1}{c}{90 km h$^{-1}$} \\ 
-    \hline
-    <<probabilities_table, echo=FALSE, include=TRUE, results="asis">>=
-    lines = read_lines("tables/probabilities_table.tex")
-    for (line in lines[6:17]) {
-          cat(line)
-    }
-    @
-    \hline 
-    \end{tabular}
-\end{table}
-
-\begin{table}[!ht]
-    \centering
-    \caption{Mean $\pm$ standard deviation of seasonal hail days in historic
-    and future simulations, and relative future change with 95\% confidence
-    interval, per domain. Statistical significance is indicated by $\ast{}$
-    for a 90\% confidence level ($p < 0.1$) and $\ast{}\!\ast{}$ for a 95\%
-    confidence level ($p < 0.05$).}
-    \label{tab:frequency}  
-    \begin{tabular}{lrrr@{}l@{}r}
-          \hline
-          Domain & Historic days & Future days & \multicolumn{3}{r}{Future change} \\ 
-          \hline
-          <<hail_freq_table, echo=FALSE, include=TRUE, results="asis">>=
-          lines = read_lines("tables/hail_freq_table.tex")
-          for (line in lines[5:10]) {
-                cat(line)
-          }
-          @
-          \hline 
-     \end{tabular}
-\end{table}
 
 \begin{table} 
     \centering
@@ -346,6 +285,68 @@ size of hail and the tropical latitude of this event made it highly unusual.
         }
         @
         \hline
+    \end{tabular}
+\end{table}
+
+\begin{table}[!ht]
+    \centering
+    \caption{Mean $\pm$ standard deviation of seasonal hail days in historic
+    and future simulations, and relative future change with 95\% confidence
+    interval, per domain. Statistical significance is indicated by $\ast{}$
+    for a 90\% confidence level ($p < 0.1$) and $\ast{}\!\ast{}$ for a 95\%
+    confidence level ($p < 0.05$).}
+    \label{tab:frequency}  
+    \begin{tabular}{lrrr@{}l@{}r}
+          \hline
+          Domain & Historic days & Future days & \multicolumn{3}{r}{Future change} \\ 
+          \hline
+          <<hail_freq_table, echo=FALSE, include=TRUE, results="asis">>=
+          lines = read_lines("tables/hail_freq_table.tex")
+          for (line in lines[5:10]) {
+                cat(line)
+          }
+          @
+          \hline 
+     \end{tabular}
+\end{table}
+
+\begin{table}
+     \centering
+     \caption{Return periods for hail sizes of 50 or 100 mm, and of
+     hail-proximal wind exceeding 70 and 90 km h$^{-1}$, per domain and epoch.}
+     \label{tab:return_periods}
+     \begin{tabular}{llcccc}
+     \hline
+     & & \multicolumn{2}{c}{Hail RP [years]} & \multicolumn{2}{c}{Wind RP [years]} \\ 
+     Domain & Epoch & 50 mm & 100 mm & 70 km h$^{-1}$ & \multicolumn{1}{c}{90 km h$^{-1}$} \\ 
+     \hline
+     <<rps_table, echo=FALSE, include=TRUE, results="asis">>=
+     lines = read_lines("tables/return_periods_table.tex")
+     for (line in lines[8:19]) {
+        cat(gsub("NA", ">20", line))
+     }
+     @
+     \hline 
+     \end{tabular}
+\end{table}
+
+\begin{table}
+    \centering
+    \caption{Probability of a hail day exceeding hail sizes of 50 or 100 mm, and
+    of coincident wind exceeding 70 and 90 km h$^{-1}$, per domain and epoch.}
+    \label{tab:exceedence_probs}
+    \begin{tabular}{llcccc}
+    \hline
+    & & \multicolumn{2}{c}{Hail probability [\%]} & \multicolumn{2}{c}{Wind probability [\%]} \\ 
+    Domain & Epoch & 50 mm & 100 mm & 70 km h$^{-1}$ & \multicolumn{1}{c}{90 km h$^{-1}$} \\ 
+    \hline
+    <<probabilities_table, echo=FALSE, include=TRUE, results="asis">>=
+    lines = read_lines("tables/probabilities_table.tex")
+    for (line in lines[6:17]) {
+          cat(line)
+    }
+    @
+    \hline 
     \end{tabular}
 \end{table}
 
