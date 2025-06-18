@@ -84,20 +84,21 @@ damaging wind occurrence around Melbourne, Sydney/Canberra, and Perth.
       hail-proximal winds. The projections show increases in hail frequency in
       the Sydney/Canberra and Brisbane regions and robust increases in maximum
       hail size around Melbourne, Sydney/Canberra, Kalgoorlie, and Perth.
-      Damaging hail-proximal winds are projected to decrease in Melbourne,
-      Sydney/Canberra and Perth, although daily maximum hail-proximal wind
-      speeds are projected to increase in Sydney/Canberra and Perth.
+      Damaging ($\geq$ 90 km h$^{-1}$) hail-proximal wind frequency is projected
+      to decrease in Melbourne, Sydney/Canberra and Perth, although daily
+      maximum hail-proximal wind speeds are projected to increase in
+      Sydney/Canberra and Perth.
 \end{abstract}
 
 \section*{Plain Language Summary}
 
 Hailstorms endanger lives and damage property, leading to large insurance losses
 in Australia. Hailstorms are more damaging if the hailstones they produce are
-larger. They are also more damaging if there is high wind at the same time,
+larger. They are also more damaging when hail is accompanied by strong winds,
 because the wind can push hailstones sideways into breakable materials such as
 windows or house facades. We expect climate change to affect hailstorms, but
 there have been few studies on how hailstorm frequency and severity may change
-in future in Australia. In this study we used simulations of storm-season
+in the future in Australia. In this study we used simulations of storm-season
 weather in a historical epoch and a future, warmer climate scenario to examine
 changes in hailstone size and in the strength of winds when hail occurs, over
 major cities and a remote area in Australia. The simulations project increased
@@ -118,9 +119,9 @@ convective storms \cite{Allen_2018} and their associated hazards of hail
 \cite{Raupach_NREE_2021} and extreme winds \cite{Brown_JGRA_2021}. However,
 there remains high uncertainty and geographical heterogeneity in the details of
 how changes may manifest. Here, we use high-resolution downscaled simulations of
-a future with $\sim$2.8~$^{\circ{}}$C global warming over pre-industrial
-temperatures to examine changes in hail size and hail-proximal wind strength,
-and thus hail damage potential, over hail-prone areas of Australia.
+a future with $\sim$2.4~$^{\circ{}}$C global warming over a historical period to
+examine changes in hail size and hail-proximal wind strength, and thus hail
+damage potential, over hail-prone areas of Australia.
 
 Damaging severe storm hazards include hail over 2 cm diameter or wind gusts over
 90 km h$^{-1}$ \cite{Allen_2018}. Hail and convective winds are usually studied
@@ -237,21 +238,22 @@ occurred. HAILCAST ran every model time step, so on days with reduced time step
 HAILCAST ran more often. We aggregated hail sizes to daily maxima, so we expect
 minimal effect of this time step variability. Except in Section
 \ref{sec:overall_maxima}, we subset our analyses to only times and locations
-where surface hail was recorded, i.e. hail swaths for each hour. Wind
-speeds and convective parameters were therefore instantaneous values within one
-hour of hail occurrence. Convective parameters were calculated as described in
+where surface hail was predicted, i.e. hail swaths for each hour. Wind speeds
+and convective parameters were therefore instantaneous values within one hour of
+hail occurrence. Convective parameters were calculated as described in
 \citeA{Raupach_MWR_2023}, and winds were 10 m winds. Radar data
 \cite{Soderholm_radar_data} were used verify the historical simulations.
 
 Boundary conditions for the simulations were bias-corrected data by
-\citeA{Xu_SD_2021}, with a mean climate and interannual variance from
+\citeA{Xu_SD_2021}, with weather and interannual variance derived from one
+Coupled Model Intercomparison Project Phase 6 \cite<CMIP6,>{Eyring_GMD_2016}
+ensemble member, biases in mean climate and interannual variance corrected using
 European Centre for Medium-Range Weather Forecasts Reanalysis 5
-\cite<ERA5,>{Hersbach_QJRMS_2020} and a non-linear trend derived from the
-ensemble mean of 18 Coupled Model Intercomparison Project Phase 6
-\cite<CMIP6,>{Eyring_GMD_2016} models. Boundary conditions were prepared using
-the \texttt{nc2wrf} code of \citeA{Xu_code_data_2021}. Future projections used
-the SSP2-4.5 shared socioeconomic pathway \cite<SSP,>{ONeill_GEC_2017}. The
-global mean temperature in the boundary conditions was 0.39 K greater than
+\cite<ERA5,>{Hersbach_QJRMS_2020} data, and a non-linear trend from the ensemble
+mean of 18 CMIP6 models. Boundary conditions were prepared using the
+\texttt{nc2wrf} code of \citeA{Xu_code_data_2021}. Future projections used the
+SSP2-4.5 shared socioeconomic pathway \cite<SSP,>{ONeill_GEC_2017}. The global
+mean temperature in the boundary conditions was 0.39 K greater than
 pre-industrial \cite<1850--1990 in the CMIP6 35-model ensemble,>{Gutierrez_2021}
 for the historical epoch and 2.81 K greater for the future epoch, separating the
 epochs by 2.42 K of warming.
@@ -293,6 +295,28 @@ significance and confidence intervals.
 \section{Results}
 \label{sec:results}
 
+\subsection{Historical climatology reliability}
+
+The statistics of the historical simulations compared well with other records.
+The simulated climatology (Supporting Information Table \ref{SM-tab:hist_means})
+matched proxy-based expectations for relative hail hazard per domain
+\cite{Raupach_npjCAS_2023}. The climatology aligned with radar records, albeit
+with slight underestimations of seasonal hail days in the simulations, and some
+uncertainty in the radar data over whether the Brisbane or Sydney/Canberra
+domain is most hail-prone (Supporting Information Table
+\ref{SM-tab:radar_stats}). The largest disagreement in seasonal hail days
+between simulations and radar was for Sydney/Canberra, for which simulated
+seasonal hail days also showed the largest variability (Supporting Information
+Tables \ref{SM-tab:frequency}, \ref{SM-tab:radar_stats}). There were differences
+between radar and simulations in the percentages of hail days containing 50 mm
+or 100 mm hail, with radar recording large hail more often than the simulations
+(Supporting Information Tables \ref{SM-tab:return_periods},
+\ref{SM-tab:radar_stats}). However, the two datasets agreed on Adelaide and
+Sydney/Canberra having the greatest probability of 100 mm hail. Given inherent
+uncertainties in simulation \cite{Adams-Selin_WF_2019} and radar detection
+\cite{Greco_WF_2024} of hail, we are satisfied with the historical dataset's
+reliability.
+
 \subsection{Overall maxima}
 \label{sec:overall_maxima}
 
@@ -300,10 +324,7 @@ Hailstorm tracks are visible in maps of overall maximum hail size, but not in
 hail-proximal winds (Figure \ref{fig:maxes_by_domain}). An increase in maximum
 hail sizes between epochs is apparent for domains other than Perth and Brisbane,
 with increases in storm activity in the Adelaide, Kalgoorlie, Melbourne and
-Canberra/Sydney domains. Maximum wind speeds in proximity to hail were more
-widespread in the future scenarios than the historic scenarios, with an eastward
-expansion in areas experiencing maximum wind speeds in the Brisbane and Adelaide
-domains and a southern shift in the Kalgoorlie region.
+Canberra/Sydney domains.
 
 \begin{figure}[!h]
       \includegraphics[width=\textwidth]{figures/max_hail_sizes_by_domain}
@@ -316,12 +337,14 @@ domains and a southern shift in the Kalgoorlie region.
 \end{figure}
 
 \subsection{Extreme value analysis}
+\label{sec:eva}
 
 \subsubsection{Model fits}
 
 EVD models were fitted to daily maxima time series (Supporting Information
-Figures \ref{SM-fig:timeseries_hail} and \ref{SM-fig:timeseries_wind}), with
-reasonable resulting fits (Supporting Information Figures
+Figures \ref{SM-fig:timeseries_hail} and \ref{SM-fig:timeseries_wind}, with
+histograms of distributions of daily maxima shown in \ref{SM-fig:histograms}),
+with reasonable resulting fits (Supporting Information Figures
 \ref{SM-fig:densities_hail} and \ref{SM-fig:densities_wind}). QQ plots for hail
 size showed acceptable agreement with some model over- or under-estimation of
 the highest few quantiles, while wind speed QQ plots showed excellent agreement
@@ -341,13 +364,13 @@ obvious changes between epochs (Supporting Information Figure
 showed non-overlapping parameter confidence intervals between epochs, while
 there were obvious parameter changes in the Adelaide, Brisbane, and Perth
 domains. KS test $p$-value distributions for historical compared to future
-models showed that there were significant changes for the Kalgoorlie, Perth,
-Melbourne, and Sydney/Canberra domains for hail size, and in the Melbourne,
-Sydney/Canberra, and Perth domains for wind speed (Supporting Information Figure
-\ref{SM-fig:ks_pvals}). We conclude that the changes in hail and hail-proximal
-wind maxima between epochs can be considered significant only in the Melbourne,
-Perth, and Sydney/Canberra domains, while changes in hail size can be considered
-significant around Kalgoorlie.
+models showed that for hail size there were significant changes over the
+Kalgoorlie, Perth, Melbourne, and Sydney/Canberra domains, and for wind speed
+over the Melbourne, Sydney/Canberra, and Perth domains (Supporting Information
+Figure \ref{SM-fig:ks_pvals}). We conclude that the changes in hail and
+hail-proximal wind maxima between epochs can be considered significant only in
+the Melbourne, Perth, and Sydney/Canberra domains, while changes in hail size
+can be considered significant around Kalgoorlie.
 
 \subsubsection{Return periods}
 
@@ -432,8 +455,8 @@ Figure \ref{fig:thresholds} shows the probability of a hail day exceeding
 damaging hail and wind thresholds (Supporting Information Table
 \ref{SM-tab:exceedence_probs}). Around Melbourne, the probability of a hail day
 producing giant hail more than doubled to $\sim$\Sexpr{prob("Melbourne", 50,
-"ssp245")}\%, and 100 mm hail was more than six times more likely in future at
-$\sim$\Sexpr{prob("Melbourne", 100, "ssp245")}\%. Likewise, Kalgoorlie showed
+"ssp245")}\%, and 100 mm hail was more than six times more likely in the future
+at $\sim$\Sexpr{prob("Melbourne", 100, "ssp245")}\%. Likewise, Kalgoorlie showed
 increases in both giant hail (from $\sim$\Sexpr{prob("Kalgoorlie", 50,
 "historical")}\% to $\sim$\Sexpr{prob("Kalgoorlie", 50, "ssp245")}\%) and 100 mm
 hail (from $\sim$\Sexpr{prob("Kalgoorlie", 100, "historical")}\% to
@@ -557,7 +580,7 @@ hail damage potential in the EVD analyses.
       \hline
       <<ing_changes_table1, echo=FALSE, include=TRUE, results="asis">>=
       lines = read_lines("tables/ingredients_1.tex")
-      for (line in lines[c(8,14,12,15,13,11,16,5,9,6,10,17,7)]) {
+      for (line in lines[c(8,15,13,11,14,12,16,5,9,6,10,17,7)]) {
             cat(line)
       }
       @
@@ -566,35 +589,13 @@ hail damage potential in the EVD analyses.
       \hline
       <<ing_changes_table2, echo=FALSE, include=TRUE, results="asis">>=
       lines = read_lines("tables/ingredients_2.tex")
-      for (line in lines[c(8,14,12,15,13,11,16,5,9,6,10,17,7)]) {
+      for (line in lines[c(8,15,13,11,14,12,16,5,9,6,10,17,7)]) {
             cat(line)
       }
       @
       \hline
       \end{tabular}
 \end{table}
-
-\subsection{Historical climatology and comparison with radar}
-
-The statistics of the historical simulations compared well with other records.
-The simulated climatology (Supporting Information Table \ref{SM-tab:hist_means})
-matched proxy-based expectations for relative hail hazard per domain
-\cite{Raupach_npjCAS_2023}. The climatology aligned with radar records, albeit
-with slight underestimations of seasonal hail days in the simulations, and some
-uncertainty in the radar data over whether the Brisbane or Sydney/Canberra
-domain is most hail-prone (Supporting Information Table
-\ref{SM-tab:radar_stats}). The largest disagreement in seasonal hail days
-between simulations and radar was for Sydney/Canberra, for which simulated
-seasonal hail days also showed the largest variability (Supporting Information
-Tables \ref{SM-tab:frequency}, \ref{SM-tab:radar_stats}). There were differences
-between radar and simulations in the percentages of hail days containing 50 mm
-or 100 mm hail, with radar recording large hail more often than the simulations
-(Supporting Information Tables \ref{SM-tab:return_periods},
-\ref{SM-tab:radar_stats}). However, the two datasets agreed on Adelaide and
-Sydney/Canberra having the greatest probability of 100 mm hail. Given inherent
-uncertainties in simulation \cite{Adams-Selin_WF_2019} and radar detection
-\cite{Greco_WF_2024} of hail, we are satisfied with the historical dataset's
-reliability.
 
 \section{Conclusions}
 
@@ -603,23 +604,27 @@ wind speed over hail-prone regions of Australia, for SSP2-4.5 in 2080--2099
 compared to 1989--2009, with boundary conditions derived from 18 CMIP ensemble
 members. The domains included major cities and covered 65\% of Australia's
 population. Unlike proxy-based studies, our analysis used convection-permitting
-modelling that could explicitly simulate storms, and unlike pseudo-global
-warming studies, we used boundary conditions from global models that include
-projected changes in large-scale circulations.
+modelling that explicitly simulated storms, and unlike pseudo-global warming
+studies, we used boundary conditions that include projected changes in
+large-scale circulations.
 
-Between epochs, overall hail frequency was projected to increase by 29\% in
-Sydney/Canberra and 15\% in Brisbane, without significant changes elsewhere.
-Average maximum hail size was projected to increase around Sydney/Canberra,
-Brisbane, and Melbourne, and average maximum hail-proximal wind was projected to
-increase around Brisbane, Melbourne, and Sydney/Canberra. Around Melbourne,
-Perth, and Sydney/Canberra, maximum hail sizes were projected to increase while
-the probability of damaging hail-proximal winds was projected to decrease,
-although the average hail-proximal wind speeds were projected to increase around
-Sydney/Canberra and Perth. There were non-significant increases in maximum
-hail-proximal wind speeds around Adelaide and Kalgoorlie. Increases in maximum
-hail size and maximum hail-proximal winds were correlated with increases in
-atmospheric instability -- there was little projected change in vertical wind
-shear except a decrease around Brisbane. 
+Our conclusions rest on analysis of differences in distribution means (Table
+\ref{tab:ing_changes}) as well as extreme value analysis to examine changes in
+distribution tails (Section \ref{sec:eva}). The differences in means showed that
+between epochs, overall hail frequency was projected to increase by 29\% in
+Sydney/Canberra and 15\% in Brisbane, without significant changes elsewhere;
+average maximum hail size was projected to increase around Sydney/Canberra,
+Brisbane, and Melbourne; and average maximum hail-proximal wind was projected to
+increase around Brisbane, Melbourne, and Sydney/Canberra. Further, increases in
+maximum hail size and maximum hail-proximal winds were correlated with increases
+in atmospheric instability -- there was little projected change in vertical wind
+shear except a decrease around Brisbane. The extreme value analyses showed that
+around Melbourne, Perth, and Sydney/Canberra, maximum hail sizes were projected
+to increase while the probability of damaging hail-proximal winds was projected
+to decrease, although the average hail-proximal wind speeds were projected to
+increase around Sydney/Canberra and Perth. In addition, there were
+non-significant increases in maximum hail-proximal wind speeds around Adelaide
+and Kalgoorlie. 
 
 Our projections of increased hail frequency for Sydney/Canberra and indications
 of decreases in the other domains (other than Brisbane) align with reanalysis
@@ -629,18 +634,19 @@ This contradiction, plus apparent offsetting between instability and shear
 changes in the Brisbane area, increases projection uncertainty around Brisbane.
 Our projections for hail-proximal wind strength show increases in mean daily
 maxima but decreases in damaging wind occurrence around Sydney/Canberra and
-Melbourne. CAPE-based proxies also show increases \cite{Brown_JGRA_2021}, but
-convection-permitting projections that show decreases in all convective winds in
-a similar region \cite{Brown_NHESS_2024}. Reanalyses show an increasing trend in
-thunderstorm environments in Australia's southeast (1979-2016)
-\cite{Dowdy_CD_2020}. Severe storm environment frequencies in global reanalyses
-show non-significant increases in Australia's southwest and along the southeast
-coastal fringe, and decreases around Adelaide, agreeing with our hail frequency
-results, but have opposite sign to our projections around Canberra and
-Kalgoorlie \cite{Taszarek_npjCAS_2021}. Global proxy-based projections for
-severe storm environments show increases across Australia on average, with more
-model and proxy agreement in Australia's southeast and northwest
-\cite{Lepore_EF_2021}. 
+Melbourne. CAPE-based convective wind proxies (2081--2100 vs 1979--2005) also
+project increases \cite{Brown_JGRA_2021}, but convection-permitting simulations
+(2039--2059 vs 1985--2005) project future decreases in overall convective wind
+frequency, albeit with high uncertainty, in a similar region
+\cite{Brown_NHESS_2024}. Reanalyses show an increasing trend in thunderstorm
+environments in Australia's southeast (1979-2016) \cite{Dowdy_CD_2020}. Severe
+storm environment frequencies in global reanalyses show non-significant
+increases in Australia's southwest and along the southeast coastal fringe, and
+decreases around Adelaide, agreeing with our hail frequency results, but have
+opposite sign to our projections around Canberra and Kalgoorlie
+\cite{Taszarek_npjCAS_2021}. Global proxy-based projections for severe storm
+environments show increases across Australia on average, with more model and
+proxy agreement in Australia's southeast and northwest \cite{Lepore_EF_2021}. 
 
 Several caveats apply to our results. We used instantaneous hourly wind values
 which likely underestimated maximum gusts. We did not explicitly test whether

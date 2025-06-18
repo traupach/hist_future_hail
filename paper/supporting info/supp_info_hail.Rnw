@@ -152,6 +152,14 @@ size of hail and the tropical latitude of this event made it highly unusual.
 \end{figure}
 
 \begin{figure}[!ht]
+    \includegraphics[width=\textwidth]{figures/epoch_hists_hail}
+
+    \includegraphics[width=\textwidth]{figures/epoch_hists_wind}
+    \caption{Histograms of daily maximum hail diameter (top) and daily maximum hail-proximal wind speed (bottom) by epoch and domain.}
+    \label{fig:histograms}
+\end{figure}
+
+\begin{figure}[!ht]
     \includegraphics[width=\textwidth]{figures/gev_dists_hail}
     \caption{Densities of maximum daily hail size per domain and epoch derived
      from WRF simulations and the fitted EVD (Generalized Pareto with 20 mm
@@ -193,14 +201,17 @@ size of hail and the tropical latitude of this event made it highly unusual.
      = 0.05$; when $p$ values are below this line the null hypothesis that the
      two samples come from the same distribution can be rejected.}
     \label{fig:ks_pvals}
-\end{figure}
+\end{figure}S
 
 \begin{figure}[!ht]
     \includegraphics[width=\textwidth]{figures/fit_params}
     \caption{Location (a, d), scale (b, e), and shape (c, f) parameters for
-    fitted EVD distributions for maximum hail size (a--c) and 10 m wind at
-    hail hours (d--f). Parameter values are shown as a point and whiskers show
-    95\% confidence intervals.}
+    fitted EVD distributions for maximum hail size (a--c) and 10 m wind at hail
+    hours (d--f). Parameter values are shown as a point and whiskers show 95\%
+    confidence intervals. Maximum hail sizes are fitted with Generalized Pareto
+    models that have no location parameter. Maximum hail-proximal winds are
+    fitted with Generalized Extreme Value distributions that use all three
+    parameters.}
     \label{fig:evd_parameters}
 \end{figure}
 
