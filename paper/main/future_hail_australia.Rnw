@@ -3,7 +3,7 @@
 \usepackage{url} %this package should fix any errors with URLs in refs.
 \usepackage[inline]{trackchanges} %for better track changes. finalnew option will compile document with changes incorporated.
 \usepackage{soul}
-\linenumbers
+%\linenumbers
 
 <<libraries, echo=FALSE, include=FALSE>>=
 require(readr, quietly=TRUE)
@@ -84,7 +84,7 @@ damaging wind occurrence around Melbourne, Sydney/Canberra, and Perth.
       hail-proximal winds. The projections show increases in hail frequency in
       the Sydney/Canberra and Brisbane regions and robust increases in maximum
       hail size around Melbourne, Sydney/Canberra, Kalgoorlie, and Perth.
-      Damaging ($\geq$ 90 km h$^{-1}$) hail-proximal wind frequency is projected
+      Damaging ($\geq$ 90 km h$^{-1}$) hail-proximal winds are projected
       to decrease in Melbourne, Sydney/Canberra and Perth, although daily
       maximum hail-proximal wind speeds are projected to increase in
       Sydney/Canberra and Perth.
@@ -235,7 +235,7 @@ values were instantaneous for most variables, but HAILCAST output maximum hail
 sizes over each simulated hour. The time step for the coarse domain was 100 s,
 reduced to 80 s or 60 s for days on which Courant-Friedrichs-Lewy (CFL) errors
 occurred. HAILCAST ran every model time step, so on days with reduced time step
-HAILCAST ran more often. We aggregated hail sizes to daily maxima, so we expect
+HAILCAST ran more often. We aggregated hail sizes to daily values, so we expect
 minimal effect of this time step variability. Except in Section
 \ref{sec:overall_maxima}, we subset our analyses to only times and locations
 where surface hail was predicted, i.e. hail swaths for each hour. Wind speeds
@@ -250,34 +250,34 @@ Coupled Model Intercomparison Project Phase 6 \cite<CMIP6,>{Eyring_GMD_2016}
 ensemble member, biases in mean climate and interannual variance corrected using
 European Centre for Medium-Range Weather Forecasts Reanalysis 5
 \cite<ERA5,>{Hersbach_QJRMS_2020} data, and a non-linear trend from the ensemble
-mean of 18 CMIP6 models. Boundary conditions were prepared using the
-\texttt{nc2wrf} code of \citeA{Xu_code_data_2021}. Future projections used the
-SSP2-4.5 shared socioeconomic pathway \cite<SSP,>{ONeill_GEC_2017}. The global
-mean temperature in the boundary conditions was 0.39 K greater than
-pre-industrial \cite<1850--1990 in the CMIP6 35-model ensemble,>{Gutierrez_2021}
-for the historical epoch and 2.81 K greater for the future epoch, separating the
-epochs by 2.42 K of warming.
+mean of 18 CMIP6 models. Boundary conditions were prepared using \texttt{nc2wrf}
+by \citeA{Xu_code_data_2021}. Future projections used the SSP2-4.5 shared
+socioeconomic pathway \cite<SSP,>{ONeill_GEC_2017}. The global mean temperature
+in the boundary conditions was 0.39 K greater than pre-industrial
+\cite<1850--1990 in the CMIP6 35-model ensemble,>{Gutierrez_2021} for the
+historical epoch and 2.81 K greater for the future epoch, separating the epochs
+by 2.42 K of warming.
 
 HAILCAST occasionally produced unreasonably large hail sizes, particularly over
 water bodies; since our focus was on land, we subset the data to land areas and
 removed any HAILCAST value of surface hail over 180 mm diameter \cite<larger
 than the Australian hail record of $\sim$16 cm,>{BOM_2021}. Updates to HAILCAST
 since the version used here may address these large hail sizes, but the majority
-of HAILCAST results would not be affected, so our approach of removing very
-large hail sizes is reasonable (pers. comm. B. Adams-Selin, 2024). Under 0.006\%
-of non-zero hail-diameter values over land were removed per domain. 
+of HAILCAST results would not be affected, so our approach is reasonable (pers.
+comm. B. Adams-Selin, 2024). Under 0.006\% of non-zero hail-diameter values over
+land were removed per domain. 
 
 \subsection{Statistical modelling}
 
 For extreme value analyses we used the R \cite{R_software} package
-\texttt{extRemes} \cite{Gilleland_JSS_2016}. Block maxima were defined as daily
-maxima of surface hailstone sizes and wind speeds per domain, under the
-assumption of independence \cite{Coles_2001} because single hailstorms do not
-last more than one day. Two types of extreme value distributions (EVDs) were
-used. For hailstone size, generalized Pareto distributions with a threshold of
-20 mm were fitted to each series of daily maxima, because they provided a good
-fit to the distribution tails. For wind speeds, which were more normally
-distributed, generalized EVDs were fitted. We used quantile-quantile (QQ) plots
+\texttt{extRemes} \cite{Gilleland_JSS_2016}. Block maxima were daily maxima of
+surface hailstone sizes and wind speeds per domain, under the assumption of
+independence \cite{Coles_2001} because single hailstorms do not last more than
+one day. Two types of extreme value distributions (EVDs) were used. For
+hailstone size, generalized Pareto distributions with a threshold of 20 mm were
+fitted to each series of daily maxima, because they provided a good fit to the
+distribution tails. For wind speeds, which were more normally distributed,
+generalized EVDs were fitted. We used quantile-quantile (QQ) plots
 \cite{Coles_2001} and the Kolmogorov–Smirnoff (KS) test to assess goodness of
 fit by comparing values simulated by WRF to values drawn from the EVDs. The KS
 test was also used to examine the (dis)similarity of EVDs for historical versus
@@ -311,11 +311,9 @@ Tables \ref{SM-tab:frequency}, \ref{SM-tab:radar_stats}). There were differences
 between radar and simulations in the percentages of hail days containing 50 mm
 or 100 mm hail, with radar recording large hail more often than the simulations
 (Supporting Information Tables \ref{SM-tab:return_periods},
-\ref{SM-tab:radar_stats}). However, the two datasets agreed on Adelaide and
-Sydney/Canberra having the greatest probability of 100 mm hail. Given inherent
-uncertainties in simulation \cite{Adams-Selin_WF_2019} and radar detection
-\cite{Greco_WF_2024} of hail, we are satisfied with the historical dataset's
-reliability.
+\ref{SM-tab:radar_stats}). Given inherent uncertainties in simulation
+\cite{Adams-Selin_WF_2019} and radar detection \cite{Greco_WF_2024} of hail, we
+are satisfied with the historical dataset's reliability.
 
 \subsection{Overall maxima}
 \label{sec:overall_maxima}
@@ -326,17 +324,14 @@ hail sizes between epochs is apparent for domains other than Perth and Brisbane,
 with increases in storm activity in the Adelaide, Kalgoorlie, Melbourne and
 Canberra/Sydney domains. Areas with high wind speeds in proximity to hail
 occurrence were more widespread in the future scenarios than the historic
-scenarios, with an eastward expansion in areas experiencing strong maximum wind
-speeds in the Brisbane and Adelaide domains and a southern shift in the
-Kalgoorlie region.
+scenarios.
 
 \begin{figure}[!h]
       \includegraphics[width=\textwidth]{figures/max_hail_sizes_by_domain}
       \includegraphics[width=\textwidth]{figures/max_10m_winds_by_domain}
-      \caption{Maximum hail sizes (a-l) and maximum 10 m wind speeds (m-x) in
-      historical and future climates, by domain. Fuchsia contours surround
-      significant urban areas \cite{ABS_2022}. Color bars are truncated for
-      contrast.}
+      \caption{Maximum hail sizes (a-l) and maximum 10 m wind speeds (m-x) by
+      domain and epoch. Fuchsia contours surround significant urban areas
+      \cite{ABS_2022}. Color bars are truncated for contrast.}
       \label{fig:maxes_by_domain}
 \end{figure}
 
@@ -347,15 +342,15 @@ Kalgoorlie region.
 
 EVD models were fitted to daily maxima time series (Supporting Information
 Figures \ref{SM-fig:timeseries_hail} and \ref{SM-fig:timeseries_wind}, with
-histograms of distributions of daily maxima shown in \ref{SM-fig:histograms}),
-with reasonable resulting fits (Supporting Information Figures
-\ref{SM-fig:densities_hail} and \ref{SM-fig:densities_wind}). QQ plots for hail
-size showed acceptable agreement with some model over- or under-estimation of
-the highest few quantiles, while wind speed QQ plots showed excellent agreement
-(Supporting Information Figures \ref{SM-fig:qq_hail} and \ref{SM-fig:qq_wind}).
-KS tests comparing distributions from WRF and the EVD models produced $p$ values
-largely above 0.05 (Supporting Material Figure \ref{SM-fig:ks_pvals}). The EVD
-models had sufficient goodness of fit for our analyses.
+histograms of daily maxima shown in \ref{SM-fig:histograms}), with reasonable
+resulting fits (Supporting Information Figures \ref{SM-fig:densities_hail} and
+\ref{SM-fig:densities_wind}). QQ plots for hail size showed acceptable agreement
+with some model over- or under-estimation of the highest few quantiles, while
+wind speed QQ plots showed excellent agreement (Supporting Information Figures
+\ref{SM-fig:qq_hail} and \ref{SM-fig:qq_wind}). KS tests comparing distributions
+from WRF and the EVD models produced $p$ values largely above 0.05 (Supporting
+Material Figure \ref{SM-fig:ks_pvals}). The EVD models had sufficient goodness
+of fit for our analyses.
 
 \subsubsection{Significance of changes}
 \label{sec:significance}
@@ -371,7 +366,7 @@ domains. KS test $p$-value distributions for historical compared to future
 models showed that for hail size there were significant changes over the
 Kalgoorlie, Perth, Melbourne, and Sydney/Canberra domains, and for wind speed
 over the Melbourne, Sydney/Canberra, and Perth domains (Supporting Information
-Figure \ref{SM-fig:ks_pvals}). We conclude that the changes in hail and
+Figure \ref{SM-fig:ks_pvals}). We conclude that changes in hail and
 hail-proximal wind maxima between epochs can be considered significant only in
 the Melbourne, Perth, and Sydney/Canberra domains, while changes in hail size
 can be considered significant around Kalgoorlie.
@@ -566,16 +561,16 @@ indicating that offsetting of changes may have led to no significant change in
 hail damage potential in the EVD analyses. 
 
 \begin{table}[h!]
-      \caption{Relative changes in seasonal hail days, daily mean and maximum
-      hail size and 10 m wind, and daily mean atmospheric variables: bulk
-      vertical 0-6 km wind shear (S06), CAPE, convective inhibition (CIN),
-      lifted index (LI), temperature at 500 hPa (T500), lapse rate from 700 to
-      500 hPa (LR), freezing-level height (FLH, height of dry-bulb temperature
-      zero), and melting-level height (MLH, height of wet-bulb temperature
-      zero), for hail times. Statistical significance is indicated by $\ast{}$
-      for 90\% ($p < 0.1$), $\ast{}\!\ast{}$ for 95\%, and
-      $\ast{}\!\ast{}\!\!\ast{}$ for 99\% confidence levels. 95\% confidence
-      intervals in brackets.}
+      \caption{Relative changes in seasonal hail days, daily mean and daily
+      maximum 10 m wind and (maximum hourly) hail size, and daily mean
+      atmospheric variables: bulk vertical 0-6 km wind shear (S06), CAPE,
+      convective inhibition (CIN), lifted index (LI), temperature at 500 hPa
+      (T500), lapse rate from 700 to 500 hPa (LR), freezing-level height (FLH,
+      height of dry-bulb temperature zero), and melting-level height (MLH,
+      height of wet-bulb temperature zero), for hail times. Statistical
+      significance is indicated by $\ast{}$ for 90\% ($p < 0.1$),
+      $\ast{}\!\ast{}$ for 95\%, and $\ast{}\!\ast{}\!\!\ast{}$ for 99\%
+      confidence levels. 95\% confidence intervals in brackets.}
       \label{tab:ing_changes}
       \centering
       \renewcommand{\arraystretch}{0.90}
@@ -614,20 +609,20 @@ modelling that explicitly simulated storms, and unlike pseudo-global warming
 studies, we used boundary conditions that include projected changes in
 large-scale circulations.
 
-Our conclusions rest on analysis of differences in distribution means (Table
-\ref{tab:ing_changes}) as well as extreme value analysis to examine changes in
-distribution tails (Section \ref{sec:eva}). The differences in means showed that
-between epochs, overall hail frequency was projected to increase by 29\% in
-Sydney/Canberra and 15\% in Brisbane, without significant changes elsewhere;
-average maximum hail size was projected to increase around Sydney/Canberra,
-Brisbane, and Melbourne; and average maximum hail-proximal wind was projected to
-increase around Brisbane, Melbourne, and Sydney/Canberra. Further, increases in
-maximum hail size and maximum hail-proximal winds were correlated with increases
-in atmospheric instability -- there was little projected change in vertical wind
-shear except a decrease around Brisbane. The extreme value analyses showed that
-around Melbourne, Perth, and Sydney/Canberra, maximum hail sizes were projected
-to increase while the probability of damaging hail-proximal winds was projected
-to decrease, although the average hail-proximal wind speeds were projected to
+Our conclusions rest on differences in distribution means (Table
+\ref{tab:ing_changes}) and tails (using extreme value analysis, Section
+\ref{sec:eva}). The differences in means showed that between epochs, overall
+hail frequency was projected to increase by 29\% in Sydney/Canberra and 15\% in
+Brisbane, without significant changes elsewhere; average maximum hail size was
+projected to increase around Sydney/Canberra, Brisbane, and Melbourne; and
+average maximum hail-proximal wind was projected to increase around Brisbane,
+Melbourne, and Sydney/Canberra. Further, increases in maximum hail size and
+maximum hail-proximal winds were correlated with increases in atmospheric
+instability -- there was little projected change in vertical wind shear except a
+decrease around Brisbane. The extreme value analyses showed that around
+Melbourne, Perth, and Sydney/Canberra, maximum hail sizes were projected to
+increase while the probability of damaging hail-proximal winds was projected to
+decrease, although the average hail-proximal wind speeds were projected to
 increase around Sydney/Canberra and Perth. In addition, there were
 non-significant increases in maximum hail-proximal wind speeds around Adelaide
 and Kalgoorlie. 
@@ -657,13 +652,13 @@ proxy agreement in Australia's southeast and northwest \cite{Lepore_EF_2021}.
 Several caveats apply to our results. We used instantaneous hourly wind values
 which likely underestimated maximum gusts. We did not explicitly test whether
 the hail simulated in this study is wind-driven, but rather analyzed changes in
-hail size and, separately, in wind strength in temporal and spatial proximity to
-hail. Our simulations used $\sim$3 km grid spacing, allowing for well-simulated
-cold pools \cite{Prein_PTRS_2021} but limiting representation of individual
-downdrafts \cite{Wang_JGRA_2020} and possibly underestimating convective winds
-\cite{ElRafei_WCE_2023}. We considered only the peak convective season of
-October--February, yet significant hail events do occur outside these months
-\cite{ICA_2024} and seasonal shifts in hail-prone conditions have been observed
+hail size and, separately, in wind strength in proximity to hail. Our
+simulations used $\sim$3 km grid spacing, allowing for well-simulated cold pools
+\cite{Prein_PTRS_2021} but limiting representation of individual downdrafts
+\cite{Wang_JGRA_2020} and possibly underestimating convective winds
+\cite{ElRafei_WCE_2023}. We considered only the peak convective season
+(October--February), yet significant hail events do occur outside these months
+\cite{ICA_2024} and seasonal shifts in hail-prone conditions have occurred
 \cite{Raupach_npjCAS_2023}. Our results are based on a single model realization,
 and an ensemble is needed to build a consensus hazard projection. Future work
 could address these caveats, consider bivariate analyses, better understand why
@@ -688,7 +683,7 @@ Computational Infrastructure (NCI) data catalogue \cite{Soderholm_radar_data}.
 
 THR's position at UNSW Sydney is supported by QBE Insurance. This research used
 resources from the National Computational Infrastructure (NCI Australia), an
-NCRIS enabled capability supported by the Australian Government. We thank Simon
+NCRIS-enabled capability supported by the Australian Government. We thank Simon
 Tett for useful discussions on extreme value statistics.
 
 %% Include references from supporting information.
