@@ -324,7 +324,11 @@ Hailstorm tracks are visible in maps of overall maximum hail size, but not in
 hail-proximal winds (Figure \ref{fig:maxes_by_domain}). An increase in maximum
 hail sizes between epochs is apparent for domains other than Perth and Brisbane,
 with increases in storm activity in the Adelaide, Kalgoorlie, Melbourne and
-Canberra/Sydney domains.
+Canberra/Sydney domains. Areas with high wind speeds in proximity to hail
+occurrence were more widespread in the future scenarios than the historic
+scenarios, with an eastward expansion in areas experiencing strong maximum wind
+speeds in the Brisbane and Adelaide domains and a southern shift in the
+Kalgoorlie region.
 
 \begin{figure}[!h]
       \includegraphics[width=\textwidth]{figures/max_hail_sizes_by_domain}
