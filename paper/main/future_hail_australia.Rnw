@@ -574,6 +574,7 @@ hail damage potential in the EVD analyses.
       intervals in brackets.}
       \label{tab:ing_changes}
       \centering
+      \renewcommand{\arraystretch}{0.90}
       \begin{tabular}{lr@{}l@{}rr@{}l@{}rr@{}l@{}r}
       \hline
       & \multicolumn{3}{c}{Adelaide} & \multicolumn{3}{c}{Brisbane} & \multicolumn{3}{c}{Kalgoorlie} \\ 
@@ -595,6 +596,7 @@ hail damage potential in the EVD analyses.
       @
       \hline
       \end{tabular}
+      \renewcommand{\arraystretch}{1.0}
 \end{table}
 
 \section{Conclusions}
